@@ -1,0 +1,6 @@
+URL to use:  http://search.twitter.com/search.atom?q=%23@pocketnoagenda&from=adamcurry&rpp=1
+
+The line which actually contains the tweet has the url which gives the tweet ID.
+ex: http://twitter.com/adamcurry/statuses/29679686843
+
+Also has <div class="lastUpdated">mm/dd/yyyy hh:mm (AM|PM)</div>
