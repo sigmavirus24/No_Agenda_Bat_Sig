@@ -1,6 +1,16 @@
-URL to use:  http://search.twitter.com/search.atom?q=%23@pocketnoagenda&from=adamcurry&rpp=1
+URL to use now: http://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1
 
-The line which actually contains the tweet has the url which gives the tweet ID.
-ex: http://twitter.com/adamcurry/statuses/29679686843
+Reasoning in using json: 
+ \_ everything on one line makes it easier to search within it.
+ \_ id_str, created_at
+ \_ refresh_url makes it easy to update/check after initially starting the program
 
-Also has <div class="lastUpdated">mm/dd/yyyy hh:mm (AM|PM)</div>
+
+
+xxxx OLD
+x URL to use:  http://search.twitter.com/search.atom?q=%23@pocketnoagenda&from=adamcurry&rpp=1
+x 
+x The line which actually contains the tweet has the url which gives the tweet ID.
+x ex: http://twitter.com/adamcurry/statuses/29679686843
+x 
+x Also has <div class="lastUpdated">mm/dd/yyyy hh:mm (AM|PM)</div>
