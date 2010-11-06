@@ -13,7 +13,8 @@ all: $(TARGETS)
 
 main: $(OBJ)
 	@echo "  [BUILD] $@"
-	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@
+	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
+# -lcurl necessary to compile, don't ask me why
 
 clean:
 	$(RM) *.o $(TARGETS)
