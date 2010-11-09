@@ -1,6 +1,6 @@
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall
+CFLAGS := -ggdb3 -Werror -Wall -DDEBUG
 Q := @
 
 TARGETS := main

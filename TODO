@@ -1,0 +1,6 @@
+Scale: 0 (lowest) - 9 (highest)
+9: Write wrapper function for the curl calls.
+8: Figure out if writing own functions will be faster than #include'ing all these libraries
+8: Figure out reasonable options (commandline)
+8: Figure out structure of rc file (IF needed)
+4: Make a GUI

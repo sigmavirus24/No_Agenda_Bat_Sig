@@ -6,10 +6,14 @@
 #endif
 
 #include <curl/curl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <stdio.h>
+
+typedef struct stat t_stat;
 
 #endif
