@@ -13,12 +13,17 @@
 
 typedef struct stat t_stat;
 
-CURLcode my_curl_easy(FILE *, 
-					 		 size_t(*fn)(const void *, size_t, size_t, FILE *),
-					 		 char *);
 typedef struct s_tweet {
 		  char *date; /* For ourselves */
 		  char *text; /* Might be nice to display for user */
 		  char *refresh; /* Refresh URL starting with '?' */
 } t_tweet;
+
+CURLcode my_curl_easy(FILE *, 
+					 		 size_t(*fn)(const void *, size_t, size_t, FILE *),
+					 		 char *);
+
+t_tweet *parse(char *);
+char *find_char(char *, char);
+char *find_str(char *, char *);
 #endif
