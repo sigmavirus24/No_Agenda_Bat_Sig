@@ -24,6 +24,6 @@ CURLcode my_curl_easy(FILE *,
 					 		 char *);
 
 t_tweet *parse(char *);
-char *find_char(char *, char);
-char *find_str(char *, char *);
+int find_char(char *, char);
+int find_str(char *, char *);
 #endif
