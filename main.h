@@ -1,10 +1,7 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#ifdef DEBUG
 #include <errno.h>
-#endif
-
 #include <curl/curl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -16,4 +13,12 @@
 
 typedef struct stat t_stat;
 
+CURLcode my_curl_easy(FILE *, 
+					 		 size_t(*fn)(const void *, size_t, size_t, FILE *),
+					 		 char *);
+typedef struct s_tweet {
+		  char *date; /* For ourselves */
+		  char *text; /* Might be nice to display for user */
+		  char *refresh; /* Refresh URL starting with '?' */
+} t_tweet;
 #endif

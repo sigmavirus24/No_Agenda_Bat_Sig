@@ -4,7 +4,7 @@ CFLAGS := -ggdb3 -Werror -Wall -DDEBUG
 Q := @
 
 TARGETS := main
-SRC := main.c
+SRC := main.c curl_functions.c
 OBJ := $(SRC:%c=%o)
 
 default: all
