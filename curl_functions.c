@@ -7,7 +7,7 @@ CURLcode my_curl_easy(FILE *out,
 		  CURLcode ret;
 
 		  curl = curl_easy_init();
-		  if(curl) {
+		  if(curl){
 		  		curl_easy_setopt(curl, CURLOPT_URL, url);
 		  		curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
 		  		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fn);

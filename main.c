@@ -1,15 +1,15 @@
 #include "./main.h"
-#define MAX_SIZE 4098
 
 int main(int argc, char **argv){
 	CURLcode res;
 	FILE *out;
 	t_stat buf;
+	t_tweet *info;
 	char *def; /* Default URL */
 	char *refresh; /* Refresh URL */
 	int s;
 
-	if(argc == 1) {
+	if(argc == 1){
 		/* Read from rc file */
 	} else {
 		/* Parse arguments */
@@ -28,7 +28,7 @@ int main(int argc, char **argv){
 		}
 	}
 
-	if(NULL == (out = fopen("/tmp/bat_sig.txt", "w+"))) {
+	if(NULL == (out = fopen("/tmp/bat_sig.txt", "w+"))){
 		fprintf(stderr, "Cannot open /tmp/bat_sig.txt\n");
 		return 1;
 	}
@@ -47,7 +47,7 @@ int main(int argc, char **argv){
 	 * a new URL buffer and have it watch that. 
 	 * For testing, I'm using the one as of Tue Nov 9
 	 */
-	if(NULL == (out = fopen("/tmp/bat_sig2.txt", "w+"))) {
+	if(NULL == (out = fopen("/tmp/bat_sig2.txt", "w+"))){
 		fprintf(stderr, "Cannot open second file\n");
 		return 1;
 	}
@@ -57,6 +57,7 @@ int main(int argc, char **argv){
 	res = my_curl_easy(out, fwrite, refresh);
 	/* Returns "{\"results\":[]" if there is nothing. 
 	 * Can run a while loop until this does not match. */
+	info = parse("/tmp/bat_sig.txt");
 
 	curl_global_cleanup();
 
