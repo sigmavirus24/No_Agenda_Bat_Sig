@@ -5,7 +5,7 @@ void *xmalloc(int n){
 
 	p = malloc(n);
 	if(p == 0){
-		my_str("Virtual memory exhausted.\n");
+		fprintf(stderr, "Virtual memory exhausted.\n");
 		exit(1);
 	}
 	return p;

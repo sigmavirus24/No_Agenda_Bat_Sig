@@ -26,4 +26,5 @@ CURLcode my_curl_easy(FILE *,
 t_tweet *parse(char *);
 int find_char(char *, char);
 int find_str(char *, char *);
+void *xmalloc(int);
 #endif
