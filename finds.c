@@ -40,9 +40,6 @@ int find_str(char *str, char *find){
 			p = str + (flen - 1);
 			pos += flen - 1;
 			while(pos < slen){
-#ifdef DEBUG
-				printf("%i\n", pos);
-#endif
 				if(*p == *(find + flen - 1)){
 					i = flen - 1;
 					while(i > 0){

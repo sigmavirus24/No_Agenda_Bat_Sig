@@ -6,17 +6,17 @@ t_tweet *parse(char *file){
 		  t_stat buf;
 		  FILE *f;
 		  char *s;
-			/*char *p;*/
+		  char *p;
 
 		  if(0 == stat(file, &buf)){
 					 if(NULL != (f = fopen(file, "r"))){
 								parsed = (t_tweet *)xmalloc(sizeof(t_tweet));
 								s = (char *)xmalloc(MAX_SIZE * sizeof(char));
 
-								s = fgets(s, MAX_SIZE - 1, f);
-								printf("%s\n\n", s);
+								p = fgets(s, MAX_SIZE, f);
+								printf("%s\n%s\n", p, s);
 								if(s)
-									printf("%i\n", find_str(s, "\"results\":["));
+										  printf("%i\n", find_str(s, "\"results\":["));
 								/* parse into parsed */
 								free(s);
 								fclose(f);
