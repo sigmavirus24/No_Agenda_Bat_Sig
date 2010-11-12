@@ -11,6 +11,7 @@ int find_char(char *str, char c){
 			if(*str == c)
 				max = (i > max) ? i : max;
 			i++;
+			str++;
 		}
 		return max;
 	}
@@ -27,44 +28,45 @@ int find_char(char *str, char c){
 int find_str(char *str, char *find){
 	int flen;
 	int slen;
-	int len;
+	int pos;
 	int i;
 	char *p;
 
 	if(str && find){
-		len = 0;
+		pos = 0;
 		flen = strlen(find);
 		slen = strlen(str);
-		if(slen < flen)
-			return -1;
-		p = str + flen - 1;
-		len += flen;
-		while(len < slen){
-			if(*p == *(find + flen - 1)){
-				i = flen - 1;
-				while(--i > 0)
-					if(*(--p) != *(find + i))
-						break;
-				if(i == 0 && *p == *find)
-					return len + 1;
-				else {
-					/* Shift pattern */
-					i = find_char(find, *p);
-					if(i < 0){
-						p = str + len + flen;
-						len += flen;
-					} else {
-						p = str + len + i;
-						len += i;
+		if(flen < slen){
+			p = str + (flen - 1);
+			pos += flen - 1;
+			while(pos < slen){
+#ifdef DEBUG
+				printf("%i\n", pos);
+#endif
+				if(*p == *(find + flen - 1)){
+					i = flen - 1;
+					while(i > 0){
+						if(*(p--) != *(find + i))
+							break;
+						i--;
 					}
+					if(i == 0 && *p == *find)
+						return pos;
+				} else {
+						/* Shift pattern */
+						i = find_char(find, *p);
+						if(i < 0){
+							p = str + pos + flen;
+							pos += flen;
+						} else {
+							p = str + pos + (flen - i - 1);
+							pos += (flen - i - 1);
+						}
 				}
-			} else {
-				p += flen;
-				len += flen;
 			}
+			if(pos <= slen)
+				return pos;
 		}
-		if(len == slen)
-			return len;
 	}
 	return -1;
 }
