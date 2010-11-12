@@ -13,6 +13,7 @@ CURLcode my_curl_easy(FILE *out,
 		  		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fn);
 		  		ret = curl_easy_perform(curl);
 
+				fclose(out);
 		  		curl_easy_cleanup(curl);
 		  }
 

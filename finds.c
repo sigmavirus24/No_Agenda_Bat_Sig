@@ -1,17 +1,31 @@
 #include "./main.h"
 
-/* find_char::Returns position of last instance of c */
+/* find_char::Returns first position of c */
 int find_char(char *str, char c){
+	int i;
+
+	if(str){
+		i = 0;
+		while(*str){
+			if(*(str++) == c)
+				return i;
+			i++;
+		}
+	}
+	return -1;
+}
+
+/* rfind_char::Returns position of last instance of c */
+int rfind_char(char *str, char c){
 	int max;
 	int i;
 
 	if(str){
 		max = i = 0;
 		while(*str){
-			if(*str == c)
+			if(*(str++) == c)
 				max = (i > max) ? i : max;
 			i++;
-			str++;
 		}
 		return max;
 	}
@@ -51,7 +65,7 @@ int find_str(char *str, char *find){
 						return pos;
 				} else {
 						/* Shift pattern */
-						i = find_char(find, *p);
+						i = rfind_char(find, *p);
 						if(i < 0){
 							p = str + pos + flen;
 							pos += flen;

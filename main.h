@@ -14,8 +14,8 @@
 typedef struct stat t_stat;
 
 typedef struct s_tweet {
-		  char *date; /* For ourselves */
 		  char *text; /* Might be nice to display for user */
+		  char *date; /* For ourselves */
 		  char *refresh; /* Refresh URL starting with '?' */
 } t_tweet;
 
@@ -25,6 +25,7 @@ CURLcode my_curl_easy(FILE *,
 
 t_tweet *parse(char *);
 int find_char(char *, char);
+int rfind_char(char *, char);
 int find_str(char *, char *);
 void *xmalloc(int);
 #endif
