@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 		} else {
 			/* Something is wrong, should probably exit */
 			fprintf(stderr, "Something went wrong somewhere...\n");
-			return 1;
+			/*return 1;*/
 		}
 	}
 
@@ -55,16 +55,18 @@ int main(int argc, char **argv){
 		return 1;
 	}
 	info = parse("/tmp/bat_sig.txt");
-	printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
+	if(info){
+		printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
 
-	refresh = strdup(info->refresh);
+		refresh = strdup(info->refresh);
 
-	res = my_curl_easy(out, fwrite, refresh);
-	/* Returns "{\"results\":[]" if there is nothing. 
-	 * Can run a while loop until this does not match. */
+		res = my_curl_easy(out, fwrite, refresh);
+		/* Returns "{\"results\":[]" if there is nothing. 
+		 * Can run a while loop until this does not match. */
 
-	curl_global_cleanup();
+		curl_global_cleanup();
 
-	free_t_tweet(info);
+		free_t_tweet(info);
+	}
 	return 0;
 }

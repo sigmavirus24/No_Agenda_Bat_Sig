@@ -1,3 +1,7 @@
+To debug with valgrind use this command:
+valgrind --suppressions=bat_sig.supp ./executable
+(Currently executable = main)
+
 URL to use now: http://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1
 
 Reasoning in using json: 

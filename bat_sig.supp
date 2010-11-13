@@ -1,0 +1,498 @@
+##Libcrypto suppressions, I didn't write it, I don't care about them
+##Probably the result of using SSL with libcurl
+{
+   Bat-Sig-libcrypto-obj1
+   Memcheck:Cond
+   fun:*
+   ...
+   fun:*
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-obj2
+   Memcheck:Value4
+   fun:*
+   ...
+   fun:*
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-obj3
+   Memcheck:Cond
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-obj4
+   Memcheck:Value4
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-obj5
+   Memcheck:Cond
+   obj:/lib/libcrypto.so.0.9.8
+   ...
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-obj6
+   Memcheck:Value4
+   obj:/lib/libcrypto.so.0.9.8
+   ...
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-write
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-RSA_pad
+   Memcheck:Cond
+   fun:RSA_padding_add_PKCS1_type_2
+}
+{
+   Bat-Sig-libcrypto-BN_all
+   Memcheck:Cond
+   fun:BN_*
+}
+{
+   Bat-Sig-libcrypto-bn_all
+   Memcheck:Cond
+   fun:bn_*
+}
+{
+   Bat-Sig-libcrypto-SHA1_all-cond
+   Memcheck:Cond
+   fun:memcpy
+   fun:SHA1_*
+}
+{
+   Bat-Sig-libcrypto-SHA1_all-val4
+   Memcheck:Value4
+   fun:memcpy
+   fun:SHA1_*
+}
+{
+   Bat-Sig-libcrypto-memsetSHA1_fin
+   Memcheck:Cond
+   fun:memset
+   ...
+   fun:SHA1_Final
+   obj:/lib/libcrypto.so.0.9.8
+   obj:/lib/libcrypto.so.0.9.8
+}
+{
+   Bat-Sig-libcrypto-BUF_MEM-cond
+   Memcheck:Cond
+   fun:memset
+   fun:BUF_MEM_grow_clean
+}
+{
+   Bat-Sig-libcrypto-BUF_MEM-val4
+   Memcheck:Value4
+   fun:memset
+   fun:BUF_MEM_grow_clean
+}
+###########################################################
+##Libssl suppressions, I didn't it, I don't care about them
+##Probably the result of using SSL with libcurl
+{
+   Bat-Sig-libssl-obj1
+   Memcheck:Cond
+   obj:/lib/libssl.so.0.9.8
+}
+{
+   Bat-Sig-libssl-obj2
+   Memcheck:Value4
+   obj:/lib/libssl.so.0.9.8
+}
+{
+   Bat-Sig-libssl-ssl3_read
+   Memcheck:Cond
+   fun:memcpy
+   fun:ssl3_read_bytes
+}
+{
+   Bat-Sig-libssl-MD5_Upd-cond
+   Memcheck:Cond
+   fun:memcpy
+   fun:MD5_Update
+}
+{
+   Bat-Sig-libssl-MD5_Upd-val4
+   Memcheck:Value4
+   fun:memcpy
+   fun:MD5_Update
+}
+{
+   Bat-Sig-libssl-ssl3_get_fin-cond
+   Memcheck:Cond
+   fun:memcpy
+   fun:ssl3_get_finished
+}
+{
+   Bat-Sig-libssl-ssl3_get_fin-val4
+   Memcheck:Value4
+   fun:memcpy
+   fun:ssl3_get_finished
+}
+###########################################################
+##Libcurl suppressions, I didn't write it, I don't care about them
+{
+   Bat-Sig-libcurl-bunch_o_fun1
+   Memcheck:Cond
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2
+   Memcheck:Cond
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun3
+   Memcheck:Cond
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun3-val4
+   Memcheck:Value4
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun4
+   Memcheck:Cond
+   fun:memchr
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+#{
+#   Bat-Sig-libcurl-bunch_o_fun5
+#   Memcheck:Cond
+#   fun:Curl_raw_nequal
+#   obj:/usr/lib/libcurl.so.4.1.1
+#   fun:Curl_readwrite
+#   fun:Curl_perform
+#   fun:curl_easy_perform
+#   fun:my_curl_easy
+#   fun:main
+#}
+{
+   Bat-Sig-libcurl-bunch_o_fun5_1
+   Memcheck:Cond
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun5_1
+   Memcheck:Value4
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+#{
+#   Bat-Sig-libcurl-bunch_o_fun6
+#   Memcheck:Cond
+#   fun:Curl_raw_toupper
+#   fun:Curl_raw_nequal
+#   obj:/usr/lib/libcurl.so.4.1.1
+#   fun:Curl_readwrite
+#   fun:Curl_perform
+#   fun:curl_easy_perform
+#   fun:my_curl_easy
+#   fun:main
+#}
+{
+   Bat-Sig-libcurl-bunch_o_fun6_1
+   Memcheck:Cond
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun6_1
+   Memcheck:Value4
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun7
+   Memcheck:Cond
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun8
+   Memcheck:Cond
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+} 
+{
+   Bat-Sig-libcurl-bunch_o_fun9
+   Memcheck:Value4
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funA
+   Memcheck:Cond
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funB
+   Memcheck:Cond
+   fun:_IO_sputbackc
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funC
+   Memcheck:Value4
+   fun:____strtol_l_internal
+   fun:__strtol_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funD
+   Memcheck:Cond
+   fun:____strtol_l_internal
+   fun:__strtol_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funE
+   Memcheck:Cond
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funF
+   Memcheck:Cond
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun10
+   Memcheck:Value4
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun11
+   Memcheck:Cond
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun12
+   Memcheck:Value4
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun13
+   Memcheck:Value4
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun14
+   Memcheck:Cond
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun15
+   Memcheck:Value4
+   fun:____strtoll_l_internal
+   fun:strtoq
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun16
+   Memcheck:Cond
+   fun:____strtoll_l_internal
+   fun:strtoq
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun17
+   Memcheck:Cond
+   fun:Curl_pgrsSetDownloadSize
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun18
+   Memcheck:Value4
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun19
+   Memcheck:Cond
+   fun:index
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1A
+   Memcheck:Cond
+   fun:Curl_http_auth_act
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easy
+   fun:main
+}
+
+###########################################################
+##Odd error from find_char
+##Will investigate it further
+#{
+#   Bat-Sig-find_char
+#   Memcheck:Addr1
+#   fun:find_char
+#   fun:parse
+#   fun:main
+#}
