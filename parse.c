@@ -7,8 +7,8 @@ t_tweet *parse(char *file){
 		  FILE *stream;
 		  char *s;
 		  char *p;
-		  int i;
-		  int j;
+		  char tmp[MAX_SIZE];
+		  int i, j, k , t;
 
 		  if(0 == stat(file, &buf)){
 					 if(NULL != (stream = fopen(file, "r"))){
@@ -23,7 +23,7 @@ t_tweet *parse(char *file){
 										  printf("%i\n", find_str(s, "\"results\":["));
 #endif
 										  i = find_str(s, "{\"results\":[");
-										  j = find_char(s+i, ']');
+										  j = find_char(s + i, ']');
 										  if((i + 1) == j){
 													 /*{"results":[]*/
 													 /* We're reading bat_sig2 and 
@@ -31,6 +31,29 @@ t_tweet *parse(char *file){
 													 parsed = NULL;
 										  } else {
 													 parsed = (t_tweet *)xmalloc(sizeof(t_tweet));
+													 memset(tmp, '\0', MAX_SIZE);
+													 p = s + i + 1;
+													 tmp = strncpy(tmp, p, j - i);
+
+													 /* Grab the date */
+													 i = find_str(tmp, "\"created_at\":\"");
+													 k = find_char(tmp + i + 1, '"');
+													 parsed->date = (char *)xmalloc((k - i + 1) * sizeof(char));
+													 memset(parsed->date, '\0', k - i + 1);
+													 parsed->date = strncpy(tmp + i + 1, k - i);
+
+													 /* Grab the id_str to create the URL for the user */
+													 i = find_str(tmp + i, "\"id_str\":\"");
+													 k = find_char(tmp + i + 1, '"');
+													 t = strlen("https://twitter.com/adamcurry/statuses/");
+													 p = (char *)xmalloc((t + k - i + 1) * sizeof(char));
+													 memset(p, '\0', t + k - i + 1);
+													 p = strcpy(p, "https://twitter.com/adamcurry/statuses/");
+													 (p + t + 1) = strncpy(p + t + 1, tmp + i + 1, k - i);
+													 parsed->tweet_url = p;
+
+													 /* Now grab the actual tweet */
+													 i = find_str(tmp, "\"text\":\"");
 										  }
 								}
 								free(s);
