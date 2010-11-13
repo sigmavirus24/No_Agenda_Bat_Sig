@@ -1,24 +1,20 @@
-RM := rm -f
-CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DDEBUG
-Q := @
-
-TARGETS := main
-SRC := main.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c
-OBJ := $(SRC:%c=%o)
+PWD := $(shell pwd)
+MAKE := make -C
+MAKECLEAN := make clean
+DIRS := src/
+Q  := @
+CD := cd
 
 default: all
 
-all: $(TARGETS)
+all: 
+	for i in $(DIRS) ; do \
+		$(MAKE) $(PWD)/$$i ; \
+	done
 
-main: $(OBJ)
-	@echo "  [BUILD] $@"
-	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
-# -lcurl necessary to compile, don't ask me why
-
+.SILENT:
 clean:
-	$(RM) *.o $(TARGETS)
+	for i in $(DIRS) ; do \
+		$(CD) $(PWD)/$$i && $(MAKECLEAN) ; \
+	done
 
-%.o: %.c
-	@echo "  [CC] $@"
-	$(Q)$(COMPILE.c) $(OUTPUT_OPTION) $<

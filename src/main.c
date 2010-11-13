@@ -1,4 +1,4 @@
-#include "./main.h"
+#include "./include/main.h"
 
 int main(int argc, char **argv){
 	CURLcode res;
@@ -21,13 +21,13 @@ int main(int argc, char **argv){
 		perror("stat");
 #endif
 		if(s == ENOENT){
-				  /* First running of program or old file was deleted.
-					* Either way, we need an initial pull
-					*/
+			/* First running of program or old file was deleted.
+			 * Either way, we need an initial pull
+			 */
 		} else {
-				  /* Something is wrong, should probably exit */
-				  fprintf(stderr, "Something went wrong somewhere...\n");
-				  return 1;
+			/* Something is wrong, should probably exit */
+			fprintf(stderr, "Something went wrong somewhere...\n");
+			return 1;
 		}
 	}
 

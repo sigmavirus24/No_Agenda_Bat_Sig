@@ -1,4 +1,4 @@
-#include "./main.h"
+#include "./include/main.h"
 
 void *xmalloc(int n){
 	void *p;

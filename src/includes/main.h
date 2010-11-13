@@ -14,15 +14,15 @@
 typedef struct stat t_stat;
 
 typedef struct s_tweet {
-		  char *date; /* For ourselves */
-		  char *text; /* Might be nice to display for user */
-		  char *tweet_url; /* In case the user is a denier */
-		  char *refresh; /* Refresh URL starting with '?' */
+	char *date; /* For ourselves */
+	char *text; /* Might be nice to display for user */
+	char *tweet_url; /* In case the user is a denier */
+	char *refresh; /* Refresh URL starting with '?' */
 } t_tweet;
 
 CURLcode my_curl_easy(FILE *, 
-					 		 size_t(*fn)(const void *, size_t, size_t, FILE *),
-					 		 char *);
+		size_t(*fn)(const void *, size_t, size_t, FILE *),
+		char *);
 
 t_tweet *parse(char *);
 int find_char(char *, char);

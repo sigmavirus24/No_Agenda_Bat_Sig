@@ -1,4 +1,4 @@
-#include "./main.h"
+#include "./include/main.h"
 
 /* find_char::Returns first position of c */
 int find_char(char *str, char c){
@@ -64,15 +64,15 @@ int find_str(char *str, char *find){
 					if(i == 0 && *p == *find)
 						return pos;
 				} else {
-						/* Shift pattern */
-						i = rfind_char(find, *p);
-						if(i < 0){
-							p = str + pos + flen;
-							pos += flen;
-						} else {
-							p = str + pos + (flen - i - 1);
-							pos += (flen - i - 1);
-						}
+					/* Shift pattern */
+					i = rfind_char(find, *p);
+					if(i < 0){
+						p = str + pos + flen;
+						pos += flen;
+					} else {
+						p = str + pos + (flen - i - 1);
+						pos += (flen - i - 1);
+					}
 				}
 			}
 			if(pos <= slen)
