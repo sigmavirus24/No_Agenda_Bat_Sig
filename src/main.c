@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 		} else {
 			/* Something is wrong, should probably exit */
 			fprintf(stderr, "Something went wrong somewhere...\n");
-			/*return 1;*/
+			return 1;
 		}
 	}
 
@@ -41,6 +41,10 @@ int main(int argc, char **argv){
 	curl_global_init(CURL_GLOBAL_SSL);
 
 	res = my_curl_easy(out, fwrite, def);
+	if(0 > fclose(out)){
+			  fprintf(stderr,"Error closing file\n");
+			  return 1;
+	}
 	/* Should assume user did not invoke this to use the last copy of
 	 * the bat-signal output so we need to check if this was posted today.
 	 * If so, we're done!
@@ -64,9 +68,16 @@ int main(int argc, char **argv){
 		/* Returns "{\"results\":[]" if there is nothing. 
 		 * Can run a while loop until this does not match. */
 
-		curl_global_cleanup();
 
 		free_t_tweet(info);
+		free(refresh);
 	}
+
+	if(0 > fclose(out)){
+			  fprintf(stderr,"Error closing file\n");
+			  return 1;
+	}
+	free(def);
+	curl_global_cleanup();
 	return 0;
 }

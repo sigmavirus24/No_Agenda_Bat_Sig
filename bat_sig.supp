@@ -486,6 +486,1130 @@
    fun:main
 }
 
+#################x86_64 Architecture Erros#################
+{
+   Bat-Sig-libcurl_crypto-x86_1
+   Memcheck:Cond
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:ssl3_send_client_key_exchange
+   fun:ssl3_connect
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2
+   Memcheck:Value8
+   fun:bn_mul_mont
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3
+   Memcheck:Value8
+   fun:BN_*
+   fun:BN_*
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:ssl3_send_client_key_exchange
+   fun:ssl3_connect
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4
+   Memcheck:Value8
+   fun:BN_num_bits_word
+   fun:BN_num_bits
+   fun:BN_bn2bin
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:ssl3_send_client_key_exchange
+   fun:ssl3_connect
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_5
+   Memcheck:Value8
+   fun:AES_set_encrypt_key
+   obj:*
+   obj:*
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:EVP_CipherInit_ex
+   fun:tls1_change_cipher_state
+   fun:ssl3_connect
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_6
+   Memcheck:Value8
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:AES_cbc_encrypt
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+{
+   Bat-Sig-libcurl_crypto-x86_7
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:BIO_write
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:ssl3_connect
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_8
+   Memcheck:Value8
+   fun:AES_set_encrypt_key
+   obj:*
+   obj:*
+   fun:AES_set_decrypt_key
+   obj:*
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:EVP_CipherInit_ex
+   fun:tls1_change_cipher_state
+   fun:ssl3_do_change_cipher_spec
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+}
+{
+   Bat-Sig-libcurl_crypto-x86_9
+   Memcheck:Value8
+   fun:AES_set_decrypt_key
+   obj:*
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:EVP_CipherInit_ex
+   fun:tls1_change_cipher_state
+   fun:ssl3_do_change_cipher_spec
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_A
+   Memcheck:Value8
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:AES_cbc_encrypt
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+{
+   Bat-Sig-libcurl_crypto-x86_B
+   Memcheck:Cond
+   fun:tls1_enc
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_C
+   Memcheck:Value8
+   fun:tls1_enc
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_D
+   Memcheck:Cond
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_E
+   Memcheck:Cond
+   fun:SHA1_Update
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_F
+   Memcheck:Value8
+   fun:SHA1_Final
+   fun:EVP_DigestFinal_ex
+   fun:HMAC_Final
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_10
+   Memcheck:Cond
+   fun:memset
+   fun:SHA1_Final
+   fun:EVP_DigestFinal_ex
+   fun:HMAC_Final
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_11
+   Memcheck:Value8
+   fun:memset
+   fun:SHA1_Final
+   fun:EVP_DigestFinal_ex
+   fun:HMAC_Final
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_12
+   Memcheck:Value8
+   fun:memcpy
+   fun:SHA1_Update
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_13
+   Memcheck:Cond
+   fun:SHA1_Final
+   fun:EVP_DigestFinal_ex
+   fun:HMAC_Final
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_14
+   Memcheck:Value8
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_15
+   Memcheck:Cond
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_16
+   Memcheck:Cond
+   fun:BUF_MEM_grow_clean
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_17
+   Memcheck:Value8
+   fun:memset
+   fun:BUF_MEM_grow_clean
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_18
+   Memcheck:Value8
+   fun:memcpy
+   fun:ssl3_read_bytes
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_19
+   Memcheck:Cond
+   fun:MD5_Update
+   fun:ssl3_finish_mac
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1A
+   Memcheck:Value8
+   fun:memcpy
+   fun:MD5_Update
+   fun:ssl3_finish_mac
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1B
+   Memcheck:Cond
+   fun:SHA1_Update
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1C
+   Memcheck:Value8
+   fun:memcpy
+   fun:SHA1_Update
+   fun:ssl3_get_message
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1D
+   Memcheck:Cond
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1E
+   Memcheck:Value8
+   fun:memcpy
+   fun:ssl3_get_finished
+   fun:ssl3_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_1F
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:BIO_write
+   fun:ssl3_write_pending
+   fun:ssl3_write_bytes
+   fun:Curl_ossl_send
+   fun:Curl_write
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_http
+   fun:Curl_do
+   fun:Curl_perform
+   fun:my_curl_easy
+}
+{
+   Bat-Sig-libcurl_crypto-x86_20
+   Memcheck:Cond
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_21
+   Memcheck:Cond
+   fun:tls1_enc
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_22
+   Memcheck:Value8
+   fun:tls1_enc
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_23
+   Memcheck:Cond
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_24
+   Memcheck:Cond
+   fun:SHA1_Update
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_25
+   Memcheck:Value8
+   fun:memcpy
+   fun:SHA1_Update
+   fun:tls1_mac
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_26
+   Memcheck:Cond
+   fun:sha1_block_data_order
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+{
+   Bat-Sig-libcurl_crypto-x86_27
+   Memcheck:Value8
+   fun:ssl3_read_bytes
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_28
+   Memcheck:Cond
+   fun:ssl3_read
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_29
+   Memcheck:Cond
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2A
+   Memcheck:Cond
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2B
+   Memcheck:Cond
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2C
+   Memcheck:Cond
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2D
+   Memcheck:Cond
+   fun:memchr
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2E
+   Memcheck:Cond
+   fun:Curl_raw_nequal
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_2F
+   Memcheck:Cond
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_30
+   Memcheck:Value8
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_31
+   Memcheck:Cond
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_32
+   Memcheck:Value8
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_33
+   Memcheck:Cond
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_34
+   Memcheck:Cond
+   fun:_IO_sputbackc
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_35
+   Memcheck:Value8
+   fun:____strtol_l_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_36
+   Memcheck:Cond
+   fun:____strtol_l_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_37
+   Memcheck:Cond
+   fun:Curl_raw_nequal
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_38
+   Memcheck:Cond
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_39
+   Memcheck:Cond
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3A
+   Memcheck:Value8
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3B
+   Memcheck:Cond
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3C
+   Memcheck:Value8
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3D
+   Memcheck:Cond
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3E
+   Memcheck:Cond
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_3F
+   Memcheck:Value8
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_40
+   Memcheck:Value8
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_41
+   Memcheck:Value8
+   fun:____strtol_l_internal
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_42
+   Memcheck:Cond
+   fun:____strtol_l_internal
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_43
+   Memcheck:Cond
+   fun:Curl_pgrsSetDownloadSize
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_44
+   Memcheck:Value8
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_45
+   Memcheck:Cond
+   fun:index
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_46
+   Memcheck:Cond
+   fun:Curl_http_auth_act
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_47
+   Memcheck:Cond
+   fun:fwrite
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_48
+   Memcheck:Cond
+   fun:_IO_file_xsputn@@GLIBC_2.2.5
+   fun:fwrite
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_49
+   Memcheck:Cond
+   fun:_IO_default_xsputn
+   fun:_IO_file_xsputn@@GLIBC_2.2.5
+   fun:fwrite
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4A
+   Memcheck:Cond
+   fun:mempcpy
+   fun:_IO_default_xsputn
+   fun:_IO_file_xsputn@@GLIBC_2.2.5
+   fun:fwrite
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4B
+   Memcheck:Value8
+   fun:mempcpy
+   fun:_IO_default_xsputn
+   fun:_IO_file_xsputn@@GLIBC_2.2.5
+   fun:fwrite
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4C
+   Memcheck:Cond
+   fun:Curl_client_write
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4D
+   Memcheck:Cond
+   fun:Curl_pgrsUpdate
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4E
+   Memcheck:Cond
+   fun:Curl_speedcheck
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_4F
+   Memcheck:Cond
+   fun:Curl_retry_request
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_50
+   Memcheck:Cond
+   fun:Curl_http_done
+   fun:Curl_done
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_51
+   Memcheck:Cond
+   fun:Curl_pgrsUpdate
+   fun:Curl_pgrsDone
+   fun:Curl_done
+   fun:Curl_perform
+   fun:my_curl_easy
+   fun:main
+}
+{
+   Bat-Sig-libcurl_crypto-x86_52
+   Memcheck:Cond
+   fun:memset
+	...
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_53
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   obj:/lib64/libcrypto.so.0.9.8
+   fun:BIO_write
+   fun:ssl23_write_bytes
+   fun:ssl23_connect
+   obj:/usr/lib64/libcurl.so.4.1.1
+   fun:Curl_ossl_connect
+   fun:Curl_ssl_connect
+   fun:Curl_http_connect
+   fun:Curl_protocol_connect
+   fun:Curl_connect
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_54
+   Memcheck:Value8
+   fun:memset
+	...
+   fun:Curl_perform
+}
+{
+   Bat-Sig-libcurl_crypto-x86_55
+   Memcheck:Leak
+   fun:malloc
+	fun:CRYPTO_malloc
+	...
+   fun:main
+}
+
+#########################GLIBC_2.2.5
+{
+	Bat-Sig-Glibc-oddity-1
+   Memcheck:Cond
+   fun:_IO_do_write@@GLIBC_2.2.5
+   fun:_IO_file_close_it@@GLIBC_2.2.5
+   fun:fclose@@GLIBC_2.2.5
+   fun:main
+}
+{
+	Bat-Sig-Glibc-oddity-2
+   Memcheck:Cond
+   fun:_IO_file_write@@GLIBC_2.2.5
+   fun:_IO_do_write@@GLIBC_2.2.5
+   fun:_IO_file_close_it@@GLIBC_2.2.5
+   fun:fclose@@GLIBC_2.2.5
+   fun:main
+}
+{
+	Bat-Sig-Glibc-oddity-3
+   Memcheck:Param
+   write(count)
+   fun:__write_nocancel
+   fun:_IO_file_write@@GLIBC_2.2.5
+   fun:_IO_do_write@@GLIBC_2.2.5
+   fun:_IO_file_close_it@@GLIBC_2.2.5
+   fun:fclose@@GLIBC_2.2.5
+   fun:main
+}
+{
+	Bat-Sig-Glibc-oddity-4
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   fun:_IO_file_write@@GLIBC_2.2.5
+   fun:_IO_do_write@@GLIBC_2.2.5
+   fun:_IO_file_close_it@@GLIBC_2.2.5
+   fun:fclose@@GLIBC_2.2.5
+   fun:main
+}
+
+
 ###########################################################
 ##Odd error from find_char
 ##Will investigate it further
