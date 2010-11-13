@@ -58,6 +58,7 @@ int main(int argc, char **argv){
 	/* Returns "{\"results\":[]" if there is nothing. 
 	 * Can run a while loop until this does not match. */
 	info = parse("/tmp/bat_sig.txt");
+	printf("Date: %s\nTweetURL: %s\n", info->date, info->tweet_url);
 
 	curl_global_cleanup();
 

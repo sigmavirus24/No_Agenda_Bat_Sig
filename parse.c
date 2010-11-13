@@ -33,27 +33,27 @@ t_tweet *parse(char *file){
 													 parsed = (t_tweet *)xmalloc(sizeof(t_tweet));
 													 memset(tmp, '\0', MAX_SIZE);
 													 p = s + i + 1;
-													 tmp = strncpy(tmp, p, j - i);
+													 p = strncpy(tmp, p, j - i);
 
 													 /* Grab the date */
 													 i = find_str(tmp, "\"created_at\":\"");
 													 k = find_char(tmp + i + 1, '"');
-													 parsed->date = (char *)xmalloc((k - i + 1) * sizeof(char));
-													 memset(parsed->date, '\0', k - i + 1);
-													 parsed->date = strncpy(tmp + i + 1, k - i);
+													 parsed->date = (char *)xmalloc((k + 1) * sizeof(char));
+													 memset(parsed->date, '\0', k + 1);
+													 parsed->date = strncpy(parsed->date, tmp + i + 1, k);
 
 													 /* Grab the id_str to create the URL for the user */
-													 i = find_str(tmp + i, "\"id_str\":\"");
+													 i += find_str(tmp + i, "\"id_str\":\"");
 													 k = find_char(tmp + i + 1, '"');
 													 t = strlen("https://twitter.com/adamcurry/statuses/");
-													 p = (char *)xmalloc((t + k - i + 1) * sizeof(char));
-													 memset(p, '\0', t + k - i + 1);
+													 p = (char *)xmalloc((t + k + 1) * sizeof(char));
+													 memset(p, '\0', t + k + 1);
 													 p = strcpy(p, "https://twitter.com/adamcurry/statuses/");
-													 (p + t + 1) = strncpy(p + t + 1, tmp + i + 1, k - i);
 													 parsed->tweet_url = p;
+													 p = strncpy(p + t, tmp + i + 1, k);
 
 													 /* Now grab the actual tweet */
-													 i = find_str(tmp, "\"text\":\"");
+													 i += find_str(tmp + i, "\"text\":\"");
 										  }
 								}
 								free(s);
