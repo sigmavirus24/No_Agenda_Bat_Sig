@@ -1,4 +1,0 @@
-Date: Thu, 11 Nov 2010 17:05:58 +0000
-TweetURL: https://twitter.com/adamcurry/statuses/2769010886184960
-Tweet: Live now with No Agenda 251 at http://noagendastream.com &amp; http://noagendachat.net #@pocketnoagenda
-Refresh: https://search.twitter.com/search.json?since_id=3491929681563648&q=%23%40pocketnoagenda+from%3Aadamcurry
