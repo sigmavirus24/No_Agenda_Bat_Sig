@@ -54,14 +54,14 @@ int main(int argc, char **argv){
 		fprintf(stderr, "Cannot open second file\n");
 		return 1;
 	}
+	info = parse("/tmp/bat_sig.txt");
+	printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
 
-	refresh = strdup("https://search.twitter.com/search.json?since_id=2072899217264640&q=%23%40pocketnoagenda+from%3Aadamcurry");
+	refresh = strdup(info->refresh);
 
 	res = my_curl_easy(out, fwrite, refresh);
 	/* Returns "{\"results\":[]" if there is nothing. 
 	 * Can run a while loop until this does not match. */
-	info = parse("/tmp/bat_sig.txt");
-	printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
 
 	curl_global_cleanup();
 
