@@ -4,6 +4,7 @@ int main(int argc, char **argv){
 	CURLcode res;
 	FILE *out;
 	t_stat buf;
+	/*t_tweet *first_pass; */
 	t_tweet *info;
 	char *def; /* Default URL */
 	char *refresh; /* Refresh URL */
@@ -25,6 +26,8 @@ int main(int argc, char **argv){
 					*/
 		} else {
 				  /* Something is wrong, should probably exit */
+				  fprintf(stderr, "Something went wrong somewhere...\n");
+				  return 1;
 		}
 	}
 
@@ -58,10 +61,10 @@ int main(int argc, char **argv){
 	/* Returns "{\"results\":[]" if there is nothing. 
 	 * Can run a while loop until this does not match. */
 	info = parse("/tmp/bat_sig.txt");
-	printf("Date: %s\nTweetURL: %s\n", info->date, info->tweet_url);
+	printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
 
 	curl_global_cleanup();
 
-	free(info);
+	free_t_tweet(info);
 	return 0;
 }

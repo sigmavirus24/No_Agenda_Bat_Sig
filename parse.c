@@ -18,10 +18,7 @@ t_tweet *parse(char *file){
 								if(p != s || !p)
 										  fprintf(stderr, "fgets error");
 								if(s){
-										  /* parse into parsed */
-#ifdef DEBUG
-										  printf("%i\n", find_str(s, "\"results\":["));
-#endif
+										  /* commence the parsing */
 										  i = find_str(s, "{\"results\":[");
 										  j = find_char(s + i, ']');
 										  if((i + 1) == j){
@@ -51,9 +48,29 @@ t_tweet *parse(char *file){
 													 p = strcpy(p, "https://twitter.com/adamcurry/statuses/");
 													 parsed->tweet_url = p;
 													 p = strncpy(p + t, tmp + i + 1, k);
+													 p = parsed->tweet_url;
+													 parsed->tweet_url = strdup(p);
+													 free(p);
 
 													 /* Now grab the actual tweet */
 													 i += find_str(tmp + i, "\"text\":\"");
+													 k = find_char(tmp + i + 1, '"');
+													 parsed->text = (char *)xmalloc((k + 1) * sizeof(char));
+													 memset(parsed->text, '\0', k + 1);
+													 parsed->text = strncpy(parsed->text, tmp + i + 1, k);
+
+													 /* Finally grab the refresh url */
+													 i = find_str(s + j, "\"refresh_url\":\"");
+													 t = find_char(s + j + i + 1, '"');
+													 k = strlen("https://search.twitter.com/search.json");
+													 p = (char *)xmalloc((k + t + 1) * sizeof(char));
+													 memset(p, '\0', k + t + 1);
+													 p = strcpy(p, "https://search.twitter.com/search.json");
+													 parsed->refresh = p;
+													 p = strncpy(p + k, s + j + i + 1, t);
+													 p = parsed->refresh;
+													 parsed->refresh = strdup(p);
+													 free(p);
 										  }
 								}
 								free(s);

@@ -29,4 +29,5 @@ int find_char(char *, char);
 int rfind_char(char *, char);
 int find_str(char *, char *);
 void *xmalloc(int);
+void free_t_tweet(t_tweet *);
 #endif
