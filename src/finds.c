@@ -1,3 +1,7 @@
+/* No Agenda Bat Signal
+ * Copyright (C) 2010
+ * See LICENSE file for license details.
+ */
 #include "./include/main.h"
 
 /* find_char::Returns first position of c */

@@ -1,3 +1,7 @@
+/* No Agenda Bat Signal
+ * Copyright (C) 2010
+ * See LICENSE file for license details.
+ */
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
