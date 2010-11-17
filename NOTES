@@ -1,3 +1,8 @@
+Rate-limitations: 1 request every 10 seconds should be safe.
+ \_ Reasoning: http://dev.twitter.com/pages/rate-limiting says that search.twitter.com is higher than the Rest API which is 350 per hour.
+	Since 350 is 1 request every ~10.3 seconds, I would say it is safe to request once every 10 seconds. I don't want to push it and get anyone in trouble.
+
+
 To debug with valgrind use this command:
 valgrind --suppressions=bat_sig.supp ./executable
 (Currently executable = main)
@@ -14,6 +19,6 @@ xxxx OLD
 x URL to use:  http://search.twitter.com/search.atom?q=%23@pocketnoagenda&from=adamcurry&rpp=1
 x 
 x The line which actually contains the tweet has the url which gives the tweet ID.
-x ex: http://twitter.com/adamcurry/statuses/29679686843
+x example: http://twitter.com/adamcurry/statuses/29679686843
 x 
 x Also has <div class="lastUpdated">mm/dd/yyyy hh:mm (AM|PM)</div>
