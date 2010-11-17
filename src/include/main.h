@@ -14,6 +14,7 @@
 #include <string.h>
 #include <signal.h>
 #include <stdio.h>
+#define MAX_SIZE 2048
 
 typedef struct stat t_stat;
 
@@ -27,11 +28,12 @@ typedef struct s_tweet {
 CURLcode my_curl_easy(FILE *, 
 		size_t(*fn)(const void *, size_t, size_t, FILE *),
 		char *);
+CURLcode my_curl_easier(char *, char *);
 
-t_tweet *parse(char *);
+t_tweet *parse_mem(char *);
 int find_char(char *, char);
 int rfind_char(char *, char);
 int find_str(char *, char *);
-void *xmalloc(int);
 void free_t_tweet(t_tweet *);
+void *xmalloc(int);
 #endif

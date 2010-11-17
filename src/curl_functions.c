@@ -4,6 +4,20 @@
  */
 #include "./include/main.h"
 
+static size_t write_to_mem(void *p, size_t size, size_t nmemb, void *data){
+	size_t size_new = 0;
+
+	if(data && p){
+		size_new = size * nmemb;
+		if(size_new < MAX_SIZE)
+			if(!memcpy(data, p, size_new)){
+				fprintf(stderr, "memcpy error!");
+				return -1;
+			}
+	}
+	return size_new;
+}
+
 CURLcode my_curl_easy(FILE *out, 
 		size_t(*fn)(const void *, size_t, size_t, FILE *),
 		char *url){
@@ -13,8 +27,27 @@ CURLcode my_curl_easy(FILE *out,
 	curl = curl_easy_init();
 	if(curl){
 		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fn);
+		ret = curl_easy_perform(curl);
+
+		curl_easy_cleanup(curl);
+	}
+
+	return ret;
+}
+
+CURLcode my_curl_easier(char *mem, char *url){
+	CURL *curl;
+	CURLcode ret;
+
+	curl = curl_easy_init();
+	if(curl){
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)mem);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_to_mem);
 		ret = curl_easy_perform(curl);
 
 		curl_easy_cleanup(curl);

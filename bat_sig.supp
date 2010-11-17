@@ -190,17 +190,6 @@
    fun:my_curl_easy
    fun:main
 }
-#{
-#   Bat-Sig-libcurl-bunch_o_fun5
-#   Memcheck:Cond
-#   fun:Curl_raw_nequal
-#   obj:/usr/lib/libcurl.so.4.1.1
-#   fun:Curl_readwrite
-#   fun:Curl_perform
-#   fun:curl_easy_perform
-#   fun:my_curl_easy
-#   fun:main
-#}
 {
    Bat-Sig-libcurl-bunch_o_fun5_1
    Memcheck:Cond
@@ -223,18 +212,6 @@
    fun:my_curl_easy
    fun:main
 }
-#{
-#   Bat-Sig-libcurl-bunch_o_fun6
-#   Memcheck:Cond
-#   fun:Curl_raw_toupper
-#   fun:Curl_raw_nequal
-#   obj:/usr/lib/libcurl.so.4.1.1
-#   fun:Curl_readwrite
-#   fun:Curl_perform
-#   fun:curl_easy_perform
-#   fun:my_curl_easy
-#   fun:main
-#}
 {
    Bat-Sig-libcurl-bunch_o_fun6_1
    Memcheck:Cond
@@ -485,6 +462,762 @@
    fun:my_curl_easy
    fun:main
 }
+{
+   Bat-Sig-libcurl-bunch_o_fun1B
+   Memcheck:Cond
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1C
+   Memcheck:Cond
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1D
+   Memcheck:Cond
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1E
+   Memcheck:Cond
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1E
+   Memcheck:Value4
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1F
+   Memcheck:Value4
+   fun:memchr
+   fun:Curl_readwrite
+   ...
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun20
+   Memcheck:Cond
+   fun:Curl_raw_nequal
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun21
+   Memcheck:Cond
+   fun:Curl_raw_toupper
+   ...
+   fun:my_curl_easier
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun21
+   Memcheck:Value4
+   fun:Curl_raw_toupper
+   ...
+   fun:my_curl_easier
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun22
+   Memcheck:Cond
+   fun:memchr
+   fun:Curl_readwrite
+   ...
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun23
+   Memcheck:Cond
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun24
+   Memcheck:Value4
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun25
+   Memcheck:Cond
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun26
+   Memcheck:Cond
+   fun:_IO_sputbackc
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun27
+   Memcheck:Value4
+   fun:____strtol_l_internal
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun28
+   Memcheck:Cond
+   fun:____strtol_l_internal
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun29
+   Memcheck:Cond
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2A
+   Memcheck:Cond
+   fun:Curl_copy_header_value
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2B
+   Memcheck:Value4
+   fun:Curl_copy_header_value
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2C
+   Memcheck:Cond
+   fun:index
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2D
+   Memcheck:Value4
+   fun:index
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2E
+   Memcheck:Cond
+   fun:memcpy
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2F
+   Memcheck:Value4
+   fun:memcpy
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun30
+   Memcheck:Value4
+   fun:____strtoll_l_internal
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun31
+   Memcheck:Cond
+   fun:____strtoll_l_internal
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun32
+   Memcheck:Cond
+   fun:Curl_pgrsSetDownloadSize
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun33
+   Memcheck:Value4
+   fun:Curl_pgrsSetDownloadSize
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1
+   Memcheck:Cond
+   fun:Curl_ossl_recv
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun2
+   Memcheck:Cond
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun3
+   Memcheck:Cond
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun3-val4
+   Memcheck:Value4
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun4
+   Memcheck:Cond
+   fun:memchr
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun5_1
+   Memcheck:Cond
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun5_1
+   Memcheck:Value4
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun6_1
+   Memcheck:Cond
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun6_1
+   Memcheck:Value4
+   fun:Curl_raw_toupper
+   fun:Curl_raw_nequal
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun7
+   Memcheck:Cond
+   fun:Curl_ssl_recv
+   fun:Curl_read
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun8
+   Memcheck:Cond
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+} 
+{
+   Bat-Sig-libcurl-bunch_o_fun9
+   Memcheck:Value4
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funA
+   Memcheck:Cond
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funB
+   Memcheck:Cond
+   fun:_IO_sputbackc
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funC
+   Memcheck:Value4
+   fun:____strtol_l_internal
+   fun:__strtol_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funD
+   Memcheck:Cond
+   fun:____strtol_l_internal
+   fun:__strtol_internal
+   fun:_IO_vfscanf
+   fun:vsscanf
+   fun:sscanf
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funE
+   Memcheck:Cond
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_funF
+   Memcheck:Cond
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun10
+   Memcheck:Value4
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun11
+   Memcheck:Cond
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun12
+   Memcheck:Value4
+   fun:memcpy
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun13
+   Memcheck:Value4
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun14
+   Memcheck:Cond
+   fun:index
+   fun:Curl_copy_header_value
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun15
+   Memcheck:Value4
+   fun:____strtoll_l_internal
+   fun:strtoq
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun16
+   Memcheck:Cond
+   fun:____strtoll_l_internal
+   fun:strtoq
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun17
+   Memcheck:Cond
+   fun:Curl_pgrsSetDownloadSize
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun18
+   Memcheck:Value4
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun19
+   Memcheck:Cond
+   fun:index
+   fun:Curl_compareheader
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Bat-Sig-libcurl-bunch_o_fun1A
+   Memcheck:Cond
+   fun:Curl_http_auth_act
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-1
+   Memcheck:Cond
+   fun:Curl_client_write
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-2
+   Memcheck:Value4
+   fun:Curl_client_write
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-3
+   Memcheck:Cond
+   fun:strlen
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-4
+   Memcheck:Cond
+   fun:Curl_retry_request
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-5
+   Memcheck:Cond
+   fun:Curl_http_done
+   fun:Curl_done
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-6
+   Memcheck:Cond
+   fun:Curl_pgrsUpdate
+   fun:Curl_pgrsDone
+   fun:Curl_done
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-7
+   Memcheck:Cond
+   obj:/usr/lib/libcurl.so.4.1.1
+   fun:Curl_pgrsDone
+   fun:Curl_done
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-8
+   Memcheck:Cond
+   fun:strlen
+   ...
+   fun:printf
+   ...
+}
+{
+   Insanity-9
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   ...
+   fun:printf
+   fun:main
+}
+{
+   Insanity-9
+   Memcheck:Cond
+   fun:_IO_file_xsputn@@GLIBC_2.1
+   ...
+   fun:printf
+   fun:main
+}
+{
+   Insanity-A
+   Memcheck:Value4
+   fun:_IO_vfscanf
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-B
+   Memcheck:Cond
+   fun:_IO_vfscanf
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-C
+   Memcheck:Cond
+   fun:write_to_mem
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-D
+   Memcheck:Cond
+   fun:Curl_pgrsUpdate
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-D
+   Memcheck:Cond
+   ...
+   fun:Curl_readwrite
+   fun:Curl_perform
+   fun:curl_easy_perform
+   fun:my_curl_easier
+   fun:main
+}
+{
+   Insanity-E
+   Memcheck:Cond
+   obj:/usr/lib/libcurl.so.4.1.1
+   ...
+   fun:my_curl_easier
+   fun:main
+}
+
+#################Issues with Strlen and other "standard functions"####
+{
+   I-am-insane-1
+   Memcheck:Cond
+   fun:strlen
+   ...
+   fun:main
+}
+{
+   I-am-insane-2
+   Memcheck:Cond
+   fun:strcpy
+   fun:parse_mem
+   fun:main
+}
+{
+   I-am-insane-3
+   Memcheck:Cond
+   fun:strncpy
+   fun:parse_mem
+   fun:main
+}
+
+###Conditional jumps that can be ignored
+{
+   This-is-now-annoying-1
+   Memcheck:Cond
+   fun:find_str
+   ...
+   fun:main
+}
+{
+   This-is-now-annoying-2
+   Memcheck:Cond
+   fun:find_char
+   ...
+   fun:main
+}
+{
+   This-is-now-annoying-3
+   Memcheck:Cond
+   fun:rfind_char
+   ...
+   fun:main
+}
+
 
 #################x86_64 Architecture Erros#################
 {
@@ -1486,9 +2219,9 @@
 {
    Bat-Sig-libcurl_crypto-x86_4D
    Memcheck:Cond
+   ...
    fun:Curl_pgrsUpdate
-   fun:Curl_readwrite
-   fun:Curl_perform
+   ...
    fun:my_curl_easy
    fun:main
 }
@@ -1556,15 +2289,15 @@
    Bat-Sig-libcurl_crypto-x86_54
    Memcheck:Value8
    fun:memset
-	...
+   ...
    fun:Curl_perform
 }
 {
    Bat-Sig-libcurl_crypto-x86_55
    Memcheck:Leak
    fun:malloc
-	fun:CRYPTO_malloc
-	...
+   fun:CRYPTO_malloc
+   ...
    fun:main
 }
 
