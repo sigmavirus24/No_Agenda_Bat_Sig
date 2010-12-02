@@ -15,52 +15,48 @@
  * See LICENSE file for license details.
  */
 #include "./include/main.h"
+#define SLEEP_SECONDS 11
 
 int main(int argc, char **argv){
 	CURLcode res;
-	/* FILE *out; */
-	/* t_stat buf; */
-	/*t_tweet *first_pass; */
 	t_tweet *info;
+	t_tweet *refr;
 	char *def; /* Default URL */
 	char *mem;
-	/* char *refresh;*/ /* Refresh URL */
-	/* int s; */
-
 
 	if(argc == 1){
 		/* Read from rc file */
 	} else {
 		/* Parse arguments */
-	   if(!strcmp(argv[1], "--license")){
-				  printf("\"No Agenda Bat Signal\" Copyright (C) 2010\nThis program comes with ABSOLUTELY NO WARRANTY; for details visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
-				  return 0;
+		if(!strcmp(argv[1], "--license")){
+			printf("\"No Agenda Bat Signal\" Copyright (C) 2010\nThis program comes with ABSOLUTELY NO WARRANTY; for details visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
+			return 0;
 		}
 	}
 
 	/*
-	if(0 > (s = stat("/tmp/bat_sig.txt", &buf))){
+	   if(0 > (s = stat("/tmp/bat_sig.txt", &buf))){
 #ifdef DEBUG
-		perror("stat");
+perror("stat");
 #endif
-		if(s == ENOENT){
-		*/
-			/* First running of program or old file was deleted.
-			 * Either way, we need an initial pull
-			 */
+if(s == ENOENT){
+*/
+/* First running of program or old file was deleted.
+ * Either way, we need an initial pull
+ */
 /*
-		} else {
-		*/
-			/* Something is wrong, should probably exit */
-			/*fprintf(stderr, "Something went wrong somewhere...\n");*/
-			/*return 1;*/
-		/*}
-	}
+   } else {
+   */
+/* Something is wrong, should probably exit */
+/*fprintf(stderr, "Something went wrong somewhere...\n");*/
+/*return 1;*/
+/*}
+  }
 
-	if(NULL == (out = fopen("/tmp/bat_sig.txt", "w+"))){
-		fprintf(stderr, "Cannot open /tmp/bat_sig.txt\n");
-		return 1;
-	}*/
+  if(NULL == (out = fopen("/tmp/bat_sig.txt", "w+"))){
+  fprintf(stderr, "Cannot open /tmp/bat_sig.txt\n");
+  return 1;
+  }*/
 
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
 
@@ -74,20 +70,31 @@ int main(int argc, char **argv){
 
 	info = parse_mem(mem);
 	if(info){
-		printf("Date: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", info->date, info->tweet_url, info->text, info->refresh);
-
 		/* Now to grab the "refresh_url" string from the data and attach it to
 		 * a new URL buffer and have it watch that. 
 		 * For testing, I'm using the one as of Tue Nov 9
 		 */
 		/* refresh = strdup(info->refresh); */
 
-		res = my_curl_easier(mem, info->refresh);
-		/* Returns "{\"results\":[]" if there is nothing. 
-		 * Can run a while loop until this does not match. */
+		while(1){
+			res = my_curl_easier(mem, info->refresh);
+			/* Returns "{\"results\":[]" if there is nothing. 
+			 * Can run a while loop until this does not match. */
 
+			refr = parse_mem(mem);
+
+			if(refr)
+				break;
+
+			(void)sleep(SLEEP_SECONDS);
+		}
+
+		printf("Time: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", refr->date, refr->tweet_url, refr->text, refr->refresh);
+
+		/* fork() and exec Jingle */
 
 		free_t_tweet(info);
+		free_t_tweet(refr);
 		/* free(refresh); */
 	}
 

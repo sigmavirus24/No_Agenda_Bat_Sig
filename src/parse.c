@@ -27,7 +27,7 @@ t_tweet *parse_mem(char *mem){
 		s = mem;
 		/* commence the parsing */
 		i = find_str(s, "{\"results\":[");
-		j = find_char(s + i, ']');
+		j = find_char(s, ']');
 		if((i + 1) == j){
 			/*{"results":[]*/
 			/* We're reading bat_sig2 and 
