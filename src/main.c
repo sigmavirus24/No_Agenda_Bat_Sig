@@ -16,6 +16,7 @@
  */
 #include "./include/main.h"
 #define SLEEP_SECONDS 11
+#define MAX_ITER 350
 
 int main(int argc, char **argv){
 	CURLcode res;
@@ -23,6 +24,9 @@ int main(int argc, char **argv){
 	t_tweet *refr;
 	char *def; /* Default URL */
 	char *mem;
+	char *path_to_jingle = "~/NA_Jingles/douchebag.mp3";
+	char count;
+	pid_t pid;
 
 	if(argc == 1){
 		/* Read from rc file */
@@ -33,30 +37,6 @@ int main(int argc, char **argv){
 			return 0;
 		}
 	}
-
-	/*
-	   if(0 > (s = stat("/tmp/bat_sig.txt", &buf))){
-#ifdef DEBUG
-perror("stat");
-#endif
-if(s == ENOENT){
-*/
-/* First running of program or old file was deleted.
- * Either way, we need an initial pull
- */
-/*
-   } else {
-   */
-/* Something is wrong, should probably exit */
-/*fprintf(stderr, "Something went wrong somewhere...\n");*/
-/*return 1;*/
-/*}
-  }
-
-  if(NULL == (out = fopen("/tmp/bat_sig.txt", "w+"))){
-  fprintf(stderr, "Cannot open /tmp/bat_sig.txt\n");
-  return 1;
-  }*/
 
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
 
@@ -76,7 +56,7 @@ if(s == ENOENT){
 		 */
 		/* refresh = strdup(info->refresh); */
 
-		while(1){
+		for(count = 0; count < MAX_ITER; count++){
 			res = my_curl_easier(mem, info->refresh);
 			/* Returns "{\"results\":[]" if there is nothing. 
 			 * Can run a while loop until this does not match. */
@@ -89,13 +69,27 @@ if(s == ENOENT){
 			(void)sleep(SLEEP_SECONDS);
 		}
 
-		printf("Time: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", refr->date, refr->tweet_url, refr->text, refr->refresh);
+		if(!refr)
+			printf("No bat signal was sent.\n");
+		else{
+			printf("Time: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", refr->date, refr->tweet_url, refr->text, refr->refresh);
 
-		/* fork() and exec Jingle */
+			/* fork() and exec Jingle */
+			if(0 > (pid = fork())){
+				fprintf(stderr, "Error forking.\n");
+				return 1;
+			}
+			if(pid == 0){
+				char *args[] = {"/usr/bin/mpg123", path_to_jingle, NULL};
+				execvp(*args, args);
+				exit(EXIT_FAILURE);
+			} else 
+				(void)wait(NULL);
+			
+			free_t_tweet(refr);
+		}
 
 		free_t_tweet(info);
-		free_t_tweet(refr);
-		/* free(refresh); */
 	}
 
 	free(def);
