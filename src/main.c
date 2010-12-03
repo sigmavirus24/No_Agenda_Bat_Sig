@@ -24,7 +24,7 @@ int main(int argc, char **argv){
 	t_tweet *refr;
 	char *def; /* Default URL */
 	char *mem;
-	char *path_to_jingle = "~/NA_Jingles/douchebag.mp3";
+	char *path_to_jingle;
 	char count;
 	pid_t pid;
 
@@ -33,9 +33,19 @@ int main(int argc, char **argv){
 	} else {
 		/* Parse arguments */
 		if(!strcmp(argv[1], "--license")){
-			printf("\"No Agenda Bat Signal\" Copyright (C) 2010\nThis program comes with ABSOLUTELY NO WARRANTY; for details visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
+			printf("\"No Agenda Bat Signal\" Copyright (C) 2010\n\nThis program comes with ABSOLUTELY NO WARRANTY.\nFor details check LICENSE which can be found in the source, visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
 			return 0;
 		}
+	}
+
+	path_to_jingle = (char *)xmalloc(100 * sizeof(char));
+	if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
+		fprintf(stderr, "getenv\n");
+		return 1;
+	}
+	if(NULL == strcat(path_to_jingle, "/NA_Jingles/douchebag.mp3")){
+		fprintf(stderr, "strcat\n");
+		return 1;
 	}
 
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
@@ -72,7 +82,7 @@ int main(int argc, char **argv){
 		if(!refr)
 			printf("No bat signal was sent.\n");
 		else{
-			printf("Time: %s\nTweetURL: %s\nTweet: %s\nRefresh: %s\n", refr->date, refr->tweet_url, refr->text, refr->refresh);
+			printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
 
 			/* fork() and exec Jingle */
 			if(0 > (pid = fork())){
@@ -82,7 +92,6 @@ int main(int argc, char **argv){
 			if(pid == 0){
 				char *args[] = {"/usr/bin/mpg123", path_to_jingle, NULL};
 				execvp(*args, args);
-				exit(EXIT_FAILURE);
 			} else 
 				(void)wait(NULL);
 			
@@ -94,5 +103,6 @@ int main(int argc, char **argv){
 
 	free(def);
 	free(mem);
+	free(path_to_jingle);
 	return 0;
 }
