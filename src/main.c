@@ -47,6 +47,7 @@ int main(int argc, char **argv){
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 
+	/* Using a local directory, hopefully git will accept the mp3 file.
 	path_to_jingle = (char *)xmalloc(100 * sizeof(char));
 	if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
 		fprintf(stderr, "getenv\n");
@@ -56,6 +57,8 @@ int main(int argc, char **argv){
 		fprintf(stderr, "strcat\n");
 		return 1;
 	}
+	*/
+	path_to_jingle = "jingles/douchebag.mp3";
 
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
 
