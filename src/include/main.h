@@ -28,6 +28,9 @@
 #include <stdio.h>
 #define MAX_SIZE 2048
 
+#include <gtk/gtk.h>
+#include <gtk/gtksignal.h>
+
 typedef struct stat t_stat;
 
 typedef struct s_tweet {
@@ -48,4 +51,5 @@ int rfind_char(char *, char);
 int find_str(char *, char *);
 void free_t_tweet(t_tweet *);
 void *xmalloc(int);
+GtkWidget *make_window(t_tweet *);
 #endif

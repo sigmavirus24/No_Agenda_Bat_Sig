@@ -26,6 +26,7 @@ int main(int argc, char **argv){
 	char *mem;
 	char *path_to_jingle;
 	char count;
+	char gtk_on = 0;
 	pid_t pid;
 
 	if(argc == 1){
@@ -36,7 +37,15 @@ int main(int argc, char **argv){
 			printf("\"No Agenda Bat Signal\" Copyright (C) 2010\n\nThis program comes with ABSOLUTELY NO WARRANTY.\nFor details check LICENSE which can be found in the source, visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
 			return 0;
 		}
+
+		if(!strcmp(argv[1], "--gtk")){
+			gtk_on = 1;
+			gtk_init(&argc, &argv);
+		}
 	}
+
+	setbuf(stdout, NULL);
+	setbuf(stderr, NULL);
 
 	path_to_jingle = (char *)xmalloc(100 * sizeof(char));
 	if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
@@ -82,8 +91,6 @@ int main(int argc, char **argv){
 		if(!refr)
 			printf("No bat signal was sent.\n");
 		else{
-			printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
-
 			/* fork() and exec Jingle */
 			if(0 > (pid = fork())){
 				fprintf(stderr, "Error forking.\n");
@@ -92,12 +99,18 @@ int main(int argc, char **argv){
 			if(pid == 0){
 				char *args[] = {"/usr/bin/mpg123", path_to_jingle, NULL};
 				execvp(*args, args);
-			} else 
+			} else {
+				if(!gtk_on)
+					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
+				else {
+					GtkWidget *win = make_window(refr);
+					gtk_widget_show(win);
+					gtk_main();
+				}
 				(void)wait(NULL);
-			
+			}
 			free_t_tweet(refr);
 		}
-
 		free_t_tweet(info);
 	}
 
