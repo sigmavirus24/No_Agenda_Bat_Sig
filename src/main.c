@@ -30,6 +30,9 @@ int main(int argc, char **argv){
 	char gtk_on = 0;
 	pid_t pid;
 
+	setbuf(stdout, NULL);
+	setbuf(stderr, NULL);
+
 	if(argc == 1){
 		/* Read from rc file */
 	} else {
@@ -43,10 +46,13 @@ int main(int argc, char **argv){
 			gtk_on = 1;
 			gtk_init(&argc, &argv);
 		}
+
+		if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")){
+				  printf("usage: ./nabatsignal [--gtk | -h | --help | --license]\n");
+				  return 0;
+		}
 	}
 
-	setbuf(stdout, NULL);
-	setbuf(stderr, NULL);
 
 	/* Using a local directory, hopefully git will accept the mp3 file.
 	path_to_jingle = (char *)xmalloc(100 * sizeof(char));
@@ -64,7 +70,7 @@ int main(int argc, char **argv){
 #ifndef SIGMANATEST
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
 #else
-	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=sigmanatest&rpp=1");
+	def = strdup("https://search.twitter.com/search.json?from=sigmanatest&rpp=1");
 #endif
 
 

@@ -23,19 +23,32 @@ void xstrcat(char *dest, char *src){
 
 GtkWidget *make_window(t_tweet *p){
 	GtkWidget *win;
+#if 0
 	GtkWidget *button;
 	GtkWidget *vertical_box;
 	GtkWidget *gtk_label;
 	char *label;
 	int len;
+#endif
+	GtkWidget *dialog;
 	
 	/* gtk_init in main.c */
 
 	/* Window set up */
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(win), "No Agenda Bat Signal (C) 2010");
-	/* g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL); */
+	g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(win), 10);
+	/* Dialog box */
+	dialog = gtk_message_dialog_new(GTK_WINDOW(win), 
+						 GTK_DIALOG_DESTROY_WITH_PARENT, 
+						 GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "%s\n%s\n%s\n\n", 
+						 p->date, p->text, p->tweet_url);
+	g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy),
+						 win);
+#if 0
+	/* Make vertical box */
+	vertical_box = gtk_vbox_new(FALSE, 0);
 
 	/* Label create */
 	len = strlen(p->date) + strlen(p->tweet_url) + strlen(p->text) + 3 + 1;
@@ -43,22 +56,26 @@ GtkWidget *make_window(t_tweet *p){
 	/* 3 '\n', 1 '\0' */
 	memset(label, '\0', len);
 	xstrcat(label, p->date);
-	xstrcat(label, p->tweet_url);
 	xstrcat(label, p->text);
 	gtk_label = gtk_label_new(label);
+	gtk_box_pack_start(GTK_BOX(vertical_box), gtk_label, TRUE, TRUE, 0);
 	gtk_widget_show(gtk_label);
+	
+	button = gtk_link_button_new(p->tweet_url);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vertical_box), button, TRUE, TRUE, 0);
 
 	/* Button */
 	button = gtk_button_new_with_label("Dismiss.");
 	g_signal_connect(button, "clicked", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_box_pack_start(GTK_BOX(vertical_box), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 
-	/* Vertical box */
-	vertical_box = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vertical_box), gtk_label, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vertical_box), button, TRUE, TRUE, 0);
+	/* Show vertical box */
 	gtk_widget_show(vertical_box);
 
 	gtk_container_add(GTK_CONTAINER(win), vertical_box);
+#endif
+	gtk_widget_show(dialog);
 	return win;
 }
