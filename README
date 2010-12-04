@@ -2,6 +2,7 @@ This is a simple C program that users can run and will background for 30 minutes
 
 DEPENDENCIES:
 libcurl (http://curl.haxx.se)
+mpg123
 
 INSTALLATION:
 In the directory containing src/ and jingles/ run the command "make".

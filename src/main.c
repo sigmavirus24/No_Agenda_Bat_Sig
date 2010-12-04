@@ -20,6 +20,7 @@
 
 int main(int argc, char **argv){
 	CURLcode res;
+	GtkWidget *win;
 	t_tweet *info;
 	t_tweet *refr;
 	char *def; /* Default URL */
@@ -60,7 +61,11 @@ int main(int argc, char **argv){
 	*/
 	path_to_jingle = "jingles/douchebag.mp3";
 
+#ifndef SIGMANATEST
 	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
+#else
+	def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=sigmanatest&rpp=1");
+#endif
 
 
 	/* Should assume user did not invoke this to use the last copy of
@@ -106,7 +111,7 @@ int main(int argc, char **argv){
 				if(!gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
 				else {
-					GtkWidget *win = make_window(refr);
+					win = make_window(refr);
 					gtk_widget_show(win);
 					gtk_main();
 				}
@@ -119,6 +124,6 @@ int main(int argc, char **argv){
 
 	free(def);
 	free(mem);
-	free(path_to_jingle);
+/*	free(path_to_jingle); */
 	return 0;
 }

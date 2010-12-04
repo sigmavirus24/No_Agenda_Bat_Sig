@@ -35,7 +35,7 @@ GtkWidget *make_window(t_tweet *p){
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(win), "No Agenda Bat Signal (C) 2010");
 	/* g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL); */
-	gtk_container_set_border_width(GTK_CONTAINER(win), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(win), 10);
 
 	/* Label create */
 	len = strlen(p->date) + strlen(p->tweet_url) + strlen(p->text) + 3 + 1;
@@ -50,6 +50,7 @@ GtkWidget *make_window(t_tweet *p){
 
 	/* Button */
 	button = gtk_button_new_with_label("Dismiss.");
+	g_signal_connect(button, "clicked", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_widget_show(button);
 
 	/* Vertical box */
