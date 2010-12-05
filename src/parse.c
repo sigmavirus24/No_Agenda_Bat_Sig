@@ -28,7 +28,7 @@ t_tweet *parse_mem(char *mem){
 		/* commence the parsing */
 		i = find_str(s, "{\"results\":[");
 		j = find_char(s, ']');
-		if((i + 1) == j){
+		if((i < 0) || (i + 1) == j){
 			/*{"results":[]*/
 			/* We're reading bat_sig2 and 
 			 * there is nothing to see here */
@@ -82,4 +82,16 @@ t_tweet *parse_mem(char *mem){
 		}
 	}
 	return parsed;
+}
+
+void make_get(char *dest, char *src){
+		  int i;
+
+		  if(dest && src){
+					 memset(dest, '\0', MAX_SIZE);
+					 strcpy(dest, "GET ");
+					 i = find_str(src, "twitter.com/");
+					 strcat(dest, src + i);
+					 strcat(dest, " HTTP/1.1\n");
+		  }
 }

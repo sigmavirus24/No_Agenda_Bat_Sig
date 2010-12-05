@@ -19,6 +19,9 @@
 
 #include <errno.h>
 #include <curl/curl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -46,6 +49,7 @@ CURLcode my_curl_easy(FILE *,
 CURLcode my_curl_easier(char *, char *);
 
 t_tweet *parse_mem(char *);
+void make_get(char *, char *);
 int find_char(char *, char);
 int rfind_char(char *, char);
 int find_str(char *, char *);
