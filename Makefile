@@ -18,3 +18,7 @@ clean:
 		$(CD) $(PWD)/$$i && $(MAKECLEAN) ; \
 	done
 
+test:
+	for i in $(DIRS) ; do \
+		$(CD) $$i && make test ; \
+	done
