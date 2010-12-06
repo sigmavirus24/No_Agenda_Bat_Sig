@@ -17,7 +17,6 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#include <errno.h>
 #include <curl/curl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -33,27 +32,7 @@
 
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
+#include "t_tweet.h"
 
-typedef struct stat t_stat;
-
-typedef struct s_tweet {
-	char *date; /* For ourselves */
-	char *text; /* Might be nice to display for user */
-	char *tweet_url; /* In case the user is a denier */
-	char *refresh; /* Refresh URL starting with '?' */
-} t_tweet;
-
-CURLcode my_curl_easy(FILE *, 
-		size_t(*fn)(const void *, size_t, size_t, FILE *),
-		char *);
-CURLcode my_curl_easier(char *, char *);
-
-t_tweet *parse_mem(char *);
-void make_get(char *, char *);
-int find_char(char *, char);
-int rfind_char(char *, char);
-int find_str(char *, char *);
-void free_t_tweet(t_tweet *);
-void *xmalloc(int);
-GtkWidget *make_window(t_tweet *);
+#include "functions.h"
 #endif

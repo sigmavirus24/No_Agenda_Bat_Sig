@@ -85,13 +85,13 @@ t_tweet *parse_mem(char *mem){
 }
 
 void make_get(char *dest, char *src){
-		  int i;
+	int i;
 
-		  if(dest && src){
-					 memset(dest, '\0', MAX_SIZE);
-					 strcpy(dest, "GET ");
-					 i = find_str(src, "twitter.com/");
-					 strcat(dest, src + i);
-					 strcat(dest, " HTTP/1.1\n");
-		  }
+	if(dest && src){
+		memset(dest, '\0', MAX_SIZE);
+		strcpy(dest, "GET ");
+		i = find_str(src, "twitter.com/");
+		strcat(dest, src + i);
+		strcat(dest, " HTTP/1.1\n");
+	}
 }

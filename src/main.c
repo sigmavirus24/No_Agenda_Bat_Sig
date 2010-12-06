@@ -57,7 +57,7 @@ int main(int argc, char **argv){
 			if(!strcmp(argv[(int)count], "-h") || 
 					!strcmp(argv[(int)count], "--help")){
 				printf("usage:\n      ./nabatsignal [--gtk | -h | --help | --license | --ssl]\n");
-			   return 0;
+				return 0;
 			}
 
 			if(!strcmp(argv[(int)count], "--ssl"))
@@ -67,16 +67,16 @@ int main(int argc, char **argv){
 
 
 	/* Using a local directory, hopefully git will accept the mp3 file.
-	path_to_jingle = (char *)xmalloc(100 * sizeof(char));
-	if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
-		fprintf(stderr, "getenv\n");
-		return 1;
-	}
-	if(NULL == strcat(path_to_jingle, "/NA_Jingles/douchebag.mp3")){
-		fprintf(stderr, "strcat\n");
-		return 1;
-	}
-	*/
+	   path_to_jingle = (char *)xmalloc(100 * sizeof(char));
+	   if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
+	   fprintf(stderr, "getenv\n");
+	   return 1;
+	   }
+	   if(NULL == strcat(path_to_jingle, "/NA_Jingles/douchebag.mp3")){
+	   fprintf(stderr, "strcat\n");
+	   return 1;
+	   }
+	   */
 	path_to_jingle = "jingles/douchebag.mp3";
 
 	if(use_ssl){
@@ -108,18 +108,18 @@ int main(int argc, char **argv){
 		}
 
 		for(p = ret; p; p = p->ai_next){
-			 if(0 > (sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
-				 continue;
-			 if(0 > connect(sockfd, p->ai_addr, p->ai_addrlen)){
-				 close(sockfd);
-				 sockfd = -1;
-			 } else
-				 break;
+			if(0 > (sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
+				continue;
+			if(0 > connect(sockfd, p->ai_addr, p->ai_addrlen)){
+				close(sockfd);
+				sockfd = -1;
+			} else
+				break;
 		}
 
 		if(sockfd < 0){
-				  printf("Cannot establish connection.\n");
-				  return 1;
+			printf("Cannot establish connection.\n");
+			return 1;
 		} else {
 #ifndef SIGMANATEST
 			def = "GET /search.json?q=@pocketnoagenda&from=adamcurry&rpp=1 HTTP/1.1\n";
@@ -149,7 +149,7 @@ int main(int argc, char **argv){
 		make_get(def, info->refresh);
 
 		for(count = 0; count < MAX_ITER; count++){
-		   memset(mem, '\0', MAX_SIZE);
+			memset(mem, '\0', MAX_SIZE);
 			if(use_ssl)
 				res = my_curl_easier(mem, info->refresh);
 			else {
@@ -205,6 +205,6 @@ int main(int argc, char **argv){
 	close(sockfd);
 	free(def);
 	free(mem);
-/*	free(path_to_jingle); */
+	/*	free(path_to_jingle); */
 	return 0;
 }

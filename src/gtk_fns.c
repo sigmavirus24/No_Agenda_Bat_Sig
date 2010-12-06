@@ -14,7 +14,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#include "./include/main.h"
+#include "./include/gtk_fns.h"
 
 void xstrcat(char *dest, char *src){
 	strcat(dest, src);
@@ -31,7 +31,7 @@ GtkWidget *make_window(t_tweet *p){
 	int len;
 #endif
 	GtkWidget *dialog;
-	
+
 	/* gtk_init in main.c */
 
 	/* Window set up */
@@ -41,11 +41,11 @@ GtkWidget *make_window(t_tweet *p){
 	gtk_container_set_border_width(GTK_CONTAINER(win), 10);
 	/* Dialog box */
 	dialog = gtk_message_dialog_new(GTK_WINDOW(win), 
-						 GTK_DIALOG_DESTROY_WITH_PARENT, 
-						 GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "%s\n%s\n%s\n\n", 
-						 p->date, p->text, p->tweet_url);
+			GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "%s\n%s\n%s\n\n", 
+			p->date, p->text, p->tweet_url);
 	g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy),
-						 win);
+			win);
 #if 0
 	/* Make vertical box */
 	vertical_box = gtk_vbox_new(FALSE, 0);
@@ -60,7 +60,7 @@ GtkWidget *make_window(t_tweet *p){
 	gtk_label = gtk_label_new(label);
 	gtk_box_pack_start(GTK_BOX(vertical_box), gtk_label, TRUE, TRUE, 0);
 	gtk_widget_show(gtk_label);
-	
+
 	button = gtk_link_button_new(p->tweet_url);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(vertical_box), button, TRUE, TRUE, 0);

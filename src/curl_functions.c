@@ -14,7 +14,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#include "./include/main.h"
+#include "./include/curl_functions.h"
 
 static size_t write_to_mem(void *p, size_t size, size_t nmemb, void *data){
 	size_t size_new = 0;
