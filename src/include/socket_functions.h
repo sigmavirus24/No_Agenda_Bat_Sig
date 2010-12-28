@@ -25,4 +25,9 @@
 #include <stdio.h>
 #include <string.h>
 
+int close(int);
+int write(int, void *, int);
+int read(int, void *, int);
+void free(void *);
+void exit(int);
 #endif

@@ -4,7 +4,7 @@ CFLAGS := -ggdb3 -Werror -Wall -DDEBUG `pkg-config --cflags gtk+-2.0` `pkg-confi
 Q := @
 
 TARGETS := nabatsignal
-SRC := main.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c
+SRC := main.c socket_functions.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c
 OBJ := $(SRC:%c=%o)
 
 default: all

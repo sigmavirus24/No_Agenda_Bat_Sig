@@ -16,7 +16,7 @@
  */
 #include "./include/main.h"
 #define SLEEP_SECONDS 11
-#define MAX_ITER 350
+#define MAX_ITER 700
 
 int main(int argc, char **argv){
 	CURLcode res;
@@ -24,6 +24,7 @@ int main(int argc, char **argv){
 	t_tweet *info;
 	t_tweet *refr;
 	char *def; /* Default URL */
+	char *get;
 	char host[100];
 	char *mem;
 	char *path_to_jingle;
@@ -31,13 +32,17 @@ int main(int argc, char **argv){
 	char gtk_on;
 	char use_ssl;
 	int sockfd;
+#if 0
 	int r;
-	struct addrinfo hints, *ret, *p;
+#endif
+	struct addrinfo hints;
 	pid_t pid;
 
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
+
 	gtk_on = use_ssl = 0;
+	get = (char *)0xDEADBEEF;
 
 	if(argc == 1){
 		/* Read from rc file */
@@ -56,7 +61,11 @@ int main(int argc, char **argv){
 
 			if(!strcmp(argv[(int)count], "-h") || 
 					!strcmp(argv[(int)count], "--help")){
-				printf("usage:\n      ./nabatsignal [--gtk | -h | --help | --license | --ssl]\n");
+				printf("usage:\n      ./nabatsignal [--gtk | --ssl | -h | --help | --license]\n");
+				printf("\t--gtk enables a GTK pop-up box.\n");
+				printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
+				printf("\t-h and --help both print this message.\n");
+				printf("\t--license prints the license information for the No Agenda Bat Signal.\n");
 				return 0;
 			}
 
@@ -81,13 +90,13 @@ int main(int argc, char **argv){
 
 	if(use_ssl){
 #ifndef SIGMANATEST
-		def = strdup("https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1");
+		def = "https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1";
 #else
-		def = strdup("https://search.twitter.com/search.json?from=sigmanatest&rpp=1");
+		def = "https://search.twitter.com/search.json?from=sigmanatest&rpp=1";
 #endif
 	}
 	else {
-		def = strdup("search.twitter.com");
+		def = "search.twitter.com";
 		memset(host, '\0', 100);
 		sprintf(host, "Host: %s\n\n", def);
 	}
@@ -101,42 +110,24 @@ int main(int argc, char **argv){
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
 
-		/* Not the actual sockfd yet, just using it until I get the sockfd */
-		if(0 != (sockfd = getaddrinfo(def, "80", &hints, &ret))){
-			printf("Getaddrinfo error.\n");
-			return 1;
-		}
-
-		for(p = ret; p; p = p->ai_next){
-			if(0 > (sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
-				continue;
-			if(0 > connect(sockfd, p->ai_addr, p->ai_addrlen)){
-				close(sockfd);
-				sockfd = -1;
-			} else
-				break;
-		}
+		sockfd = sockets_connect(&hints, def);
 
 		if(sockfd < 0){
 			printf("Cannot establish connection.\n");
 			return 1;
 		} else {
 #ifndef SIGMANATEST
-			def = "GET /search.json?q=@pocketnoagenda&from=adamcurry&rpp=1 HTTP/1.1\n";
+			get = "GET /search.json?q=@pocketnoagenda&from=adamcurry&rpp=1 HTTP/1.1\n";
 #else
-			def = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
+			get = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
 #endif
-			write(sockfd, def, strlen(def));
-			write(sockfd, host, strlen(host));
-
-			if(0 > (r = read(sockfd, mem, MAX_SIZE - 1))){
-				printf("Nothing to see here!\n");
-				free(mem);
-				close(sockfd);
-				return 1;
-			}
-			*(mem + r) = '\0';
-			def = (char *)xmalloc(MAX_SIZE * sizeof(char));
+			sockets_request(sockfd, get, host, &mem, MAX_SIZE);
+			printf("%s\n", mem);
+			my_close(&sockfd);
+			get = (char *)xmalloc(MAX_SIZE * sizeof(char));
+			/* Twitter sends the Connection: close header so by RFC2616 we must close our
+			 * connection and then reconnect later.
+			 */
 		}
 	}
 
@@ -146,33 +137,32 @@ int main(int argc, char **argv){
 		 * a new URL buffer and have it watch that. 
 		 * For testing, I'm using the one as of Tue Nov 9
 		 */
-		make_get(def, info->refresh);
+		if(!use_ssl)
+			make_get(get, info->refresh);
 
 		for(count = 0; count < MAX_ITER; count++){
-			memset(mem, '\0', MAX_SIZE);
-			if(use_ssl)
-				res = my_curl_easier(mem, info->refresh);
-			else {
-				write(sockfd, def, strlen(def));
-				write(sockfd, host, strlen(host));
+			sockfd = sockets_connect(&hints, def);
 
-				if(0 > (r = read(sockfd, mem, MAX_SIZE - 1))){
-					printf("Something bizarre happened\n");
-					free(def);
-					free(mem);
-					close(sockfd);
-					return 1;
-				}
+			if(sockfd > 0){
+				memset(mem, '\0', MAX_SIZE); /* Clear out the memory so we do not get false information */
+				if(use_ssl)
+					res = my_curl_easier(mem, info->refresh);
+				else 
+					sockets_request(sockfd, get, host, &mem, MAX_SIZE);
+				my_close(&sockfd);
+
+				/* Returns "{\"results\":[]" if there is nothing. 
+				 * Can run a while loop until this does not match. */
+				refr = parse_mem(mem);
+
+				if(refr)
+					break;
+
+				(void)sleep(SLEEP_SECONDS);
+			} else {
+				printf("Cannot reestablish connection.\n");
+				return 1;
 			}
-			/* Returns "{\"results\":[]" if there is nothing. 
-			 * Can run a while loop until this does not match. */
-
-			refr = parse_mem(mem);
-
-			if(refr)
-				break;
-
-			(void)sleep(SLEEP_SECONDS);
 		}
 
 		if(!refr)
@@ -202,8 +192,8 @@ int main(int argc, char **argv){
 		free_t_tweet(info);
 	}
 
-	close(sockfd);
-	free(def);
+	if(get != (char *)0xDEADBEEF)
+		free(get);
 	free(mem);
 	/*	free(path_to_jingle); */
 	return 0;
