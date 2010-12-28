@@ -28,9 +28,12 @@ int main(int argc, char **argv){
 	char host[100];
 	char *mem;
 	char *path_to_jingle;
+	char *browser;
 	char count;
 	char gtk_on;
 	char use_ssl;
+	char browser_set;
+	char jingle_set;
 	int sockfd;
 #if 0
 	int r;
@@ -41,7 +44,7 @@ int main(int argc, char **argv){
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 
-	gtk_on = use_ssl = 0;
+	jingle_set = browser_set = gtk_on = use_ssl = 0;
 	get = (char *)0xDEADBEEF;
 
 	if(argc == 1){
@@ -61,32 +64,36 @@ int main(int argc, char **argv){
 
 			if(!strcmp(argv[(int)count], "-h") || 
 					!strcmp(argv[(int)count], "--help")){
-				printf("usage:\n      ./nabatsignal [--gtk | --ssl | -h | --help | --license]\n");
+				printf("usage:\n   ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ...]\n\t\t [-h | --help]\n\t\t [--license]\n");
 				printf("\t--gtk enables a GTK pop-up box.\n");
 				printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
+				printf("\t--browser followed by absolute path to\n\t\tthe executabe. i.e. /usr/bin/firefox\n");
+				printf("\t--jingle folowed by absolute path to\n\t\tthe mp3. i.e. ~/jingles/douchebag.mp3\n");
 				printf("\t-h and --help both print this message.\n");
-				printf("\t--license prints the license information for the No Agenda Bat Signal.\n");
+				printf("\t--license prints the license information.\n");
 				return 0;
 			}
 
 			if(!strcmp(argv[(int)count], "--ssl"))
 				use_ssl = 1;
+
+			if(!strcmp(argv[(int)count], "--browser")){
+				browser_set = 1;
+				count++;
+				browser = argv[(int)count];
+			}
+
+			if(!strcmp(argv[(int)count], "--jingle")){
+				jingle_set = 1;
+				count++;
+				path_to_jingle = argv[(int)count];
+			}
 		}
 	}
 
-
-	/* Using a local directory, hopefully git will accept the mp3 file.
-	   path_to_jingle = (char *)xmalloc(100 * sizeof(char));
-	   if(NULL == strcpy(path_to_jingle, getenv("HOME"))){
-	   fprintf(stderr, "getenv\n");
-	   return 1;
-	   }
-	   if(NULL == strcat(path_to_jingle, "/NA_Jingles/douchebag.mp3")){
-	   fprintf(stderr, "strcat\n");
-	   return 1;
-	   }
-	   */
 	path_to_jingle = "jingles/douchebag.mp3";
+	if(!browser_set)
+		browser = "/usr/bin/firefox";
 
 	if(use_ssl){
 #ifndef SIGMANATEST
@@ -122,7 +129,6 @@ int main(int argc, char **argv){
 			get = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
 #endif
 			sockets_request(sockfd, get, host, &mem, MAX_SIZE);
-			printf("%s\n", mem);
 			my_close(&sockfd);
 			get = (char *)xmalloc(MAX_SIZE * sizeof(char));
 			/* Twitter sends the Connection: close header so by RFC2616 we must close our
@@ -181,7 +187,7 @@ int main(int argc, char **argv){
 				if(!gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
 				else {
-					win = make_window(refr);
+					win = make_window(refr, browser);
 					gtk_widget_show(win);
 					gtk_main();
 				}

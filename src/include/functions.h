@@ -31,7 +31,7 @@ int rfind_char(char *, char);
 int find_str(char *, char *);
 void free_t_tweet(t_tweet *);
 void *xmalloc(int);
-GtkWidget *make_window(t_tweet *);
+GtkWidget *make_window(t_tweet *, char *);
 int sockets_connect(struct addrinfo *, char *);
 void sockets_request(int, char *, char *, char **, int);
 void my_close(int *);

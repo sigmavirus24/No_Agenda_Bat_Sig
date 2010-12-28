@@ -16,21 +16,13 @@
  */
 #include "./include/gtk_fns.h"
 
-void xstrcat(char *dest, char *src){
-	strcat(dest, src);
-	strcat(dest, "\n");
-}
-
-GtkWidget *make_window(t_tweet *p){
+GtkWidget *make_window(t_tweet *p, char *browser){
 	GtkWidget *win;
-#if 0
 	GtkWidget *button;
 	GtkWidget *vertical_box;
 	GtkWidget *gtk_label;
 	char *label;
 	int len;
-#endif
-	GtkWidget *dialog;
 
 	/* gtk_init in main.c */
 
@@ -39,14 +31,7 @@ GtkWidget *make_window(t_tweet *p){
 	gtk_window_set_title(GTK_WINDOW(win), "No Agenda Bat Signal (C) 2010");
 	g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(win), 10);
-	/* Dialog box */
-	dialog = gtk_message_dialog_new(GTK_WINDOW(win), 
-			GTK_DIALOG_DESTROY_WITH_PARENT, 
-			GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "%s\n%s\n%s\n\n", 
-			p->date, p->text, p->tweet_url);
-	g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy),
-			win);
-#if 0
+
 	/* Make vertical box */
 	vertical_box = gtk_vbox_new(FALSE, 0);
 
@@ -61,9 +46,10 @@ GtkWidget *make_window(t_tweet *p){
 	gtk_box_pack_start(GTK_BOX(vertical_box), gtk_label, TRUE, TRUE, 0);
 	gtk_widget_show(gtk_label);
 
-	button = gtk_link_button_new(p->tweet_url);
-	gtk_widget_show(button);
+	button = gtk_button_new_with_label("Open Stream");
+	g_signal_connect(button, "clicked", G_CALLBACK(open_url), (gpointer) browser);
 	gtk_box_pack_start(GTK_BOX(vertical_box), button, TRUE, TRUE, 0);
+	gtk_widget_show(button);
 
 	/* Button */
 	button = gtk_button_new_with_label("Dismiss.");
@@ -75,7 +61,28 @@ GtkWidget *make_window(t_tweet *p){
 	gtk_widget_show(vertical_box);
 
 	gtk_container_add(GTK_CONTAINER(win), vertical_box);
-#endif
-	gtk_widget_show(dialog);
 	return win;
+}
+
+void xstrcat(char *dest, char *src){
+	strcat(dest, src);
+	strcat(dest, "\n");
+}
+
+static void open_url(GtkWidget *button, gpointer data){
+	int pid;
+	char *browser;
+
+	browser = (char *)data;
+
+	if(0 > (pid = fork())){
+		fprintf(stderr, "Error forking.\n");
+		exit(1);
+	}
+	if(pid == 0){
+		char *args[] = {browser, "http://noagendastream.com/", NULL};
+		execvp(*args, args);
+		exit(EXIT_FAILURE);
+	} else 
+		(void)wait(NULL);
 }
