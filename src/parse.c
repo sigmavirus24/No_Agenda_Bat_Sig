@@ -14,7 +14,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#include "./include/main.h"
+#include "./include/parse.h"
 
 t_tweet *parse_mem(char *mem){
 	t_tweet *parsed;

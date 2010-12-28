@@ -16,8 +16,11 @@
  */
 #ifndef __PARSE_H__
 #define __PARSE_H__
+#define MAX_SIZE 2048
 
 #include "t_tweet.h"
 #include "functions.h"
+#include <string.h>
+#include <stdlib.h>
 
 #endif

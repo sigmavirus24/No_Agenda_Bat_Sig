@@ -34,6 +34,7 @@ int main(int argc, char **argv){
 	char use_ssl;
 	char browser_set;
 	char jingle_set;
+	char set_from_rc[2];
 	int sockfd;
 #if 0
 	int r;
@@ -45,10 +46,19 @@ int main(int argc, char **argv){
 	setbuf(stderr, NULL);
 
 	jingle_set = browser_set = gtk_on = use_ssl = 0;
-	get = (char *)0xDEADBEEF;
+	path_to_jingle = browser = get = (char *)0xDEADBEEF;
 
 	if(argc == 1){
 		/* Read from rc file */
+		set_from_rc[0] = 0;
+		set_from_rc[1] = 0;
+
+		bat_sig_rc(&path_to_jingle, &browser, &gtk_on, &use_ssl);
+		if(path_to_jingle)
+			jingle_set = set_from_rc[0] = 1;
+		if(browser)
+			browser_set = set_from_rc[1] = 1;
+		printf("%s\n%s\n%i\n%i", path_to_jingle, browser, (int)gtk_on, (int)use_ssl);
 	} else {
 		/* Parse arguments */
 		if(!strcmp(argv[1], "--license")){
@@ -64,13 +74,7 @@ int main(int argc, char **argv){
 
 			if(!strcmp(argv[(int)count], "-h") || 
 					!strcmp(argv[(int)count], "--help")){
-				printf("usage:\n   ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ...]\n\t\t [-h | --help]\n\t\t [--license]\n");
-				printf("\t--gtk enables a GTK pop-up box.\n");
-				printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
-				printf("\t--browser followed by absolute path to\n\t\tthe executabe. i.e. /usr/bin/firefox\n");
-				printf("\t--jingle folowed by absolute path to\n\t\tthe mp3. i.e. ~/jingles/douchebag.mp3\n");
-				printf("\t-h and --help both print this message.\n");
-				printf("\t--license prints the license information.\n");
+				help();
 				return 0;
 			}
 
@@ -87,6 +91,12 @@ int main(int argc, char **argv){
 				jingle_set = 1;
 				count++;
 				path_to_jingle = argv[(int)count];
+			}
+
+			if(!strcmp(argv[(int)count], "-v") ||
+					!strcmp(argv[(int)count], "--help")){
+				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, see LICENSE for details\n");
+				return 0;
 			}
 		}
 	}
@@ -201,6 +211,20 @@ int main(int argc, char **argv){
 	if(get != (char *)0xDEADBEEF)
 		free(get);
 	free(mem);
-	/*	free(path_to_jingle); */
+	if(set_from_rc[0])
+		free(path_to_jingle); 
+	if(set_from_rc[1])
+		free(browser);
 	return 0;
+}
+
+void help(void){
+	printf("usage:\n   ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ...]\n\t\t [-h | --help]\n\t\t [--license]\n\t\t[-v | --version]\n");
+	printf("\t--gtk enables a GTK pop-up box.\n");
+	printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
+	printf("\t--browser followed by absolute path to\n\t\tthe executabe. i.e. /usr/bin/firefox\n");
+	printf("\t--jingle folowed by absolute path to\n\t\tthe mp3. i.e. ~/jingles/douchebag.mp3\n");
+	printf("\t-h and --help both print this message.\n");
+	printf("\t--license prints the license information.\n");
+	printf("\t-v and --version both print the version number.\n");
 }

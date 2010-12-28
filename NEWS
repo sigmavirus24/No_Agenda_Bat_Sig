@@ -1,0 +1,7 @@
+What's new in:
+
+0.3:
+  * More commandline options (--ssl, --browser, --jingle)
+  * Ability to use HTTP or HTTPS
+  * .nabatsignalrc file
+   \_ Simple syntax

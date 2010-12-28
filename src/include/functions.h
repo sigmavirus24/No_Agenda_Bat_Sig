@@ -19,10 +19,12 @@
 
 #include "t_tweet.h"
 
+#ifdef __CURL_CURL_H
 CURLcode my_curl_easy(FILE *, 
 		size_t(*fn)(const void *, size_t, size_t, FILE *),
 		char *);
 CURLcode my_curl_easier(char *, char *);
+#endif
 
 t_tweet *parse_mem(char *);
 void make_get(char *, char *);
@@ -31,9 +33,14 @@ int rfind_char(char *, char);
 int find_str(char *, char *);
 void free_t_tweet(t_tweet *);
 void *xmalloc(int);
+#ifdef __GTK_H__
 GtkWidget *make_window(t_tweet *, char *);
+#endif
+#ifdef _SYS_SOCKET_H
 int sockets_connect(struct addrinfo *, char *);
+#endif
 void sockets_request(int, char *, char *, char **, int);
 void my_close(int *);
+void bat_sig_rc(char **, char **, char *, char *);
 
 #endif

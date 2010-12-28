@@ -14,28 +14,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef _BAT_SIG_RC_H_
+#define _BAT_SIG_RC_H_
 
-#include <curl/curl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
 #include <stdio.h>
-#define MAX_SIZE 2048
-
-#include <gtk/gtk.h>
-#include <gtk/gtksignal.h>
-#include "t_tweet.h"
-
+#include <string.h>
+#include <stdlib.h>
 #include "functions.h"
-
-void help(void);
 
 #endif
