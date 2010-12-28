@@ -86,3 +86,4 @@ static void open_url(GtkWidget *button, gpointer data){
 	} else 
 		(void)wait(NULL);
 }
+/* vim: set sw=4 ts=8: */

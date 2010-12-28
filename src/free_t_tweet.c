@@ -25,3 +25,4 @@ void free_t_tweet(t_tweet *t){
 		free(t);
 	}
 }
+/* vim: set sw=4 ts=8: */

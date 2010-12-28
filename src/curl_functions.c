@@ -67,3 +67,4 @@ CURLcode my_curl_easier(char *mem, char *url){
 
 	return ret;
 }
+/* vim: set sw=4 ts=8: */

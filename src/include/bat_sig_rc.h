@@ -23,3 +23,4 @@
 #include "functions.h"
 
 #endif
+/* vim: set sw=4 ts=8: */

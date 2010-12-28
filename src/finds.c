@@ -98,3 +98,4 @@ int find_str(char *str, char *find){
 	}
 	return -1;
 }
+/* vim: set sw=4 ts=8: */

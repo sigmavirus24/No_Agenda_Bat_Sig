@@ -39,3 +39,4 @@
 void help(void);
 
 #endif
+/* vim: set sw=4 ts=8: */

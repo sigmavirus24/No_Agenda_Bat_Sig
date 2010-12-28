@@ -44,3 +44,4 @@ void my_close(int *);
 void bat_sig_rc(char **, char **, char *, char *);
 
 #endif
+/* vim: set sw=4 ts=8: */

@@ -95,3 +95,4 @@ void make_get(char *dest, char *src){
 		strcat(dest, " HTTP/1.1\n");
 	}
 }
+/* vim: set sw=4 ts=8: */

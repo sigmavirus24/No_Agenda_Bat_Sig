@@ -56,3 +56,4 @@ void bat_sig_rc(char **jingle, char **browse, char *gtk, char *ssl){
 		}
 	}
 }
+/* vim: set sw=4 ts=8: */

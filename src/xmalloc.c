@@ -26,3 +26,4 @@ void *xmalloc(int n){
 	}
 	return p;
 }
+/* vim: set sw=4 ts=8: */

@@ -228,3 +228,4 @@ void help(void){
 	printf("\t--license prints the license information.\n");
 	printf("\t-v and --version both print the version number.\n");
 }
+/* vim: set sw=4 ts=8: */

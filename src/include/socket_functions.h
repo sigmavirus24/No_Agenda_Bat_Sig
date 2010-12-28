@@ -31,3 +31,4 @@ int read(int, void *, int);
 void free(void *);
 void exit(int);
 #endif
+/* vim: set sw=4 ts=8: */
