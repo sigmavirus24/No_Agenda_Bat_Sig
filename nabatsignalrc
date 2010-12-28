@@ -1,4 +1,4 @@
 jingle jingles/douchebag.mp3
 browser /usr/bin/firefox
 ssl off
-gtk off
+gtk on
