@@ -48,7 +48,7 @@ t_tweet *parse_mem(char *mem){
 			parsed->date = strncpy(parsed->date, tmp + i + 1, k);
 
 			/* Grab the id_str to create the URL for the user */
-			i += find_str(tmp + i, "\"id_str\":\"");
+			i = find_str(tmp, "\"id_str\":\"");
 			k = find_char(tmp + i + 1, '"');
 			t = strlen("https://twitter.com/adamcurry/statuses/");
 			p = (char *)xmalloc((t + k + 1) * sizeof(char));
@@ -61,7 +61,7 @@ t_tweet *parse_mem(char *mem){
 			free(p);
 
 			/* Now grab the actual tweet */
-			i += find_str(tmp + i, "\"text\":\"");
+			i = find_str(tmp, "\"text\":\"");
 			k = find_char(tmp + i + 1, '"');
 			parsed->text = (char *)xmalloc((k + 1) * sizeof(char));
 			memset(parsed->text, '\0', k + 1);
@@ -95,4 +95,4 @@ void make_get(char *dest, char *src){
 		strcat(dest, " HTTP/1.1\n");
 	}
 }
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

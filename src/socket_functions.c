@@ -66,4 +66,4 @@ void my_close(int *sockfd){
 	close(*sockfd);
 	*sockfd = -1;
 }
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

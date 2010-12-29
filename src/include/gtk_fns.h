@@ -30,4 +30,4 @@ void xstrcat(char *, char *);
 static void open_url(GtkWidget *, gpointer);
 
 #endif
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

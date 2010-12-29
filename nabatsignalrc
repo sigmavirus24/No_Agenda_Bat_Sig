@@ -2,3 +2,4 @@ jingle jingles/douchebag.mp3
 browser /usr/bin/firefox
 ssl off
 gtk on
+mp3player /usr/bin/mpg123

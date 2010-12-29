@@ -25,4 +25,4 @@ typedef struct s_tweet {
 } t_tweet;
 
 #endif
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

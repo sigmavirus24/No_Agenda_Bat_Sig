@@ -17,7 +17,7 @@
 #include "./include/bat_sig_rc.h"
 #define MAX_SIZE 1024
 
-void bat_sig_rc(char **jingle, char **browse, char *gtk, char *ssl){
+void bat_sig_rc(char **mp3player, char **jingle, char **browse, char *gtk, char *ssl){
 	FILE *rc;
 	char *s;
 	char *home;
@@ -49,6 +49,8 @@ void bat_sig_rc(char **jingle, char **browse, char *gtk, char *ssl){
 				if(!strncmp(s, "gtk", i))
 					if(!strcmp(s + i + 1, "on"))
 						*gtk = 1;
+				if(!strncmp(s, "mp3", i))
+					*mp3player = strdup(s + i + 1);
 			}
 		} else {
 			*jingle = NULL;
@@ -56,4 +58,4 @@ void bat_sig_rc(char **jingle, char **browse, char *gtk, char *ssl){
 		}
 	}
 }
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

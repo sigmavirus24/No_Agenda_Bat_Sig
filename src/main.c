@@ -29,36 +29,38 @@ int main(int argc, char **argv){
 	char *mem;
 	char *path_to_jingle;
 	char *browser;
+	char *mp3player;
 	char count;
 	char gtk_on;
 	char use_ssl;
 	char browser_set;
+	char mp3player_set;
 	char jingle_set;
-	char set_from_rc[2];
+	char set_from_rc[3];
 	int sockfd;
-#if 0
-	int r;
-#endif
 	struct addrinfo hints;
 	pid_t pid;
 
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 
-	jingle_set = browser_set = gtk_on = use_ssl = 0;
-	path_to_jingle = browser = get = (char *)0xDEADBEEF;
+	memset(set_from_rc, 0, 3);
+	mp3player_set = jingle_set = browser_set = gtk_on = use_ssl = 0;
+	mp3player = path_to_jingle = browser = get = (char *)0xDEADBEEF;
 
 	if(argc == 1){
 		/* Read from rc file */
-		set_from_rc[0] = 0;
-		set_from_rc[1] = 0;
 
-		bat_sig_rc(&path_to_jingle, &browser, &gtk_on, &use_ssl);
+		bat_sig_rc(&mp3player, &path_to_jingle, &browser, &gtk_on, &use_ssl);
 		if(path_to_jingle)
 			jingle_set = set_from_rc[0] = 1;
 		if(browser)
 			browser_set = set_from_rc[1] = 1;
+		if(mp3player)
+		    	mp3player_set = set_from_rc[2] = 1;
+#if 0
 		printf("%s\n%s\n%i\n%i", path_to_jingle, browser, (int)gtk_on, (int)use_ssl);
+#endif
 	} else {
 		/* Parse arguments */
 		if(!strcmp(argv[1], "--license")){
@@ -98,12 +100,21 @@ int main(int argc, char **argv){
 				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, see LICENSE for details\n");
 				return 0;
 			}
+
+			if(!strcmp(argv[(int)count], "--mp3player")){
+			    	mp3player_set = 1;
+				count++;
+				mp3player = argv[(int)count];
+			}
 		}
 	}
 
-	path_to_jingle = "jingles/douchebag.mp3";
+	if(!jingle_set)
+		path_to_jingle = "jingles/douchebag.mp3";
 	if(!browser_set)
 		browser = "/usr/bin/firefox";
+	if(!mp3player_set)
+	    	mp3player = "/usr/bin/mpg123";
 
 	if(use_ssl){
 #ifndef SIGMANATEST
@@ -190,7 +201,7 @@ int main(int argc, char **argv){
 				return 1;
 			}
 			if(pid == 0){
-				char *args[] = {"/usr/bin/mpg123", path_to_jingle, NULL};
+				char *args[] = {mp3player, path_to_jingle, "2&> /dev/null", NULL};
 				execvp(*args, args);
 				exit(EXIT_FAILURE);
 			} else {
@@ -219,13 +230,15 @@ int main(int argc, char **argv){
 }
 
 void help(void){
-	printf("usage:\n   ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ...]\n\t\t [-h | --help]\n\t\t [--license]\n\t\t[-v | --version]\n");
+	printf("usage:\n       ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ... | \n\t\t\t--mp3player ...]\n");
+	printf("\t\t [-h | --help]\n\t\t [--license]\n\t\t [-v | --version]\n");
 	printf("\t--gtk enables a GTK pop-up box.\n");
 	printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
-	printf("\t--browser followed by absolute path to\n\t\tthe executabe. i.e. /usr/bin/firefox\n");
-	printf("\t--jingle folowed by absolute path to\n\t\tthe mp3. i.e. ~/jingles/douchebag.mp3\n");
+	printf("\t--browser followed by the absolute path to the executabe. (i.e.\n\t\t /usr/bin/firefox)\n");
+	printf("\t--jingle folowed by the absolute path to the mp3. (i.e.\n\t\t ~/jingles/douchebag.mp3)\n");
+	printf("\t--mp3player followed by the absolute path.\n");
 	printf("\t-h and --help both print this message.\n");
 	printf("\t--license prints the license information.\n");
 	printf("\t-v and --version both print the version number.\n");
 }
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

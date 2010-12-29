@@ -23,4 +23,4 @@
 #define MAX_SIZE 2048
 
 #endif
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */

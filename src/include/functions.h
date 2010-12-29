@@ -41,7 +41,7 @@ int sockets_connect(struct addrinfo *, char *);
 #endif
 void sockets_request(int, char *, char *, char **, int);
 void my_close(int *);
-void bat_sig_rc(char **, char **, char *, char *);
+void bat_sig_rc(char **, char **, char **, char *, char *);
 
 #endif
-/* vim: set sw=4 ts=8: */
+/* vim: set sw=8 ts=8: */
