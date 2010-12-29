@@ -5,7 +5,7 @@ Q := @
 VERSION := 0.3
 # PREFIX := /usr/local
 
-TARGETS := nabatsignal
+TARGETS := nabatsignal test
 SRC := main.c socket_functions.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c bat_sig_rc.c
 OBJ := $(SRC:%c=%o)
 
@@ -15,20 +15,22 @@ all: $(TARGETS)
 
 nabatsignal: $(OBJ)
 	@echo "  [BUILD] $@"
-#$(Q)mv main.c include/
-#$(Q)sed "s/VERSION/${VERSION}/g" < include/main.c > main.c
-#$(Q)rm include/main.c
+#$(Q)mv main.c .main.c
+#$(Q)sed "s/VERSION/${VERSION}/g" < .main.c > main.c
+#$(Q)$(RM) .main.c
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
-	mv $@ ../
-# -lcurl necessary to compile, don't ask me why
+	$(Q)mv $@ ../
 
-test: $(OBJ)
+test: $(SRC)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@ -lcurl
-	mv $@ ../
+	$(Q)mv $@ ../
 
+.SILENT:
 clean:
-	$(RM) *.o $(TARGETS) ../$(TARGETS)
+	for i in $(TARGETS) ; do \
+		$(RM) *.o $$i ../$$i ; \
+	done
 
 %.o: %.c
 	@echo "  [CC] $@"

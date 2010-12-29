@@ -1,6 +1,5 @@
 PWD := $(shell pwd)
 MAKE := make -C
-MAKECLEAN := make clean
 DIRS := src/
 Q  := @
 CD := cd
@@ -15,10 +14,10 @@ all:
 .SILENT:
 clean:
 	for i in $(DIRS) ; do \
-		$(CD) $(PWD)/$$i && $(MAKECLEAN) ; \
+		$(MAKE) $(PWD)/$$i $@ ; \
 	done
 
 test:
 	for i in $(DIRS) ; do \
-		$(CD) $$i && make test ; \
+		$(MAKE) $(PWD)/$$i $@ ; \
 	done
