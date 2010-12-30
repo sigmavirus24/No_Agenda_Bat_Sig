@@ -42,6 +42,7 @@ int sockets_connect(struct addrinfo *, char *);
 #endif
 void sockets_request(int, char *, char *, char **, int);
 void my_close(int *);
+/* bat_sig_rc.c */
 void bat_sig_rc(t_setting *);
 
 #endif

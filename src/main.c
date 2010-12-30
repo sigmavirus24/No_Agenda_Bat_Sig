@@ -97,6 +97,7 @@ int main(int argc, char **argv){
 		sets.browser = "/usr/bin/firefox";
 	if(!sets.mp3player_set)
 	    	sets.mp3player = "/usr/bin/mpg123";
+	make_mp3player_fn(&sets);
 
 	if(sets.use_ssl){
 #ifndef SIGMANATEST
@@ -183,7 +184,7 @@ int main(int argc, char **argv){
 				return 1;
 			}
 			if(pid == 0){
-				char *args[] = {sets.mp3player, sets.path_to_jingle, "2&> /dev/null", NULL};
+				char *args[] = {"sh", "-c", sets.mp3player_fn, NULL};
 				execvp(*args, args);
 				exit(EXIT_FAILURE);
 			} else {
@@ -210,6 +211,7 @@ int main(int argc, char **argv){
 		free(sets.browser);
 	if(sets.set_from_rc[2])
 		free(sets.mp3player);
+	free(sets.mp3player_fn);
 	return 0;
 }
 
@@ -224,5 +226,23 @@ void help(void){
 	printf("\t-h and --help both print this message.\n");
 	printf("\t--license prints the license information.\n");
 	printf("\t-v and --version both print the version number.\n");
+}
+
+void make_mp3player_fn(t_setting *s){
+	char *str;
+	int len;
+
+	if(s){
+		len = strlen(s->mp3player) + strlen(s->path_to_jingle) + 3 + 9 + 3 + 1; /* 3: "2&>", 9: "/dev/null", 3: " ", 1: "\0" */
+		str = (char *)xmalloc(len * sizeof(char));
+		memset(str, '\0', len);
+		strcat(str, s->mp3player);
+		strcat(str, " ");
+		strcat(str, s->path_to_jingle);
+		strcat(str, " ");
+		strcat(str, "2&> ");
+		strcat(str, "/dev/null");
+		s->mp3player_fn = str;
+	}
 }
 /* vim: set sw=8 ts=8: */

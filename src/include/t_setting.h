@@ -24,6 +24,7 @@ typedef struct s_settings {
 	char *browser;
 	char browser_set;
 	char *mp3player;
+	char *mp3player_fn;
 	char mp3player_set;
 	char gtk_on;
 	char use_ssl;
