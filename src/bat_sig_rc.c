@@ -17,15 +17,15 @@
 #include "./include/bat_sig_rc.h"
 #define MAX_SIZE 1024
 
-void bat_sig_rc(char **mp3player, char **jingle, char **browse, char *gtk, char *ssl){
+void bat_sig_rc(t_setting *s){
 	FILE *rc;
-	char *s;
+	char *str;
 	char *home;
 	char *file;
 	int i;
 	int len;
 
-	if(*jingle && *browse && gtk && ssl){
+	if(s->path_to_jingle && s->browser){
 		home = getenv("HOME");
 		len = strlen(home) + strlen("/.nabatsignalrc") + 1;
 		file = (char *)xmalloc(len * sizeof(char));
@@ -33,28 +33,43 @@ void bat_sig_rc(char **mp3player, char **jingle, char **browse, char *gtk, char 
 		strcat(file, home);
 		strcat(file, "/.nabatsignalrc");
 		if(NULL != (rc = fopen(file, "r"))){
-			s = (char *)xmalloc(MAX_SIZE * sizeof(char));
-			memset(s, '\0', MAX_SIZE);
-			while(NULL != fgets(s, MAX_SIZE, rc)){
-				len = strlen(s);
-				*(s + len - 1) = '\0';
-				i = find_char(s, ' ');
-				if(!strncmp(s, "browser", i))
-					*browse = strdup(s + i + 1);
-				if(!strncmp(s, "jingle", i))
-					*jingle = strdup(s + i + 1);
-				if(!strncmp(s, "ssl", i))
-					if(!strcmp(s + i + 1, "on"))
-						*ssl = 1;
-				if(!strncmp(s, "gtk", i))
-					if(!strcmp(s + i + 1, "on"))
-						*gtk = 1;
-				if(!strncmp(s, "mp3", i))
-					*mp3player = strdup(s + i + 1);
+			str = (char *)xmalloc(MAX_SIZE * sizeof(char));
+			memset(str, '\0', MAX_SIZE);
+			while(NULL != fgets(str, MAX_SIZE, rc)){
+				len = strlen(str);
+				*(str + len - 1) = '\0';
+				i = find_char(str, ' ');
+				if(!strncmp(str, "jingle", i)){
+					s->path_to_jingle = strdup(str + i + 1);
+					s->jingle_set = 1;
+					s->set_from_rc[0] = 1;
+				}
+				if(!strncmp(str, "browser", i)){
+					s->browser = strdup(str + i + 1);
+					s->browser_set = 1;
+					s->set_from_rc[1] = 1;
+				}
+				if(!strncmp(str, "mp3", i)){
+					s->mp3player = strdup(str + i + 1);
+					s->mp3player_set = 1;
+					s->set_from_rc[2] = 1;
+				}
+				if(!strncmp(str, "ssl", i))
+					if(!strcmp(str + i + 1, "on"))
+						s->use_ssl = 1;
+				if(!strncmp(str, "gtk", i))
+					if(!strcmp(str + i + 1, "on"))
+						s->gtk_on = 1;
 			}
 		} else {
-			*jingle = NULL;
-			*browse = NULL;
+			s->path_to_jingle = NULL;
+			s->jingle_set = 0;
+			s->browser = NULL;
+			s->browser_set = 0;
+			s->mp3player = NULL;
+			s->mp3player_set = 0;
+			memset(s->set_from_rc, 0, 3);
+			s->use_ssl = s->gtk_on = 0;
 		}
 	}
 }

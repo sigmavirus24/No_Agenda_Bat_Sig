@@ -21,7 +21,7 @@ nabatsignal: $(OBJ)
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
 	$(Q)mv $@ ../
 
-test: $(SRC)
+test: $(OBJ)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@ -lcurl
 	$(Q)mv $@ ../

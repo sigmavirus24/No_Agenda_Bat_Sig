@@ -14,31 +14,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef __T_SETTINGS_H__
+#define __T_SETTINGS_H__
 
-#include <curl/curl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
-#include <stdio.h>
-#define MAX_SIZE 2048
-
-#include <gtk/gtk.h>
-#include <gtk/gtksignal.h>
-#include "t_tweet.h"
-#include "t_setting.h"
-
-#include "functions.h"
-
-void help(void);
-/* void parse_argv(char **, */
+typedef struct s_settings {
+	char set_from_rc[3];
+	char *path_to_jingle;
+	char jingle_set;
+	char *browser;
+	char browser_set;
+	char *mp3player;
+	char mp3player_set;
+	char gtk_on;
+	char use_ssl;
+} t_setting;
 
 #endif
 /* vim: set sw=8 ts=8: */

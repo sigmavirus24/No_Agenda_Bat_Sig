@@ -18,6 +18,7 @@
 #define __FUNCTIONS_H__
 
 #include "t_tweet.h"
+#include "t_setting.h"
 
 #ifdef __CURL_CURL_H
 CURLcode my_curl_easy(FILE *, 
@@ -41,7 +42,7 @@ int sockets_connect(struct addrinfo *, char *);
 #endif
 void sockets_request(int, char *, char *, char **, int);
 void my_close(int *);
-void bat_sig_rc(char **, char **, char **, char *, char *);
+void bat_sig_rc(t_setting *);
 
 #endif
 /* vim: set sw=8 ts=8: */

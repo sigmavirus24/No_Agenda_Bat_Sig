@@ -23,20 +23,12 @@ int main(int argc, char **argv){
 	GtkWidget *win;
 	t_tweet *info;
 	t_tweet *refr;
+	t_setting sets;
 	char *def; /* Default URL */
 	char *get;
 	char host[100];
 	char *mem;
-	char *path_to_jingle;
-	char *browser;
-	char *mp3player;
 	char count;
-	char gtk_on;
-	char use_ssl;
-	char browser_set;
-	char mp3player_set;
-	char jingle_set;
-	char set_from_rc[3];
 	int sockfd;
 	struct addrinfo hints;
 	pid_t pid;
@@ -44,23 +36,13 @@ int main(int argc, char **argv){
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 
-	memset(set_from_rc, 0, 3);
-	mp3player_set = jingle_set = browser_set = gtk_on = use_ssl = 0;
-	mp3player = path_to_jingle = browser = get = (char *)0xDEADBEEF;
+	memset(sets.set_from_rc, 0, 3);
+	sets.mp3player_set = sets.jingle_set = sets.browser_set = sets.gtk_on = sets.use_ssl = 0;
+	sets.mp3player = sets.path_to_jingle = sets.browser = get = (char *)0xDEADBEEF;
 
 	if(argc == 1){
 		/* Read from rc file */
-
-		bat_sig_rc(&mp3player, &path_to_jingle, &browser, &gtk_on, &use_ssl);
-		if(path_to_jingle)
-			jingle_set = set_from_rc[0] = 1;
-		if(browser)
-			browser_set = set_from_rc[1] = 1;
-		if(mp3player)
-		    	mp3player_set = set_from_rc[2] = 1;
-#if 0
-		printf("%s\n%s\n%i\n%i", path_to_jingle, browser, (int)gtk_on, (int)use_ssl);
-#endif
+		bat_sig_rc(&sets);
 	} else {
 		/* Parse arguments */
 		if(!strcmp(argv[1], "--license")){
@@ -70,7 +52,7 @@ int main(int argc, char **argv){
 
 		for(count = 1; count < argc; count++){
 			if(!strcmp(argv[(int)count], "--gtk")){
-				gtk_on = 1;
+				sets.gtk_on = 1;
 				gtk_init(&argc, &argv);
 			}
 
@@ -81,18 +63,18 @@ int main(int argc, char **argv){
 			}
 
 			if(!strcmp(argv[(int)count], "--ssl"))
-				use_ssl = 1;
+				sets.use_ssl = 1;
 
 			if(!strcmp(argv[(int)count], "--browser")){
-				browser_set = 1;
+				sets.browser_set = 1;
 				count++;
-				browser = argv[(int)count];
+				sets.browser = argv[(int)count];
 			}
 
 			if(!strcmp(argv[(int)count], "--jingle")){
-				jingle_set = 1;
+				sets.jingle_set = 1;
 				count++;
-				path_to_jingle = argv[(int)count];
+				sets.path_to_jingle = argv[(int)count];
 			}
 
 			if(!strcmp(argv[(int)count], "-v") ||
@@ -102,21 +84,21 @@ int main(int argc, char **argv){
 			}
 
 			if(!strcmp(argv[(int)count], "--mp3player")){
-			    	mp3player_set = 1;
+			    	sets.mp3player_set = 1;
 				count++;
-				mp3player = argv[(int)count];
+				sets.mp3player = argv[(int)count];
 			}
 		}
 	}
 
-	if(!jingle_set)
-		path_to_jingle = "jingles/douchebag.mp3";
-	if(!browser_set)
-		browser = "/usr/bin/firefox";
-	if(!mp3player_set)
-	    	mp3player = "/usr/bin/mpg123";
+	if(!sets.jingle_set)
+		sets.path_to_jingle = "jingles/douchebag.mp3";
+	if(!sets.browser_set)
+		sets.browser = "/usr/bin/firefox";
+	if(!sets.mp3player_set)
+	    	sets.mp3player = "/usr/bin/mpg123";
 
-	if(use_ssl){
+	if(sets.use_ssl){
 #ifndef SIGMANATEST
 		def = "https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1";
 #else
@@ -131,7 +113,7 @@ int main(int argc, char **argv){
 
 
 	mem = (char *)xmalloc(MAX_SIZE * sizeof(char));
-	if(use_ssl)
+	if(sets.use_ssl)
 		res = my_curl_easier(mem, def);
 	else {
 		memset(&hints, 0, sizeof(struct addrinfo));
@@ -164,7 +146,7 @@ int main(int argc, char **argv){
 		 * a new URL buffer and have it watch that. 
 		 * For testing, I'm using the one as of Tue Nov 9
 		 */
-		if(!use_ssl)
+		if(!sets.use_ssl)
 			make_get(get, info->refresh);
 
 		for(count = 0; count < MAX_ITER; count++){
@@ -172,7 +154,7 @@ int main(int argc, char **argv){
 
 			if(sockfd > 0){
 				memset(mem, '\0', MAX_SIZE); /* Clear out the memory so we do not get false information */
-				if(use_ssl)
+				if(sets.use_ssl)
 					res = my_curl_easier(mem, info->refresh);
 				else 
 					sockets_request(sockfd, get, host, &mem, MAX_SIZE);
@@ -201,14 +183,14 @@ int main(int argc, char **argv){
 				return 1;
 			}
 			if(pid == 0){
-				char *args[] = {mp3player, path_to_jingle, "2&> /dev/null", NULL};
+				char *args[] = {sets.mp3player, sets.path_to_jingle, "2&> /dev/null", NULL};
 				execvp(*args, args);
 				exit(EXIT_FAILURE);
 			} else {
-				if(!gtk_on)
+				if(!sets.gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
 				else {
-					win = make_window(refr, browser);
+					win = make_window(refr, sets.browser);
 					gtk_widget_show(win);
 					gtk_main();
 				}
@@ -222,10 +204,12 @@ int main(int argc, char **argv){
 	if(get != (char *)0xDEADBEEF)
 		free(get);
 	free(mem);
-	if(set_from_rc[0])
-		free(path_to_jingle); 
-	if(set_from_rc[1])
-		free(browser);
+	if(sets.set_from_rc[0])
+		free(sets.path_to_jingle); 
+	if(sets.set_from_rc[1])
+		free(sets.browser);
+	if(sets.set_from_rc[2])
+		free(sets.mp3player);
 	return 0;
 }
 
