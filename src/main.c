@@ -14,9 +14,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
+#define _GNU_SOURCE
+
+#include <getopt.h>
+#include <unistd.h>
 #include "./include/main.h"
+
 #define SLEEP_SECONDS 11
 #define MAX_ITER 700
+#define DBPTR 0xDEADBEEF
+
+extern int optind, opterr, optopt;
+extern char *optarg;
+
+static const struct option long_options[] = {
+	{"gtk",       no_argument,       0, 0},
+	{"ssl",       no_argument,       0, 0},
+	{"license",   no_argument,       0, 0},
+	{"version",   no_argument,       0, 'v'},
+	{"help",      no_argument,       0, 'h'},
+	{"browser",   required_argument, 0, 'b'},
+	{"jingle",    required_argument, 0, 'j'},
+	{"mp3player", required_argument, 0, 'm'},
+	{0, 0, 0, 0}
+};
+
+int parse_cmdline_opts(int argc, char *argv[], t_setting *sets);
+
 
 int main(int argc, char **argv){
 	CURLcode res;
@@ -30,6 +54,7 @@ int main(int argc, char **argv){
 	char *mem;
 	char count;
 	int sockfd;
+	int rv;
 	struct addrinfo hints;
 	pid_t pid;
 
@@ -37,65 +62,28 @@ int main(int argc, char **argv){
 	setbuf(stderr, NULL);
 
 	memset(sets.set_from_rc, 0, 3);
-	sets.mp3player_set = sets.jingle_set = sets.browser_set = sets.gtk_on = sets.use_ssl = 0;
-	sets.mp3player = sets.path_to_jingle = sets.browser = get = (char *)0xDEADBEEF;
+	sets.gtk_on = sets.use_ssl = 0;
+	sets.mp3player = sets.path_to_jingle = sets.browser = get = (char *)DBPTR;
 
 	if(argc == 1){
 		/* Read from rc file */
 		bat_sig_rc(&sets);
 	} else {
 		/* Parse arguments */
-		if(!strcmp(argv[1], "--license")){
-			printf("\"No Agenda Bat Signal\" Copyright (C) 2010\n\nThis program comes with ABSOLUTELY NO WARRANTY.\nFor details check LICENSE which can be found in the source, visit\n<http://www.gnu.org/licenses>. This is free software, and you are\nwelcome to redistribute it under certain conditions.\n");
+		rv = parse_cmdline_opts(argc, argv, &sets);
+		if(rv < 0) {
 			return 0;
 		}
-
-		for(count = 1; count < argc; count++){
-			if(!strcmp(argv[(int)count], "--gtk")){
-				sets.gtk_on = 1;
-				gtk_init(&argc, &argv);
-			}
-
-			if(!strcmp(argv[(int)count], "-h") || 
-					!strcmp(argv[(int)count], "--help")){
-				help();
-				return 0;
-			}
-
-			if(!strcmp(argv[(int)count], "--ssl"))
-				sets.use_ssl = 1;
-
-			if(!strcmp(argv[(int)count], "--browser")){
-				sets.browser_set = 1;
-				count++;
-				sets.browser = argv[(int)count];
-			}
-
-			if(!strcmp(argv[(int)count], "--jingle")){
-				sets.jingle_set = 1;
-				count++;
-				sets.path_to_jingle = argv[(int)count];
-			}
-
-			if(!strcmp(argv[(int)count], "-v") ||
-					!strcmp(argv[(int)count], "--help")){
-				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, see LICENSE for details\n");
-				return 0;
-			}
-
-			if(!strcmp(argv[(int)count], "--mp3player")){
-			    	sets.mp3player_set = 1;
-				count++;
-				sets.mp3player = argv[(int)count];
-			}
+		else if(rv > 0) { /* technically else not needed */
+			return 10; /* bad args */
 		}
 	}
 
-	if(!sets.jingle_set)
+	if(sets.path_to_jingle == (char*)DBPTR)
 		sets.path_to_jingle = "jingles/douchebag.mp3";
-	if(!sets.browser_set)
+	if(sets.browser == (char*)DBPTR)
 		sets.browser = "/usr/bin/firefox";
-	if(!sets.mp3player_set)
+	if(sets.mp3player == (char*)DBPTR)
 	    	sets.mp3player = "/usr/bin/mpg123";
 	make_mp3player_fn(&sets);
 
@@ -202,7 +190,7 @@ int main(int argc, char **argv){
 		free_t_tweet(info);
 	}
 
-	if(get != (char *)0xDEADBEEF)
+	if(get != (char *)DBPTR)
 		free(get);
 	free(mem);
 	if(sets.set_from_rc[0])
@@ -228,6 +216,94 @@ void help(void){
 	printf("\t-v and --version both print the version number.\n");
 }
 
+#define MINLEN(a,b) (a < b ? a : b)
+
+int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
+
+	int optindex = -1;
+	int c = 0, num_bad_args = 0, len = 0;
+
+	while((c = getopt_long(argc, argv, "+vhb:j:m:",
+					long_options, &optindex)) != -1) {
+		switch(c) {
+			case 0:
+				len = strlen(long_options[optindex].name);
+				if(strncmp("gtk", long_options[optindex].name,
+							MINLEN(4,len)) == 0) {
+					sets->gtk_on = 1;
+					len = 0; /* use temporarily */
+					gtk_init(&len, NULL);
+				}
+				else if(strncmp("ssl", long_options[optindex].name,
+							MINLEN(4,len)) == 0) {
+					sets->use_ssl = 1;
+				}
+				else if(strncmp("license", long_options[optindex].name,
+							MINLEN(8,len)) == 0) {
+					printf("\"No Agenda Bat Signal\" Copyright (C) 2010\n"
+							"\n"
+							"This program comes with ABSOLUTELY NO WARRANTY.\n"
+							"For details check LICENSE which can be found in "
+							"the source, visit\n"
+							"<http://www.gnu.org/licenses>. This is free "
+							"software, and you are\n"
+							"welcome to redistribute it under certain "
+							"conditions.\n");
+					return -1; /* trigger exit */
+				}
+				else {
+					return -1; /* error */
+				}
+				break;
+
+			case 'v':
+				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, "
+						"see LICENSE for details\n");
+				return -1; /* trigger exit */
+				break;
+
+			case 'h':
+				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, "
+						"see LICENSE for details\n");
+				help();
+				return -1; /* trigger exit */
+				break;
+
+			case 'b':
+				sets->browser = strdup(optarg);
+				break;
+
+			case 'j':
+				sets->path_to_jingle = strdup(optarg);
+				break;
+
+			case 'm':
+				sets->mp3player = strdup(optarg);
+				break;
+
+			default:
+				return -1; /* error */
+				break; /* never get here */
+		}
+		optindex = -1; /* reset the optindex */
+	}
+
+	/* see if anything else is hanging around */
+	if(optind < argc) {
+		fprintf(stderr, "Unknown option(s):");
+		while(optind < argc) {
+			fprintf(stderr, " %s", argv[optind++]);
+		}
+		fprintf(stderr, "\n");
+		return -1;
+	}
+
+	/* FIXME: verify argument values */
+
+	/* report bad args */
+	return num_bad_args;
+}
+
 void make_mp3player_fn(t_setting *s){
 	char *str;
 	int len;
@@ -245,4 +321,4 @@ void make_mp3player_fn(t_setting *s){
 		s->mp3player_fn = str;
 	}
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=4 ts=4: */
