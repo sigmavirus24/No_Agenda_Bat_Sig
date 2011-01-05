@@ -14,20 +14,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef __T_SETTINGS_H__
-#define __T_SETTINGS_H__
 
-typedef struct s_settings {
-	char set_from_rc[3];
-	char *path_to_jingle;
-	char jingle_set;
-	char *browser;
-	char browser_set;
-	char *mp3player;
-	char mp3player_set;
-	char gtk_on;
-	char use_ssl;
-} t_setting;
-
-#endif
-/* vim: set sw=8 ts=8: */
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <stdio.h>

@@ -38,8 +38,6 @@
 #include "functions.h"
 
 void help(void);
-void make_mp3player_fn(t_setting *);
-/* void parse_argv(char **, */
 
 #endif
 /* vim: set sw=8 ts=8: */
