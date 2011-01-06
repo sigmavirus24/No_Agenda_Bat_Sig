@@ -45,6 +45,74 @@ int dial(char *host, char *port){
 }
 
 void parse_srvr(char *in, char **list){
+	char *p;
+
+	if(in && *list){
+		/* As long as it's real and there are names on the list */
+	}
 }
 
+void zero(char *p){
+	memset(p, '\0', MAXLEN);
+}
+
+void make_command(char *dest, char *str, int i){
+	char *command;
+	static char *nick;
+
+	if(dest && str){
+		zero(dest);
+		switch(i){
+			case 0:
+				command = "PASS ";
+				break;
+			case 1:
+				command = "NICK ";
+				nick = str;
+				break;
+			case 2:
+				command = "USER ";
+				break;
+			default:
+				break;
+		}
+
+		strcat(dest, command);
+		if(i == 2){
+			strcat(dest, nick);
+			strcat(dest, " 0 * :");
+		}
+		strcat(dest, str);
+		strcat(dest, CRLF);
+	}
+}
+
+void wrap_send(int fd, char *buff){
+	int rv;
+	int len;
+
+	rv = 0;
+	len = strlen(buff);
+	while(rv < len)
+		rv += send(fd, tmp, len - rv, 0);
+}
+
+void identify(int fd, char *pass, char *nick, char *name){
+	char tmp[MAXLEN];
+
+	if(fd && pass && nick && name){
+		/* 1st: PASS yourpassword */
+		make_command(tmp, pass, 0);
+		wrap_send(fd, buff);
+		/* 2nd: NICK yournick */
+		make_command(tmp, nick, 1);
+		wrap_send(fd, buff);
+		/* 3rd: USER nick 0 * :realname */
+		make_command(tmp, name, 2);
+		wrap_send(fd, buff);
+	} else {
+		printf("Could not identify.\n");
+		exit(0);
+	}
+}
 /* vim: set ts=8 sw=8: */

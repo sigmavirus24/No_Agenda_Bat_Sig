@@ -1,29 +1,24 @@
-VERSION := 0.3.development
+VERSION := 0.1.development
 RM := rm -f
 CC := gcc
 CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0`
 Q := @
 # PREFIX := /usr/local
 
-TARGETS := nabatsignal test
-SRC := main.c socket_functions.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c bat_sig_rc.c
+TARGETS := nabot
+SRC := src/main.c src/utils.c
 OBJ := $(SRC:%c=%o)
 
 default: all
 
 all: $(TARGETS)
 
-nabatsignal: $(OBJ)
+nabot: $(OBJ)
 	@echo "  [BUILD] $@"
 #$(Q)mv main.c .main.c
 #$(Q)sed "s/VERSION/${VERSION}/g" < .main.c > main.c
 #$(Q)$(RM) .main.c
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
-	$(Q)mv $@ ../
-
-test: $(OBJ)
-	@echo "  [BUILD] $@"
-	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@ -lcurl
 	$(Q)mv $@ ../
 
 .SILENT:

@@ -43,7 +43,6 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets);
 
 
 int main(int argc, char **argv){
-	CURLcode res;
 	GtkWidget *win;
 	t_tweet *info;
 	t_tweet *refr;
@@ -102,7 +101,7 @@ int main(int argc, char **argv){
 
 	mem = (char *)xmalloc(MAX_SIZE * sizeof(char));
 	if(sets.use_ssl)
-		res = my_curl_easier(mem, def);
+		(void)my_curl_easier(mem, def);
 	else {
 		memset(&hints, 0, sizeof(struct addrinfo));
 		hints.ai_family = AF_UNSPEC;
@@ -143,7 +142,7 @@ int main(int argc, char **argv){
 			if(sockfd > 0){
 				memset(mem, '\0', MAX_SIZE); /* Clear out the memory so we do not get false information */
 				if(sets.use_ssl)
-					res = my_curl_easier(mem, info->refresh);
+					(void)my_curl_easier(mem, info->refresh);
 				else 
 					sockets_request(sockfd, get, host, &mem, MAX_SIZE);
 				my_close(&sockfd);
@@ -257,13 +256,13 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 				break;
 
 			case 'v':
-				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, "
+				printf("nabatsignal-"VERSION" (C) 2010 SigmaVirus24, "
 						"see LICENSE for details\n");
 				return -1; /* trigger exit */
 				break;
 
 			case 'h':
-				printf("nabatsignal-VERSION (C) 2010 SigmaVirus24, "
+				printf("nabatsignal-"VERSION" (C) 2010 SigmaVirus24, "
 						"see LICENSE for details\n");
 				help();
 				return -1; /* trigger exit */
@@ -303,4 +302,4 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 	/* report bad args */
 	return num_bad_args;
 }
-/* vim: set sw=4 ts=4: */
+/* vim: set sw=8 ts=8: */

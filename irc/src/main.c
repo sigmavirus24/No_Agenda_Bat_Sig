@@ -14,20 +14,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef __UTILS_H__
-#define __UTILS_H__
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <stdio.h>
-#include <string.h>
+#include "./include/main.h"
 
-#define MAXLEN 2048
-#define CRLF "\r\n"
+int main(int argc, char **argv){
+		char *nick, *pass, *name;
+		char *host, *port;
+		char **list;
+		int fd;
 
-int dial(char *, char *);
-void parse_srvr(char *, char **);
-void identify(int, char *, char *, char *);
+		setbuf(stdout, NULL);
+		setbuf(stderr, NULL);
+		if(argc > 1){
+				printf("No Agenda IRC Bot Version "VERSION": no arguments allowed. See ~/.nabotrc.\n");
+				return 0;
+		}
 
-#endif
+		fd = dial(host, port);
+		if(fd){
+				if(SIG_ERR == signal(SIGPIPE, borked_pipe)){
+						printf("Cannot set up signal handler.\n");
+						close(fd);
+						return 0;
+				}
+				identify(fd, pass, nick, name);
+		} else {
+				printf("No Agenda IRC Bot Version "VERSION": not able to connect to "host" at "port".\n");
+				return 0;
+		}
+		return 0;
+}
+
+void borked_pipe(int signo){
+		printf("Connection with network broken.");
+		exit(0);
+}
 /* vim: set ts=8 sw=8: */
