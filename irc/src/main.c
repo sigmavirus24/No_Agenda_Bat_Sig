@@ -19,8 +19,10 @@
 int main(int argc, char **argv){
 		char *nick, *pass, *name;
 		char *host, *port;
-		char **list;
+		char **auth_list;
+		char **channels;
 		int fd;
+		int pid;
 
 		setbuf(stdout, NULL);
 		setbuf(stderr, NULL);
@@ -39,6 +41,11 @@ int main(int argc, char **argv){
 				identify(fd, pass, nick, name);
 		} else {
 				printf("No Agenda IRC Bot Version "VERSION": not able to connect to "host" at "port".\n");
+				return 0;
+		}
+		if(0 > (pid = fork())){
+				printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
+				close(fd);
 				return 0;
 		}
 		return 0;

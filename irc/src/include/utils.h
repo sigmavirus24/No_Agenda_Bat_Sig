@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 
+void exit(int);
+
 #define MAXLEN 2048
 #define CRLF "\r\n"
 

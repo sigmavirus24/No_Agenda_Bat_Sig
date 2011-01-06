@@ -34,7 +34,7 @@ int dial(char *host, char *port){
 	for(p = res; p; p = p->ai_next){
 		if(0 > (sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
 			continue;
-		if(0 > connect(sockfd, p->ai_addr, p->ai_addrlen)){
+		if(0 > connect(sock, p->ai_addr, p->ai_addrlen)){
 			close(sock);
 			sock = -1;
 		} else
@@ -94,7 +94,7 @@ void wrap_send(int fd, char *buff){
 	rv = 0;
 	len = strlen(buff);
 	while(rv < len)
-		rv += send(fd, tmp, len - rv, 0);
+		rv += send(fd, buff, len - rv, 0);
 }
 
 void identify(int fd, char *pass, char *nick, char *name){
@@ -103,13 +103,13 @@ void identify(int fd, char *pass, char *nick, char *name){
 	if(fd && pass && nick && name){
 		/* 1st: PASS yourpassword */
 		make_command(tmp, pass, 0);
-		wrap_send(fd, buff);
+		wrap_send(fd, tmp);
 		/* 2nd: NICK yournick */
 		make_command(tmp, nick, 1);
-		wrap_send(fd, buff);
+		wrap_send(fd, tmp);
 		/* 3rd: USER nick 0 * :realname */
 		make_command(tmp, name, 2);
-		wrap_send(fd, buff);
+		wrap_send(fd, tmp);
 	} else {
 		printf("Could not identify.\n");
 		exit(0);

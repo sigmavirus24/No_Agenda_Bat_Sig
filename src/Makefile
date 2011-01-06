@@ -1,7 +1,7 @@
 VERSION := 0.3.development
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0`
+CFLAGS := -ggdb3 -Werror -Wall `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -DVERSION=\"$(VERSION)\" 
 Q := @
 # PREFIX := /usr/local
 

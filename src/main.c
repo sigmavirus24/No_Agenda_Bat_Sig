@@ -45,7 +45,7 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets);
 int main(int argc, char **argv){
 	GtkWidget *win;
 	t_tweet *info;
-	t_tweet *refr;
+	t_tweet *refreshed;
 	t_setting sets;
 	char *def; /* Default URL */
 	char *get;
@@ -83,7 +83,7 @@ int main(int argc, char **argv){
 	if(sets.browser == (char*)DBPTR)
 		sets.browser = "/usr/bin/firefox";
 	if(sets.mp3player == (char*)DBPTR)
-	    	sets.mp3player = "/usr/bin/mpg123";
+	    sets.mp3player = "/usr/bin/mpg123";
 
 	if(sets.use_ssl){
 #ifndef SIGMANATEST
@@ -149,9 +149,9 @@ int main(int argc, char **argv){
 
 				/* Returns "{\"results\":[]" if there is nothing. 
 				 * Can run a while loop until this does not match. */
-				refr = parse_mem(mem);
+				refreshed = parse_mem(mem);
 
-				if(refr)
+				if(refreshed)
 					break;
 
 				(void)sleep(SLEEP_SECONDS);
@@ -161,7 +161,7 @@ int main(int argc, char **argv){
 			}
 		}
 
-		if(!refr)
+		if(!refreshed)
 			printf("No bat signal was sent.\n");
 		else{
 			/* fork() and exec Jingle */
@@ -177,15 +177,16 @@ int main(int argc, char **argv){
 				exit(EXIT_FAILURE);
 			} else {
 				if(!sets.gtk_on)
-					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refr->date, refr->tweet_url, refr->text);
+					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refreshed->date, refreshed->tweet_url, refreshed->text);
 				else {
-					win = make_window(refr, sets.browser);
+					gtk_init(&argc, &argv);
+					win = make_window(refreshed, sets.browser);
 					gtk_widget_show(win);
 					gtk_main();
 				}
 				(void)wait(NULL);
 			}
-			free_t_tweet(refr);
+			free_t_tweet(refreshed);
 		}
 		free_t_tweet(info);
 	}
@@ -231,7 +232,6 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 							MINLEN(4,len)) == 0) {
 					sets->gtk_on = 1;
 					len = 0; /* use temporarily */
-					gtk_init(&len, NULL);
 				}
 				else if(strncmp("ssl", long_options[optindex].name,
 							MINLEN(4,len)) == 0) {

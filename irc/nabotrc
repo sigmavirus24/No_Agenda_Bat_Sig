@@ -4,4 +4,4 @@ realname No Agenda IRC Bot
 server irc.noagendachat.com
 port 6667
 channels #NoAgenda #linux-bat-signal #stop.whoising.me.ffs.thx.pls
-users Sigma MrOil
+auth_users Sigma MrOil
