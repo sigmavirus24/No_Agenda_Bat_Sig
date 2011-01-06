@@ -24,7 +24,7 @@ int sockets_connect(struct addrinfo *hints, char *def){
 	/* Not the actual sockfd yet, just using it until I get the sockfd */
 	if(0 != getaddrinfo(def, "80", hints, &ret)){
 		printf("Getaddrinfo error.\n");
-		return 1;
+		exit(1);
 	}
 
 	for(p = ret; p; p = p->ai_next){

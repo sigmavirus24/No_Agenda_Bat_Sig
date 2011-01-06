@@ -1,1 +1,8 @@
 Requested by MrOil. No Agenda IRC bot, to alert multiple channels of the start of the show
+
+Required:
+* Ability to respond to CTCP
+* Ability to accept private messages from list of nicks
+* Ability to /notice channels required
+* Ability to quit by either public or private message from list of nicks
+* Ability to background after starting from commandline

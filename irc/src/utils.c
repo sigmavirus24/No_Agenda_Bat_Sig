@@ -17,3 +17,34 @@
 #define __GNU_SOURCE
 
 #include "./include/utils.h"
+
+int dial(char *host, char *port){
+	struct addrinfo hints;
+	struct addrinfo *p, *res;
+	int sock;
+
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	if(0 != getaddrinfo(host, port, &hints, &res)){
+		printf("Can not retrieve server information.\n");
+		return -1;
+	}
+
+	for(p = res; p; p = p->ai_next){
+		if(0 > (sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
+			continue;
+		if(0 > connect(sockfd, p->ai_addr, p->ai_addrlen)){
+			close(sock);
+			sock = -1;
+		} else
+			break;
+	}
+	
+	return sock;
+}
+
+void parse_srvr(char *in, char **list){
+}
+
+/* vim: set ts=8 sw=8: */

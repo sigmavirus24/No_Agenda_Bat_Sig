@@ -14,8 +14,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-
+#ifndef __UTILS_H__
+#define __UTILS_H__
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <stdio.h>
+
+int dial(char *, char *);
+void parse_srvr(char *, char **);
+
+#endif
+/* vim: set ts=8 sw=8: */
