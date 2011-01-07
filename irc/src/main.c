@@ -17,6 +17,7 @@
 #include "./include/main.h"
 
 int main(int argc, char **argv){
+   FILE *server;
    int fd;
    int pid;
    char rc[128];
@@ -37,6 +38,9 @@ int main(int argc, char **argv){
    }
    strcat(rc, "/.nabotrc");
    read_rc(rc, &se);
+#ifdef DEBUG
+   printf("SETTINGS %s %s %s %s %s %s %s\n", se.pass, se.nick, se.realname, se.serv, se.port, se._chans, se._ausers);
+#endif
 
    fd = dial(se.serv, se.port);
    if(fd > 0){
@@ -46,20 +50,29 @@ int main(int argc, char **argv){
          clean_up(&se);
          return 0;
       }
-      identify(fd, &se);
-#if 0
-      memset(recvd, '\0', MAXLEN << 1);
-      for(pid = 0; pid < 5; pid++){
-         recv(fd, recvd, MAXLEN << 1, 0);
-         parse_srvr(recvd, se.ausers, fd);
+      if(NULL == (server = fdopen(fd, "r+"))){
+         printf("Cannot make file pointer.\n");
+         clean_up(&se);
+         close(fd);
+         return 0;
       }
+      memset(recvd, '\0', MAXLEN << 1);
+      for(pid = 0; pid < 2; pid++){
+         fgets(recvd, MAXLEN << 1, server);
+#ifdef DEBUG
+         printf("<<< %s", recvd);
 #endif
+         parse_srvr(recvd, &se, fd);
+         memset(recvd, '\0', MAXLEN << 1);
+      }
    } else {
       printf("No Agenda IRC Bot Version "VERSION": not able to connect to %s at %s.\n", se.serv, se.port);
       clean_up(&se);
       return 0;
    }
-   join_chans(fd, &se);
+   identify(fileno(server), &se);
+   sleep(1);
+   join_chans(fileno(server), &se);
 #if 0
    if(0 > (pid = fork())){
       printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
@@ -71,10 +84,12 @@ int main(int argc, char **argv){
 #endif
       /* Done with pid, can use now for recv()'s and send()'s */
       memset(recvd, '\0', MAXLEN << 1);
-      while(1){
-         pid = recv(fd, recvd, MAXLEN << 1, 0);
-         recvd[pid] = '\0';
-         parse_srvr(recvd, se.ausers, fd);
+      while(fgets(recvd, MAXLEN << 1, server)){
+#ifdef DEBUG
+         printf("<<< %s", recvd);
+#endif
+         parse_srvr(recvd, &se, fd);
+         memset(recvd, '\0', MAXLEN << 1);
       }
 #if 0
    }
@@ -96,8 +111,9 @@ char **parse(char *str, char ch){
    if(i > 0){
       tmp = (char **)xmalloc((i + 1) * sizeof(char *));
       p = str;
-      for(cnt = i = 0; 0 < (i = find(p, ',')); p += i, cnt++)
+      for(cnt = i = 0; 0 < (i = find(p, ',')); p += i + 1, cnt++)
          *(tmp + cnt) = strndup(p, i);
+      *(tmp + cnt++) = strdup(p);
       *(tmp + cnt) = NULL;
    } else {
       tmp = (char **)xmalloc(2 * sizeof(char *));
@@ -136,7 +152,7 @@ void read_rc(char *file, t_setting *se){
 
       /* Parse out channels and authorized users */
       se->chans = parse(se->_chans, ',');
-      se->ausers = parse(se->_ausers, ' ');
+      se->ausers = parse(se->_ausers, ',');
    }
 }
 /* vim: set ts=3 sw=3 et: */

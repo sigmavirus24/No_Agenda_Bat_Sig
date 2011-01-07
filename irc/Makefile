@@ -1,7 +1,7 @@
 VERSION := 0.1.development
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0`
+CFLAGS := -ggdb3 -Werror -Wall -DDEBUG -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0`
 Q := @
 # PREFIX := /usr/local
 
@@ -15,16 +15,13 @@ all: $(TARGETS)
 
 nabot: $(OBJ)
 	@echo "  [BUILD] $@"
-#$(Q)mv main.c .main.c
-#$(Q)sed "s/VERSION/${VERSION}/g" < .main.c > main.c
-#$(Q)$(RM) .main.c
-	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
+	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@
 	$(Q)mv $@ ../
 
 .SILENT:
 clean:
 	for i in $(TARGETS) ; do \
-		$(RM) *.o $$i ../$$i ; \
+		$(RM) $(OBJ) $$i ../$$i ; \
 	done
 
 %.o: %.c

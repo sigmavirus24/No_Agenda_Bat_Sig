@@ -17,10 +17,12 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+#include <stdio.h>
 #include <signal.h>
 #include <string.h>
 
 int fork(void);
+int sleep(int);
 
 #include "t_setting.h"
 #include "utils.h"

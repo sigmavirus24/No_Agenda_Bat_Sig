@@ -32,7 +32,7 @@ int close(int);
 
 #include "t_setting.h"
 int dial(char *, char *);
-void parse_srvr(char *, char **, int);
+void parse_srvr(char *, t_setting *, int);
 void identify(int, t_setting *);
 void join_chans(int, t_setting *);
 void wrap_send(int, char *);
