@@ -60,6 +60,9 @@ void bat_sig_rc(t_setting *s){
 				if(!strncmp(str, "gtk", i))
 					if(!strcmp(str + i + 1, "on"))
 						s->gtk_on = 1;
+				if(!strncmp(str, "irc", i))
+					if(!strcmp(str + i + 1, "on"))
+						s->irc = 1;
 			}
 		} else {
 			s->path_to_jingle = NULL;

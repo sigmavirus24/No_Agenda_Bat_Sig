@@ -1,4 +1,4 @@
-VERSION := 0.3.development
+VERSION := 0.3.development.2
 RM := rm -f
 CC := gcc
 CFLAGS := -ggdb3 -Werror -Wall `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -DVERSION=\"$(VERSION)\" 
@@ -15,9 +15,6 @@ all: $(TARGETS)
 
 nabatsignal: $(OBJ)
 	@echo "  [BUILD] $@"
-#$(Q)mv main.c .main.c
-#$(Q)sed "s/VERSION/${VERSION}/g" < .main.c > main.c
-#$(Q)$(RM) .main.c
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
 	$(Q)mv $@ ../
 

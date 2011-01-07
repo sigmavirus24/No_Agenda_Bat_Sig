@@ -27,6 +27,7 @@ typedef struct s_settings {
 	char mp3player_set;
 	char gtk_on;
 	char use_ssl;
+	char irc;
 } t_setting;
 
 #endif

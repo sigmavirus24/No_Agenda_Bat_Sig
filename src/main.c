@@ -36,6 +36,7 @@ static const struct option long_options[] = {
 	{"browser",   required_argument, 0, 'b'},
 	{"jingle",    required_argument, 0, 'j'},
 	{"mp3player", required_argument, 0, 'm'},
+	{"irc",	      no_argument,	 0, 0},
 	{0, 0, 0, 0}
 };
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv){
 	setbuf(stderr, NULL);
 
 	memset(sets.set_from_rc, 0, 3);
-	sets.gtk_on = sets.use_ssl = 0;
+	sets.irc = sets.gtk_on = sets.use_ssl = 0;
 	sets.mp3player = sets.path_to_jingle = sets.browser = get = (char *)DBPTR;
 
 	if(argc == 1){
@@ -176,6 +177,8 @@ int main(int argc, char **argv){
 				execvp(*args, args);
 				exit(EXIT_FAILURE);
 			} else {
+				if(sets.irc)
+					notice(refreshed);
 				if(!sets.gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refreshed->date, refreshed->tweet_url, refreshed->text);
 				else {
@@ -237,6 +240,10 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 				else if(strncmp("ssl", long_options[optindex].name,
 							MINLEN(4,len)) == 0) {
 					sets->use_ssl = 1;
+				}
+				else if(strncmp("irc", long_options[optindex].name,
+							MINLEN(4,len)) == 0) {
+					sets->irc = 1;
 				}
 				else if(strncmp("license", long_options[optindex].name,
 							MINLEN(8,len)) == 0) {
@@ -303,4 +310,4 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 	/* report bad args */
 	return num_bad_args;
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */

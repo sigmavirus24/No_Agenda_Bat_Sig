@@ -41,9 +41,10 @@ GtkWidget *make_window(t_tweet *, char *);
 int sockets_connect(struct addrinfo *, char *);
 #endif
 void sockets_request(int, char *, char *, char **, int);
+void notice(t_tweet *);
 void my_close(int *);
 /* bat_sig_rc.c */
 void bat_sig_rc(t_setting *);
 
 #endif
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */

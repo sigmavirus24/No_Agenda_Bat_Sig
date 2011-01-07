@@ -66,4 +66,9 @@ void my_close(int *sockfd){
 	close(*sockfd);
 	*sockfd = -1;
 }
-/* vim: set sw=8 ts=8: */
+
+void notice(t_tweet *tweet){
+	int sock;
+	struct addrinfo hints, *res, *p;
+}
+/* vim: set sw=3 ts=3 et: */
