@@ -47,11 +47,19 @@ int main(int argc, char **argv){
          return 0;
       }
       identify(fd, &se);
+#if 0
+      memset(recvd, '\0', MAXLEN << 1);
+      for(pid = 0; pid < 5; pid++){
+         recv(fd, recvd, MAXLEN << 1, 0);
+         parse_srvr(recvd, se.ausers, fd);
+      }
+#endif
    } else {
       printf("No Agenda IRC Bot Version "VERSION": not able to connect to %s at %s.\n", se.serv, se.port);
       clean_up(&se);
       return 0;
    }
+   join_chans(fd, &se);
 #if 0
    if(0 > (pid = fork())){
       printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
@@ -62,9 +70,10 @@ int main(int argc, char **argv){
    if(0 == pid){
 #endif
       /* Done with pid, can use now for recv()'s and send()'s */
-      memset(recvd, '\0', 4096);
+      memset(recvd, '\0', MAXLEN << 1);
       while(1){
-         pid = recv(fd, recvd, 4096, 0);
+         pid = recv(fd, recvd, MAXLEN << 1, 0);
+         recvd[pid] = '\0';
          parse_srvr(recvd, se.ausers, fd);
       }
 #if 0
@@ -90,8 +99,11 @@ char **parse(char *str, char ch){
       for(cnt = i = 0; 0 < (i = find(p, ',')); p += i, cnt++)
          *(tmp + cnt) = strndup(p, i);
       *(tmp + cnt) = NULL;
-   } else
-      *tmp = str;
+   } else {
+      tmp = (char **)xmalloc(2 * sizeof(char *));
+      *tmp = strdup(str);
+      *(tmp + 1) = NULL;
+   }
    return tmp;
 }
 

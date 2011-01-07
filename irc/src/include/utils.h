@@ -34,6 +34,7 @@ int close(int);
 int dial(char *, char *);
 void parse_srvr(char *, char **, int);
 void identify(int, t_setting *);
+void join_chans(int, t_setting *);
 void wrap_send(int, char *);
 char *slice(char *, char);
 int find(char *, char);

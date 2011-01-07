@@ -48,51 +48,57 @@ void parse_srvr(char *in, char **list, int fd){
    char *n;
    char *t;
    char *s;
+   char *next;
    char tmp[128];
 
    if(in && *in && *list){
-      memset(tmp, '\0', 128);
-      /* As long as it's real and there are names on the list */
-      n = in;
-      if(*n == ':'){
-         in = slice(++n, ' '); /* Get slice after user@servername */
-         if(*in == 0)
-            return;
-         slice(n, '!'); /* Get username */
-      }
-      slice(in, '\r'); /* Terminate the \r\n and ignore that part */
-      p = slice(in, ' ');
-      t = slice(p, ':');
-      for(s = p + strlen(p) - 1; s > p && isspace(*s); s--)
-         ;
-      *(s + 1) = '\0';
-
-      if(!strcmp(in, "PONG")) /* Server is replying to a PING, ignore */
-         return;
-      if(!strcmp(in, "PING")){
-         sprintf(tmp, "PONG %s", t);
-         wrap_send(fd, tmp);
-         return;
-      }
-      if(!strcmp(in, "PRIVMSG")){
-         for(; *list && strcmp(*list, n); list++)
+      next = in;
+      while(next && *next){
+         memset(tmp, '\0', 128);
+         /* As long as it's real and there are names on the list */
+         n = in;
+         if(*n == ':'){
+            in = slice(++n, ' '); /* Get slice after user@servername */
+            if(*in == 0)
+               return;
+            slice(n, '!'); /* Get username */
+         }
+         next = slice(in, '\r'); /* Terminate the \r\n and ignore that part */
+         next++;
+         p = slice(in, ' ');
+         t = slice(p, ':');
+         for(s = p + strlen(p) - 1; s > p && isspace(*s); s--)
             ;
-         if(!(*list))
+         *(s + 1) = '\0';
+
+         if(!strcmp(in, "PONG")) /* Server is replying to a PING, ignore */
             return;
-         /* commands to be determined later */
-      } else {
-         if(*t == '.'){
-            t++;
-            n = slice(t, ' ');
-            if(!strcmp(n, "test")){
-               sprintf("PRIVMSG %s Hello World\r\n", p);
-               wrap_send(fd, p);
-            }
-            if(!strcmp(n, "quit")){
-               wrap_send(fd, "QUIT Goodnight slaves!\r\n");
-               exit(0);
+         if(!strcmp(in, "PING")){
+            sprintf(tmp, "PONG %s", t);
+            wrap_send(fd, tmp);
+            return;
+         }
+         if(!strcmp(in, "PRIVMSG")){
+            for(; *list && strcmp(*list, n); list++)
+               ;
+            if(!(*list))
+               return;
+            /* commands to be determined later */
+         } else {
+            if(*t == '.'){
+               t++;
+               n = slice(t, ' ');
+               if(!strcmp(n, "test")){
+                  sprintf("PRIVMSG %s Hello World\r\n", p);
+                  wrap_send(fd, p);
+               }
+               if(!strcmp(n, "quit")){
+                  wrap_send(fd, "QUIT Goodnight slaves!\r\n");
+                  exit(0);
+               }
             }
          }
+         in = next;
       }
    }
 }
@@ -135,7 +141,7 @@ void identify(int fd, t_setting *se){
       wrap_send(fd, tmp);
 #if 0
       /* 4th: JOIN #chan1,#chan2,#chan3 key1,key2,key3 */
-      sprintf(tmp, "JOIN %s", se->_chans);
+      sprintf(tmp, "JOIN %s\r\n", se->_chans);
 #ifdef DEBUG
       printf("%s", tmp);
 #endif
@@ -146,6 +152,18 @@ void identify(int fd, t_setting *se){
       exit(0);
    }
 }
+
+#if 1
+void join_chans(int fd, t_setting *se){
+   char tmp[MAXLEN];
+   
+   if(fd && se->_chans){
+      zero(tmp);
+      sprintf(tmp, "JOIN %s\r\n", se->_chans);
+      wrap_send(fd, tmp);
+   }
+}
+#endif
 
 int find(char *str, char ch){
    int i = -1;
