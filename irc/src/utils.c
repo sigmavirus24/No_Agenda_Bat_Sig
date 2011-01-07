@@ -15,15 +15,21 @@
  * See LICENSE file for license details.
  */
 #include "./include/utils.h"
+#ifdef DEBUG
+#include <errno.h>
+#endif
 
 int dial(char *host, char *port){
    struct addrinfo hints;
    struct addrinfo *p, *res;
    int sock;
+   int i;
 
    memset(&hints, 0, sizeof(struct addrinfo));
    hints.ai_family = AF_UNSPEC;
    hints.ai_socktype = SOCK_STREAM;
+   if(!host)
+      hints.ai_flags = AI_PASSIVE; /* use my IP */
 
    if(0 != getaddrinfo(host, port, &hints, &res)){
       printf("Can not retrieve server information.\n");
@@ -33,11 +39,61 @@ int dial(char *host, char *port){
    for(p = res; p; p = p->ai_next){
       if(0 > (sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
          continue;
-      if(0 > connect(sock, p->ai_addr, p->ai_addrlen)){
-         close(sock);
-         sock = -1;
-      } else
-         break;
+
+      if(host){
+         if(0 > connect(sock, p->ai_addr, p->ai_addrlen)){
+            close(sock);
+            sock = -1;
+         } else
+            break;
+      } else {
+         i = 1;
+         if(0 > setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &i, 
+                  sizeof(int))){
+            printf("Cannot set listening socket options.\n");
+            sock = -1;
+            continue;
+         }
+         if(0 > bind(sock, p->ai_addr, p->ai_addrlen)){
+            close(sock);
+            printf("Cannot bind listening socket.\n");
+            continue;
+         }
+      }
+   }
+   freeaddrinfo(res);
+
+   if(!host && sock > 0){
+      if(-1 == listen(sock, 3)){
+         /* Shouldn't have more than 1 trying to connect
+          * at once, so three is enough.
+          */
+#ifdef DEBUG
+         i = errno;
+         switch(i){
+            case EADDRINUSE: 
+               printf("EADDRINUSE.\n"); 
+               break;
+            case EBADF:
+               printf("EBADF.\n");
+               break;
+            case ENOTSOCK:
+               printf("ENOTSOCK.\n");
+               break;
+            case EOPNOTSUPP:
+               printf("EOPNOTSUPP.\n");
+               break;
+            case 0:
+               printf("No error.\n");
+               break;
+            default:
+               printf("Who knows?! %d, %d\n", i, sock);
+               break;
+         }
+#endif
+         printf("Cannot listen on local socket.\n");
+         exit(1);
+      }
    }
 
    return sock;

@@ -19,6 +19,7 @@
 int main(int argc, char **argv){
    FILE *server;
    int fd;
+   int localfd;
    int pid;
    char rc[128];
    char recvd[4096];
@@ -36,8 +37,10 @@ int main(int argc, char **argv){
       printf("No Agenda IRC Bot Version "VERSION": unable to get $HOME.\n");
       return 0;
    }
+
    strcat(rc, "/.nabotrc");
    read_rc(rc, &se);
+
 #ifdef DEBUG
    printf("SETTINGS %s %s %s %s %s %s %s\n", se.pass, se.nick, se.realname, se.serv, se.port, se._chans, se._ausers);
 #endif
@@ -50,19 +53,21 @@ int main(int argc, char **argv){
          clean_up(&se);
          return 0;
       }
+
       if(NULL == (server = fdopen(fd, "r+"))){
          printf("Cannot make file pointer.\n");
          clean_up(&se);
          close(fd);
          return 0;
       }
+
       memset(recvd, '\0', MAXLEN << 1);
       for(pid = 0; pid < 2; pid++){
          fgets(recvd, MAXLEN << 1, server);
 #ifdef DEBUG
          printf("<<< %s", recvd);
 #endif
-         parse_srvr(recvd, &se, fd);
+         parse_srvr(recvd, &se, fileno(server));
          memset(recvd, '\0', MAXLEN << 1);
       }
    } else {
@@ -70,20 +75,20 @@ int main(int argc, char **argv){
       clean_up(&se);
       return 0;
    }
+
    identify(fileno(server), &se);
    sleep(1);
    join_chans(fileno(server), &se);
-#if 0
+
    if(0 > (pid = fork())){
       printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
-      close(fd);
+      fclose(server);
       clean_up(&se);
       return 0;
    }
+
    if(0 == pid){
-#endif
       /* Done with pid, can use now for recv()'s and send()'s */
-      memset(recvd, '\0', MAXLEN << 1);
       while(fgets(recvd, MAXLEN << 1, server)){
 #ifdef DEBUG
          printf("<<< %s", recvd);
@@ -91,9 +96,41 @@ int main(int argc, char **argv){
          parse_srvr(recvd, &se, fd);
          memset(recvd, '\0', MAXLEN << 1);
       }
-#if 0
+   } else {
+      sleep(2);
+      localfd = dial(NULL, "33333");
+      if(!fork()){/* Handles accept()'s from bat signal */
+         int bsfd;
+         socklen_t saddrlen;
+         char **p;
+         char tmp[1028];
+         struct sockaddr_in batsig;
+
+         saddrlen = sizeof(struct sockaddr_in);
+
+         while(1){
+            if(0 > (bsfd = accept(localfd, (struct sockaddr*)&batsig,
+                        &saddrlen))){
+               printf("Error accepting batsignal connection.\n");
+               clean_up(&se);
+               return -1;
+            }
+
+            if(0 > (pid = recv(bsfd, recvd, MAXLEN << 1, 0))){
+               printf("Error receiving batsignal.\n");
+            }
+            *(recvd + pid) = '\0';
+
+            memset(tmp, '\0', 1028);
+            for(p = se.chans ; *p; p++){
+               sprintf(tmp, "NOTICE %s %s\r\n", *p, recvd);
+               wrap_send(fileno(server), tmp);
+               memset(tmp, '\0', 1028);
+            }
+            close(bsfd);
+         }
+      }
    }
-#endif
    return 0;
 }
 
