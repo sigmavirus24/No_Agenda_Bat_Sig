@@ -20,16 +20,26 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 
 void exit(int);
+int close(int);
 
 #define MAXLEN 2048
 #define CRLF "\r\n"
 
+#include "t_setting.h"
 int dial(char *, char *);
-void parse_srvr(char *, char **);
-void identify(int, char *, char *, char *);
+void parse_srvr(char *, char **, int);
+void identify(int, t_setting *);
+void wrap_send(int, char *);
+char *slice(char *, char);
+int find(char *, char);
+int count(char *, char);
+void *xmalloc(int);
+void clean_up(t_setting *);
 
 #endif
-/* vim: set ts=8 sw=8: */
+/* vim: set ts=3 sw=3 et: */

@@ -17,42 +17,114 @@
 #include "./include/main.h"
 
 int main(int argc, char **argv){
-		char *nick, *pass, *name;
-		char *host, *port;
-		char **auth_list;
-		char **channels;
-		int fd;
-		int pid;
+   int fd;
+   int pid;
+   char rc[128];
+   char recvd[4096];
+   t_setting se;
 
-		setbuf(stdout, NULL);
-		setbuf(stderr, NULL);
-		if(argc > 1){
-				printf("No Agenda IRC Bot Version "VERSION": no arguments allowed. See ~/.nabotrc.\n");
-				return 0;
-		}
+   if(argc > 1){
+      printf("No Agenda IRC Bot Version "VERSION": no arguments allowed. See ~/.nabotrc.\n");
+      return 0;
+   }
+   setbuf(stdout, NULL);
+   setbuf(stderr, NULL);
 
-		fd = dial(host, port);
-		if(fd){
-				if(SIG_ERR == signal(SIGPIPE, borked_pipe)){
-						printf("Cannot set up signal handler.\n");
-						close(fd);
-						return 0;
-				}
-				identify(fd, pass, nick, name);
-		} else {
-				printf("No Agenda IRC Bot Version "VERSION": not able to connect to "host" at "port".\n");
-				return 0;
-		}
-		if(0 > (pid = fork())){
-				printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
-				close(fd);
-				return 0;
-		}
-		return 0;
+   memset(rc, '\0', 128);
+   if(NULL == strcpy(rc, getenv("HOME"))){
+      printf("No Agenda IRC Bot Version "VERSION": unable to get $HOME.\n");
+      return 0;
+   }
+   strcat(rc, "/.nabotrc");
+   read_rc(rc, &se);
+
+   fd = dial(se.serv, se.port);
+   if(fd > 0){
+      if(SIG_ERR == signal(SIGPIPE, borked_pipe)){
+         printf("Cannot set up signal handler.\n");
+         close(fd);
+         clean_up(&se);
+         return 0;
+      }
+      identify(fd, &se);
+   } else {
+      printf("No Agenda IRC Bot Version "VERSION": not able to connect to %s at %s.\n", se.serv, se.port);
+      clean_up(&se);
+      return 0;
+   }
+#if 0
+   if(0 > (pid = fork())){
+      printf("No Agenda IRC Bot Version "VERSION": unable to background.\n");
+      close(fd);
+      clean_up(&se);
+      return 0;
+   }
+   if(0 == pid){
+#endif
+      /* Done with pid, can use now for recv()'s and send()'s */
+      memset(recvd, '\0', 4096);
+      while(1){
+         pid = recv(fd, recvd, 4096, 0);
+         parse_srvr(recvd, se.ausers, fd);
+      }
+#if 0
+   }
+#endif
+   return 0;
 }
 
 void borked_pipe(int signo){
-		printf("Connection with network broken.");
-		exit(0);
+   printf("Connection with network has broken.");
+   exit(0);
 }
-/* vim: set ts=8 sw=8: */
+
+char **parse(char *str, char ch){
+   int cnt, i;
+   char **tmp;
+   char *p;
+
+   i = count(str, ch);
+   if(i > 0){
+      tmp = (char **)xmalloc((i + 1) * sizeof(char *));
+      p = str;
+      for(cnt = i = 0; 0 < (i = find(p, ',')); p += i, cnt++)
+         *(tmp + cnt) = strndup(p, i);
+      *(tmp + cnt) = NULL;
+   } else
+      *tmp = str;
+   return tmp;
+}
+
+void read_rc(char *file, t_setting *se){
+   FILE *rc;
+   char in[1024];
+   int i;
+
+   if(NULL != (rc = fopen(file, "r"))){
+      for(memset(in, '\0', 1024); fgets(in, 1024, rc); memset(in, '\0', 1024)){
+         i = strlen(in) - 1;
+         *(in + i) = '\0';
+         i = find(in, ' ');
+         if(!strncmp(in, "password", i))
+            se->pass = strdup(in + i + 1);
+         if(!strncmp(in, "nick", i))
+            se->nick = strdup(in + i + 1);
+         if(!strncmp(in, "realname", i))
+            se->realname = strdup(in + i + 1);
+         if(!strncmp(in, "server", i))
+            se->serv = strdup(in + i + 1);
+         if(!strncmp(in, "port", i))
+            se->port = strdup(in + i + 1);
+         if(!strncmp(in, "channels", i))
+            se->_chans = strdup(in + i + 1);
+         if(!strncmp(in, "auth_users", i))
+            se->_ausers = strdup(in + i + 1);
+      }
+      fclose(rc);
+
+      /* Parse out channels and authorized users */
+      se->chans = parse(se->_chans, ',');
+      se->ausers = parse(se->_ausers, ' ');
+   }
+}
+/* vim: set ts=3 sw=3 et: */

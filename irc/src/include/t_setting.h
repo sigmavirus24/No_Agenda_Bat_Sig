@@ -14,18 +14,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __T_SETTING_H__
+#define __T_SETTING_H__
 
-#include <signal.h>
-#include <string.h>
-
-int fork(void);
-
-#include "t_setting.h"
-#include "utils.h"
-void read_rc(char *, t_setting *);
-void borked_pipe(int);
-
+typedef struct s_setting {
+   char *pass;
+   char *nick;
+   char *realname;
+   char *serv;
+   char *port;
+   char *_chans;
+   char **chans;
+   char *_ausers;
+   char **ausers;
+} t_setting;
 #endif
+
 /* vim: set ts=3 sw=3 et: */

@@ -1,6 +1,6 @@
 PWD := $(shell pwd)
 MAKE := make -C
-DIRS := src/
+DIRS := src/ irc/
 Q  := @
 CD := cd
 

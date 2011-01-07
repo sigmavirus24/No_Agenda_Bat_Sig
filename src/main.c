@@ -179,7 +179,8 @@ int main(int argc, char **argv){
 				if(!sets.gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refreshed->date, refreshed->tweet_url, refreshed->text);
 				else {
-					gtk_init(&argc, &argv);
+					rv = 0;
+					gtk_init(&rv, NULL);
 					win = make_window(refreshed, sets.browser);
 					gtk_widget_show(win);
 					gtk_main();

@@ -3,5 +3,5 @@ nick nabatsignalbot
 realname No Agenda IRC Bot
 server irc.noagendachat.com
 port 6667
-channels #NoAgenda #linux-bat-signal #stop.whoising.me.ffs.thx.pls
+channels #NoAgenda,#linux-bat-signal,#stop.whoising.me.ffs.thx.pls
 auth_users Sigma MrOil
