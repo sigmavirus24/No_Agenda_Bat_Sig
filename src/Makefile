@@ -1,4 +1,4 @@
-VERSION := 0.3.development.2
+VERSION := 0.3
 RM := rm -f
 CC := gcc
 CFLAGS := -ggdb3 -Werror -Wall `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -DVERSION=\"$(VERSION)\" 

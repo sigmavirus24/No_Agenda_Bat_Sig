@@ -212,6 +212,7 @@ void help(void){
 	printf("\t\t [-h | --help]\n\t\t [--license]\n\t\t [-v | --version]\n");
 	printf("\t--gtk enables a GTK pop-up box.\n");
 	printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
+   printf("\t--irc turns on sending the signal to the No Agenda IRC Bot.\n");
 	printf("\t--browser followed by the absolute path to the executabe. (i.e.\n\t\t /usr/bin/firefox)\n");
 	printf("\t--jingle folowed by the absolute path to the mp3. (i.e.\n\t\t ~/jingles/douchebag.mp3)\n");
 	printf("\t--mp3player followed by the absolute path.\n");
