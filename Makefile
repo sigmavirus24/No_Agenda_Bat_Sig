@@ -1,6 +1,6 @@
 PWD := $(shell pwd)
 MAKE := make -C
-DIRS := src/ irc/
+DIRS := src/irc/ src/bat_signal/
 Q  := @
 CD := cd
 

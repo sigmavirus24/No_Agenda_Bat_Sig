@@ -6,3 +6,6 @@ Required:
 * Ability to /notice channels required
 * Ability to quit by either public or private message from list of nicks
 * Ability to background after starting from commandline
+
+:Nick!Mask PRIVMSG/NOTICE #channel/mynick :message
+:Nick!Mask PRIVMSG/NOTICE mynick :PING etc. etc.
