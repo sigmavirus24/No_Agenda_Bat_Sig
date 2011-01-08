@@ -16,12 +16,12 @@ all: $(TARGETS)
 nabatsignal: $(OBJ)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
-	$(Q)mv $@ ../
+	$(Q)mv $@ ../../
 
 test: $(OBJ)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@ -lcurl
-	$(Q)mv $@ ../
+	$(Q)mv $@ ../../
 
 .SILENT:
 clean:

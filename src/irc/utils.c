@@ -100,15 +100,21 @@ int dial(char *host, char *port){
 }
 
 void parse_srvr(char *in, t_setting *se, int fd){
-   char *p;
    char *n;
+#if 0
+   char *p;
    char *t;
    char *s;
+#endif
    char **l;
+   char **vect;
+   int i;
    char tmp[128];
 
    if(in && *in && se){
       memset(tmp, '\0', 128);
+      vect = srvr_to_vect(in);
+#if 0
       /* As long as it's real and there are names on the list */
       n = in;
       if(*n == ':'){
@@ -122,43 +128,109 @@ void parse_srvr(char *in, t_setting *se, int fd){
       for(s = p + strlen(p) - 1; s > p && isspace(*s); s--)
          ;
       *(s + 1) = '\0';
+#endif
+      if(!vect)
+         exit(1);
+#if 0
+      slice(vect[0], '!'); /* Isolate nick */
+      slice(vect[3], '\r'); /* Remove "\r\n" */
+#endif
 
-      if(!strcmp(in, "PONG")) /* Server is replying to a PING, ignore */
+      if(!strcmp(vect[0], "PONG")) /* Server is replying to a PING, ignore */
          return;
-      if(!strcmp(in, "PING")){
-         sprintf(tmp, "PONG %s\r\n", t);
+      if(!strcmp(vect[0], "PING")){
+         sprintf(tmp, "PONG %s\r\n", vect[1]);
 #ifdef DEBUG
          printf(">>> %s", tmp);
 #endif
          wrap_send(fd, tmp);
          return;
       }
-      if(!strcmp(in, "451") || !strcmp(in, "JOIN")){
+      if(!strcmp(vect[1], "451") || !strcmp(vect[2], "JOIN")){
          identify(fd, NULL);
+         sleep(2);
          join_chans(fd, NULL);
       }
-      if(!strcmp(in, "PRIVMSG")){
-         for(l = se->ausers; *l && strcmp(*l, n); l++)
+      if(!strcmp(vect[1], "PRIVMSG")){
+         for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
             ;
          if(!(*l))
             return;
-         /* commands to be determined later */
-      /* } else { */
-         if(*t == '.'){
-            t++;
-            n = slice(t, ' ');
-            if(!strcmp(n, "test\r\n")){
-               sprintf(tmp, "PRIVMSG %s Hello Slaves\r\n", p);
+
+         if(vect[3] && *vect[3] == '.'){
+            vect[3]++;
+            n = slice(vect[3], ' ');
+            if(!strcmp(n, "test")){
+               if(!strcmp(vect[2], se->nick))
+                  sprintf(tmp, "PRIVMSG %s Hello %s\r\n", *l, *l);
+               else
+                  sprintf(tmp, "PRIVMSG %s Hello Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
-            }
-            if(!strcmp(n, "quit\r\n")){
+            } else if(!strcmp(n, "quit")){
                wrap_send(fd, "QUIT Goodnight slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
                exit(0);
+            } else if(!strcmp(n, "start_signal")){
+               if(!fork())
+                  execl("python", "src/irc/bat_sig.py", NULL);
+            } else if(!strcmp(n, "start_test")){
+               if(!fork())
+                  execl("python", "src/irc/test.py", NULL);
+            } else if(!strcmp(n, "help")){
+               sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .help\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .start_signal (not functional yet)\r\n",
+                     *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .test\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .quit\r\n", *l);
+               wrap_send(fd, tmp);
             }
          }
       }
+      for(i = 0, l = vect; *l; l++)
+         ;
+      for( ; i; i--)
+         free(*(vect + i));
+      free(vect);
    }
+}
+
+char **srvr_to_vect(char *srvr){
+   char **tmp;
+   int i, j;
+   
+   if(srvr && *srvr){
+      if(*srvr == ':')
+         srvr++;
+      tmp = (char **)xmalloc(5 * sizeof(char *));
+      i = find(srvr, '!');
+      if(i < 0){
+         i = find(srvr, ' ');
+         *tmp = strndup(srvr, i);
+         srvr += i + 1;
+      } else {
+         *tmp = strndup(srvr, i);
+         srvr += find(srvr, ' ') + 1;
+      }
+      for(j = 1; j < 3; j++){
+         i = find(srvr, ' ');
+         if(i < 0)
+            break;
+         *(tmp + j) = strndup(srvr, i);
+         srvr += i + 1;
+      }
+      srvr++;
+      i = find(srvr, '\r');
+      *(tmp + j) = strndup(srvr, i);
+      for(j++ ; j < 5; j++)
+         *(tmp + j) = NULL;
+      return tmp;
+   }
+   return NULL;
 }
 
 void zero(char *p){

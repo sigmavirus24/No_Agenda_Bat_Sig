@@ -16,7 +16,7 @@ all: $(TARGETS)
 nabot: $(OBJ)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@
-	$(Q)mv $@ ../
+	$(Q)mv $@ ../../
 
 .SILENT:
 clean:
