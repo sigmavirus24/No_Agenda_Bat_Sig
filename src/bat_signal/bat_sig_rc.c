@@ -36,23 +36,20 @@ void bat_sig_rc(t_setting *s){
 			str = (char *)xmalloc(MAX_SIZE * sizeof(char));
 			memset(str, '\0', MAX_SIZE);
 			while(NULL != fgets(str, MAX_SIZE, rc)){
-				len = strlen(str);
-				*(str + len - 1) = '\0';
+				len = strlen(str) - 1;
+				*(str + len) = '\0';
 				i = find_char(str, ' ');
 				if(!strncmp(str, "jingle", i)){
 					s->path_to_jingle = strdup(str + i + 1);
-					s->jingle_set = 1;
-					s->set_from_rc[0] = 1;
+					s->set_from_rc[0] = s->jingle_set = 1;
 				}
 				if(!strncmp(str, "browser", i)){
 					s->browser = strdup(str + i + 1);
-					s->browser_set = 1;
-					s->set_from_rc[1] = 1;
+					s->set_from_rc[1] = s->browser_set = 1;
 				}
 				if(!strncmp(str, "mp3", i)){
 					s->mp3player = strdup(str + i + 1);
-					s->mp3player_set = 1;
-					s->set_from_rc[2] = 1;
+					s->set_from_rc[2] = s->mp3player_set = 1;
 				}
 				if(!strncmp(str, "ssl", i))
 					if(!strcmp(str + i + 1, "on"))
@@ -64,16 +61,13 @@ void bat_sig_rc(t_setting *s){
 					if(!strcmp(str + i + 1, "on"))
 						s->irc = 1;
 			}
+         free(file);
 		} else {
-			s->path_to_jingle = NULL;
-			s->jingle_set = 0;
-			s->browser = NULL;
-			s->browser_set = 0;
-			s->mp3player = NULL;
-			s->mp3player_set = 0;
+			s->mp3player = s->browser = s->path_to_jingle = NULL;
+			s->mp3player_set = s->browser_set = s->jingle_set = 0;
 			memset(s->set_from_rc, 0, 3);
 			s->use_ssl = s->gtk_on = 0;
 		}
 	}
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */
