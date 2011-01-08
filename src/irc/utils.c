@@ -167,21 +167,26 @@ void parse_srvr(char *in, t_setting *se, int fd){
                   sprintf(tmp, "PRIVMSG %s Hello Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
             } else if(!strcmp(n, "quit")){
-               wrap_send(fd, "QUIT Goodnight slaves!\r\n");
+               wrap_send(fd, "QUIT Goodbye slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
                exit(0);
             } else if(!strcmp(n, "start_signal")){
-               if(!fork())
-                  execl("python", "src/irc/bat_sig.py", NULL);
+               if(!fork()){
+                  char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
+                     NULL};
+                  execvp(*args, args);
+               }
             } else if(!strcmp(n, "start_test")){
-               if(!fork())
-                  execl("python", "src/irc/test.py", NULL);
+               if(!fork()){
+                  char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
+                  execvp(*args, args);
+               }
             } else if(!strcmp(n, "help")){
                sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", *l);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .help\r\n", *l);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .start_signal (not functional yet)\r\n",
+               sprintf(tmp, "PRIVMSG %s .start_signal\r\n",
                      *l);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .test\r\n", *l);
