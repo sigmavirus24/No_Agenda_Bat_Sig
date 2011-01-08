@@ -30,26 +30,6 @@ static size_t write_to_mem(void *p, size_t size, size_t nmemb, void *data){
 	return size_new;
 }
 
-CURLcode my_curl_easy(FILE *out, 
-		size_t(*fn)(const void *, size_t, size_t, FILE *),
-		char *url){
-	CURL *curl;
-	CURLcode ret;
-
-	curl = curl_easy_init();
-	if(curl){
-		curl_easy_setopt(curl, CURLOPT_URL, url);
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fn);
-		ret = curl_easy_perform(curl);
-
-		curl_easy_cleanup(curl);
-	}
-
-	return ret;
-}
-
 CURLcode my_curl_easier(char *mem, char *url){
 	CURL *curl;
 	CURLcode ret;
@@ -67,4 +47,4 @@ CURLcode my_curl_easier(char *mem, char *url){
 
 	return ret;
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */
