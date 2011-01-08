@@ -114,7 +114,7 @@ int main(int argc, char **argv){
 
          memset(tmp, '\0', 1028);
          for(p = se.chans ; *p; p++){
-            sprintf(tmp, "NOTICE %s %s\r\n", *p, recvd);
+            sprintf(tmp, "NOTICE %s :%s\r\n", *p, recvd);
             wrap_send(fileno(server), tmp);
             memset(tmp, '\0', 1028);
          }

@@ -30,5 +30,8 @@ int write(int, void *, int);
 int read(int, void *, int);
 void free(void *);
 void exit(int);
+void *xmalloc(int);
+
+#include "t_tweet.h"
 #endif
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */

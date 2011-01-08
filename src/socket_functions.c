@@ -69,6 +69,41 @@ void my_close(int *sockfd){
 
 void notice(t_tweet *tweet){
 	int sock;
+   int retval, len;
 	struct addrinfo hints, *res, *p;
+   char *message;
+
+   memset(&hints, 0, sizeof(struct addrinfo));
+   hints.ai_family = AF_UNSPEC;
+   hints.ai_socktype = SOCK_STREAM;
+
+   if(0 > (retval = getaddrinfo("localhost", "33333", &hints, &res))){
+      printf("Error, cannot connect to irc bot.\n");
+      exit(1);
+   }
+
+   for(p = res, sock = -1; p; p = p->ai_next){
+      if(0 > (sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)))
+         continue;
+
+      if(0 > connect(sock, p->ai_addr, p->ai_addrlen)){
+         close(sock);
+         sock = -1;
+         continue;
+      }
+   }
+
+   freeaddrinfo(res);
+
+   if(sock > 0){
+      len = strlen(tweet->text) + strlen(tweet->tweet_url) + 2;
+      message = (char *)xmalloc(len * sizeof(char));
+
+      sprintf(message, "%s %s", tweet->text, tweet->tweet_url);
+      for(retval = 0; retval < len; )
+         retval += send(sock, message, len, 0);
+      free(message);
+      close(sock);
+   }
 }
 /* vim: set sw=3 ts=3 et: */

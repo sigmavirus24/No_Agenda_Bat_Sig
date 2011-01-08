@@ -165,6 +165,8 @@ int main(int argc, char **argv){
 		if(!refreshed)
 			printf("No bat signal was sent.\n");
 		else{
+         if(sets.irc)
+            notice(refreshed);
 			/* fork() and exec Jingle */
 			if(0 > (pid = fork())){
 				fprintf(stderr, "Error forking.\n");
@@ -177,8 +179,6 @@ int main(int argc, char **argv){
 				execvp(*args, args);
 				exit(EXIT_FAILURE);
 			} else {
-				if(sets.irc)
-					notice(refreshed);
 				if(!sets.gtk_on)
 					printf("Time: %s\nTweetURL: %s\nTweet: %s\n", refreshed->date, refreshed->tweet_url, refreshed->text);
 				else {
