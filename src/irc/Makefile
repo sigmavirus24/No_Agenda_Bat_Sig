@@ -1,12 +1,12 @@
 VERSION := 0.1
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0`
+CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` #-DDEBUG
 Q := @
 # PREFIX := /usr/local
 
 TARGETS := nabot
-SRC := src/main.c src/utils.c
+SRC := main.c utils.c
 OBJ := $(SRC:%c=%o)
 
 default: all
@@ -16,7 +16,7 @@ all: $(TARGETS)
 nabot: $(OBJ)
 	@echo "  [BUILD] $@"
 	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@
-	$(Q)mv $@ ../
+	$(Q)mv $@ ../../
 
 .SILENT:
 clean:

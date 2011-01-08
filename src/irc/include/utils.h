@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 void exit(int);
 int close(int);
@@ -34,13 +35,14 @@ int close(int);
 
 #include "t_setting.h"
 int dial(char *, char *);
+int find(char *, char);
+int count(char *, char);
+char *slice(char *, char);
+char **srvr_to_vect(char *);
 void parse_srvr(char *, t_setting *, int);
 void identify(int, t_setting *);
 void join_chans(int, t_setting *);
 void wrap_send(int, char *);
-char *slice(char *, char);
-int find(char *, char);
-int count(char *, char);
 void *xmalloc(int);
 void clean_up(t_setting *);
 
