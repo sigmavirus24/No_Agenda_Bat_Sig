@@ -153,6 +153,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
             }
             if(!strcmp(n, "quit\r\n")){
                wrap_send(fd, "QUIT Goodnight slaves!\r\n");
+               kill(se->listening_pid, SIGKILL);
                exit(0);
             }
          }

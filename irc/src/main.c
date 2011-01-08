@@ -88,46 +88,48 @@ int main(int argc, char **argv){
    }
 
    if(0 == pid){
-      /* Done with pid, can use now for recv()'s and send()'s */
-      while(fgets(recvd, MAXLEN << 1, server)){
-#ifdef DEBUG
-         printf("<<< %s", recvd);
-#endif
-         parse_srvr(recvd, &se, fd);
-         memset(recvd, '\0', MAXLEN << 1);
-      }
-   } else {
+      int bsfd;
+      socklen_t saddrlen;
+      char **p;
+      char tmp[1028];
+      struct sockaddr_in batsig;
+
       sleep(2);
       localfd = dial(NULL, "33333");
-      if(!fork()){/* Handles accept()'s from bat signal */
-         int bsfd;
-         socklen_t saddrlen;
-         char **p;
-         char tmp[1028];
-         struct sockaddr_in batsig;
 
-         saddrlen = sizeof(struct sockaddr_in);
+      saddrlen = sizeof(struct sockaddr_in);
 
-         while(1){
-            if(0 > (bsfd = accept(localfd, (struct sockaddr*)&batsig,
-                        &saddrlen))){
-               printf("Error accepting batsignal connection.\n");
-               clean_up(&se);
-               return -1;
-            }
+      while(1){
+         if(0 > (bsfd = accept(localfd, (struct sockaddr*)&batsig,
+                     &saddrlen))){
+            printf("Error accepting batsignal connection.\n");
+            clean_up(&se);
+            return -1;
+         }
 
-            if(0 > (pid = recv(bsfd, recvd, MAXLEN << 1, 0))){
-               printf("Error receiving batsignal.\n");
-            }
-            *(recvd + pid) = '\0';
+         if(0 > (pid = recv(bsfd, recvd, MAXLEN << 1, 0))){
+            printf("Error receiving batsignal.\n");
+         }
+         *(recvd + pid) = '\0';
 
+         memset(tmp, '\0', 1028);
+         for(p = se.chans ; *p; p++){
+            sprintf(tmp, "NOTICE %s %s\r\n", *p, recvd);
+            wrap_send(fileno(server), tmp);
             memset(tmp, '\0', 1028);
-            for(p = se.chans ; *p; p++){
-               sprintf(tmp, "NOTICE %s %s\r\n", *p, recvd);
-               wrap_send(fileno(server), tmp);
-               memset(tmp, '\0', 1028);
-            }
-            close(bsfd);
+         }
+         close(bsfd);
+      }
+   } else {
+      se.listening_pid = pid;
+      if(!fork()){/* Handles accept()'s from bat signal */
+         /* Done with pid, can use now for recv()'s and send()'s */
+         while(fgets(recvd, MAXLEN << 1, server)){
+#ifdef DEBUG
+            printf("<<< %s", recvd);
+#endif
+            parse_srvr(recvd, &se, fd);
+            memset(recvd, '\0', MAXLEN << 1);
          }
       }
    }

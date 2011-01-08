@@ -27,6 +27,7 @@ typedef struct s_setting {
    char **chans;
    char *_ausers;
    char **ausers;
+   int listening_pid;
 } t_setting;
 #endif
 
