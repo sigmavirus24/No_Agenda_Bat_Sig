@@ -26,7 +26,7 @@ test: $(OBJ)
 .SILENT:
 clean:
 	for i in $(TARGETS) ; do \
-		$(RM) *.o $$i ../$$i ; \
+		$(RM) *.o $$i ../../$$i ; \
 	done
 
 %.o: %.c

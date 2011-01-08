@@ -21,7 +21,7 @@ nabot: $(OBJ)
 .SILENT:
 clean:
 	for i in $(TARGETS) ; do \
-		$(RM) $(OBJ) $$i ../$$i ; \
+		$(RM) $(OBJ) $$i ../../$$i ; \
 	done
 
 %.o: %.c
