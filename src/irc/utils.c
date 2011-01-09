@@ -167,10 +167,17 @@ void parse_srvr(char *in, t_setting *se, int fd){
                      vect[2]);
                wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "stream")){
-               sprintf(tmp, "PRIVMSG %s http://www.noagendastream.com/\r\n", vect[2]);
-               wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s Back-up: http://live.noagendamix.com:8000/listen.pls\r\n", vect[2]);
-               wrap_send(fd, tmp);
+               if(strcmp(n, vect[3])){
+                  sprintf(tmp, "PRIVMSG %s %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[2], n);
+                  wrap_send(fd, tmp);
+                  sprintf(tmp, "PRIVMSG %s %s Back-up: http://www.noagendastreaem.com\r\n", vect[2], n);
+                  wrap_send(fd, tmp);
+               } else {
+                  sprintf(tmp, "PRIVMSG %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[2]);
+                  wrap_send(fd, tmp);
+                  sprintf(tmp, "PRIVMSG %s Back-up: http://www.noagendastream.com/\r\n", vect[2]);
+                  wrap_send(fd, tmp);
+               }
             } else if(!strcmp(vect[3], "google") && n){
                replace_spaces(&n);
                sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[2], n);
