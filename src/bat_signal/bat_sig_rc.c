@@ -48,9 +48,6 @@ void bat_sig_rc(t_setting *s){
 				} else if(!strncmp(str, "mp3player", i)){
 					s->mp3player = strdup(str + i + 1);
 					s->set_from_rc[2] = s->mp3player_set = 1;
-				} else if(!strncmp(str, "ssl", i)) {
-					if(!strcmp(str + i + 1, "on"))
-						s->use_ssl = 1;
             } else if(!strncmp(str, "gtk", i)){
 					if(!strcmp(str + i + 1, "on"))
 						s->gtk_on = 1;
@@ -64,7 +61,7 @@ void bat_sig_rc(t_setting *s){
 			s->mp3player = s->browser = s->path_to_jingle = NULL;
 			s->mp3player_set = s->browser_set = s->jingle_set = 0;
 			memset(s->set_from_rc, 0, 3);
-			s->use_ssl = s->gtk_on = 0;
+			s->gtk_on = 0;
 		}
 	}
 }

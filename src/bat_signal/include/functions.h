@@ -20,13 +20,6 @@
 #include "t_tweet.h"
 #include "t_setting.h"
 
-#ifdef __CURL_CURL_H
-CURLcode my_curl_easy(FILE *, 
-		size_t(*fn)(const void *, size_t, size_t, FILE *),
-		char *);
-CURLcode my_curl_easier(char *, char *);
-#endif
-
 t_tweet *parse_mem(char *);
 void make_get(char *, char *);
 int find_char(char *, char);

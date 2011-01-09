@@ -29,7 +29,6 @@ extern char *optarg;
 
 static const struct option long_options[] = {
 	{"gtk",       no_argument,       0, 0},
-	{"ssl",       no_argument,       0, 0},
 	{"license",   no_argument,       0, 0},
 	{"version",   no_argument,       0, 'v'},
 	{"help",      no_argument,       0, 'h'},
@@ -48,7 +47,6 @@ int main(int argc, char **argv){
 	t_tweet *info;
 	t_tweet *refreshed;
 	t_setting sets;
-	char *def; /* Default URL */
 	char *get;
 	char *mem;
 	char *host;
@@ -61,7 +59,7 @@ int main(int argc, char **argv){
 	setbuf(stderr, NULL);
 
 	memset(sets.set_from_rc, 0, 3);
-	sets.irc = sets.gtk_on = sets.use_ssl = 0;
+	sets.irc = sets.gtk_on = 0;
 	sets.mp3player = sets.path_to_jingle = sets.browser = get = (char *)DBPTR;
 
 	if(argc == 1){
@@ -85,40 +83,27 @@ int main(int argc, char **argv){
 	if(sets.mp3player == (char*)DBPTR)
 	    sets.mp3player = "/usr/bin/mpg123";
 
-	if(sets.use_ssl){
-#ifndef SIGMANATEST
-		def = "https://search.twitter.com/search.json?q=%23@pocketnoagenda&from=adamcurry&rpp=1";
-#else
-		def = "https://search.twitter.com/search.json?from=sigmanatest&rpp=1";
-#endif
-	}
-	else {
-      host = "Host: search.twitter.com\n\n";
-	}
-
+   host = "Host: search.twitter.com\n\n";
 
 	mem = (char *)xmalloc(MAX_SIZE * sizeof(char));
-	if(sets.use_ssl)
-		(void)my_curl_easier(mem, def);
-	else {
-		sockfd = sockets_connect();
 
-		if(sockfd < 0){
-			printf("Cannot establish connection.\n");
-			return 1;
-		} else {
+   sockfd = sockets_connect();
+
+   if(sockfd < 0){
+      printf("Cannot establish connection.\n");
+      return 1;
+   } else {
 #ifndef SIGMANATEST
-			get = "GET /search.json?q=@pocketnoagenda&from=adamcurry&rpp=1 HTTP/1.1\n";
+      get = "GET /search.json?q=@pocketnoagenda&from=adamcurry&rpp=1 HTTP/1.1\n";
 #else
-			get = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
+      get = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
 #endif
-			sockets_request(sockfd, get, host, &mem, MAX_SIZE);
-			get = (char *)xmalloc(MAX_SIZE * sizeof(char));
-			/* Twitter sends the Connection: close header so by RFC2616 we must close our
-			 * connection and then reconnect later.
-			 */
-		}
-	}
+      sockets_request(sockfd, get, host, &mem, MAX_SIZE);
+      get = (char *)xmalloc(MAX_SIZE * sizeof(char));
+      /* Twitter sends the Connection: close header so by RFC2616 we must close our
+       * connection and then reconnect later.
+       */
+   }
 
 	info = parse_mem(mem);
 	if(info){
@@ -126,18 +111,15 @@ int main(int argc, char **argv){
 		 * a new URL buffer and have it watch that. 
 		 * For testing, I'm using the one as of Tue Nov 9
 		 */
-		if(!sets.use_ssl)
-			make_get(get, info->refresh);
+      make_get(get, info->refresh);
 
 		for(count = 0; count < MAX_ITER; count++){
 			sockfd = sockets_connect();
 
 			if(sockfd > 0){
 				memset(mem, '\0', MAX_SIZE); /* Clear out the memory so we do not get false information */
-				if(sets.use_ssl)
-					(void)my_curl_easier(mem, info->refresh);
-				else 
-					sockets_request(sockfd, get, host, &mem, MAX_SIZE);
+
+            sockets_request(sockfd, get, host, &mem, MAX_SIZE);
 
 				/* Returns "{\"results\":[]" if there is nothing. 
 				 * Can run a while loop until this does not match. */
@@ -197,10 +179,9 @@ int main(int argc, char **argv){
 }
 
 void help(void){
-	printf("usage:\n       ./nabatsignal [--gtk | --ssl | --browser ... | --jingle ... | \n\t\t\t--mp3player ...]\n");
+	printf("usage:\n       ./nabatsignal [--gtk | --browser ... | --jingle ... | \n\t\t\t--mp3player ...]\n");
 	printf("\t\t [-h | --help]\n\t\t [--license]\n\t\t [-v | --version]\n");
 	printf("\t--gtk enables a GTK pop-up box.\n");
-	printf("\t--ssl uses SSL/TLS to connect to Twitter.\n");
    printf("\t--irc turns on sending the signal to the No Agenda IRC Bot.\n");
 	printf("\t--browser followed by the absolute path to the executabe. (i.e.\n\t\t /usr/bin/firefox)\n");
 	printf("\t--jingle folowed by the absolute path to the mp3. (i.e.\n\t\t ~/jingles/douchebag.mp3)\n");
@@ -226,10 +207,6 @@ int parse_cmdline_opts(int argc, char *argv[], t_setting *sets) {
 							MINLEN(4,len)) == 0) {
 					sets->gtk_on = 1;
 					len = 0; /* use temporarily */
-				}
-				else if(strncmp("ssl", long_options[optindex].name,
-							MINLEN(4,len)) == 0) {
-					sets->use_ssl = 1;
 				}
 				else if(strncmp("irc", long_options[optindex].name,
 							MINLEN(4,len)) == 0) {

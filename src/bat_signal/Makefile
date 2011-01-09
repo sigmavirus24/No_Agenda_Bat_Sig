@@ -5,8 +5,8 @@ CFLAGS := -ggdb3 -Werror -Wall `pkg-config --cflags gtk+-2.0` `pkg-config --libs
 Q := @
 # PREFIX := /usr/local
 
-TARGETS := nabatsignal test
-SRC := main.c socket_functions.c curl_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c bat_sig_rc.c
+TARGETS := nabatsignal #test
+SRC := main.c socket_functions.c parse.c xmalloc.c finds.c free_t_tweet.c gtk_fns.c bat_sig_rc.c
 OBJ := $(SRC:%c=%o)
 
 default: all
@@ -15,12 +15,12 @@ all: $(TARGETS)
 
 nabatsignal: $(OBJ)
 	@echo "  [BUILD] $@"
-	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@ -lcurl
+	$(Q)$(CC) $(OBJ) $(CFLAGS) -o $@
 	$(Q)mv $@ ../../
 
 test: $(OBJ)
 	@echo "  [BUILD] $@"
-	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@ -lcurl
+	$(Q)$(CC) $(SRC) -DSIGMANATEST $(CFLAGS) -o $@
 	$(Q)mv $@ ../../
 
 .SILENT:
