@@ -95,17 +95,11 @@ int dial(char *host, char *port){
          exit(1);
       }
    }
-
    return sock;
 }
 
 void parse_srvr(char *in, t_setting *se, int fd){
    char *n;
-#if 0
-   char *p;
-   char *t;
-   char *s;
-#endif
    char **l;
    char **vect;
    int i;
@@ -114,27 +108,8 @@ void parse_srvr(char *in, t_setting *se, int fd){
    if(in && *in && se){
       memset(tmp, '\0', 128);
       vect = srvr_to_vect(in);
-#if 0
-      /* As long as it's real and there are names on the list */
-      n = in;
-      if(*n == ':'){
-         in = slice(n++, ' '); /* Get slice after user@servername */
-         if(*in == 0)
-            return;
-         slice(n, '!'); /* Get username */
-      }
-      p = slice(in, ' ');
-      t = slice(p, ':');
-      for(s = p + strlen(p) - 1; s > p && isspace(*s); s--)
-         ;
-      *(s + 1) = '\0';
-#endif
       if(!vect)
          exit(1);
-#if 0
-      slice(vect[0], '!'); /* Isolate nick */
-      slice(vect[3], '\r'); /* Remove "\r\n" */
-#endif
 
       if(!strcmp(vect[0], "PONG")) /* Server is replying to a PING, ignore */
          return;
@@ -289,7 +264,6 @@ void identify(int fd, t_setting *se){
    }
 }
 
-#if 1
 void join_chans(int fd, t_setting *se){
    char tmp[MAXLEN];
    static t_setting *s;
@@ -311,7 +285,6 @@ void join_chans(int fd, t_setting *se){
       wrap_send(fd, tmp);
    }
 }
-#endif
 
 int find(char *str, char ch){
    int i = -1;
