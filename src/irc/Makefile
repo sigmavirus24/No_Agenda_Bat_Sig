@@ -1,7 +1,7 @@
 VERSION := 0.1.1
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` #-DDEBUG
+CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE #-DDEBUG
 Q := @
 # PREFIX := /usr/local
 

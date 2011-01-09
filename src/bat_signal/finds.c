@@ -22,14 +22,12 @@ int find_char(char *str, char c){
 	int i;
 
 	if(str){
-		i = 0;
-		while(*str){
-			if(*(str++) == c)
-				return i;
-			i++;
-		}
+      for(i = 0; *str && *str != c; str++, i++)
+         ;
+      if(!(*str))
+         i = -1;
 	}
-	return -1;
+	return i;
 }
 
 /* rfind_char::Returns position of last instance of c */
@@ -38,15 +36,12 @@ int rfind_char(char *str, char c){
 	int i;
 
 	if(str){
-		max = i = 0;
-		while(*str){
-			if(*(str++) == c)
+      for(max = -1, i = 0; *str; str++, i++){
+			if(*str == c)
 				max = (i > max) ? i : max;
-			i++;
 		}
-		return max;
 	}
-	return -1;
+	return max;
 }
 
 /* find_str::Utilizes Boyer-Moore Fast String Search Algorithm:
@@ -72,6 +67,11 @@ int find_str(char *str, char *find){
 			pos += flen - 1;
 			while(pos < slen){
 				if(*p == *(find + flen - 1)){
+#if 0
+               for(i = flen - 1; i > 0 && *p != *(find + i);
+                     p--, i--)
+                  ;
+#endif
 					i = flen - 1;
 					while(i > 0){
 						if(*(p--) != *(find + i))
@@ -83,6 +83,8 @@ int find_str(char *str, char *find){
 				} else {
 					/* Shift pattern */
 					i = rfind_char(find, *p);
+#if 0
+               /* No longer needed */
 					if(i < 0){
 						p = str + pos + flen;
 						pos += flen;
@@ -90,6 +92,9 @@ int find_str(char *str, char *find){
 						p = str + pos + (flen - i - 1);
 						pos += (flen - i - 1);
 					}
+#endif
+               pos += (i < 0) ? flen : flen - i - 1;
+               p = str + pos;
 				}
 			}
 			if(pos <= slen)
@@ -98,4 +103,4 @@ int find_str(char *str, char *find){
 	}
 	return -1;
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */
