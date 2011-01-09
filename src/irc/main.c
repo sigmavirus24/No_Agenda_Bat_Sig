@@ -62,8 +62,7 @@ int main(int argc, char **argv){
       }
 
       memset(recvd, '\0', MAXLEN << 1);
-      for(pid = 0; pid < 2; pid++){
-         fgets(recvd, MAXLEN << 1, server);
+      for(pid = 0; pid < 2 && fgets(recvd, MAXLEN << 1, server); pid++){
 #ifdef DEBUG
          printf("<<< %s", recvd);
 #endif
