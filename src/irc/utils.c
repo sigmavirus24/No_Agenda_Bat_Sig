@@ -161,6 +161,9 @@ void parse_srvr(char *in, t_setting *se, int fd){
                wrap_send(fd, "QUIT Goodbye slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
                exit(0);
+            } else if(*l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
+               sprintf(tmp, "INVITE %s %s\r\n", n, vect[2]);
+               wrap_send(fd, tmp);
             } else if(*l && !strcmp(vect[3], "start_signal")){
                if(!fork()){
                   char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
@@ -185,6 +188,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s #linux-bat-signal on noagendachat.net"
                      "\r\n", vect[i]);
+               wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "stream")){
                if(strcmp(n, vect[3])){
                   sprintf(tmp, "PRIVMSG %s %s http://live.noagendamix.com:8000/"
