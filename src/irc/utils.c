@@ -195,6 +195,11 @@ void parse_srvr(char *in, t_setting *se, int fd){
                sprintf(tmp, "PRIVMSG %s https://secure.wikimedia.org/wikipedia/"
                      "en/wiki/%s\r\n", vect[i], n);
                wrap_send(fd, tmp);
+            } else if(!strcmp(vect[3], "opencongress") && strcmp(vect[3], n)){
+               replace_spaces(&n, "%20");
+               sprintf(tmp, "PRIVMSG %s http://www.opencongress.org/search/res"
+                     "ult?q=%s&search_bills=1\r\n", vect[i], n);
+               wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "help")){
                print_help(fd, vect[0]);
             } else if(!strcmp(vect[3], "twitter")){
@@ -460,6 +465,8 @@ void print_help(int fd, char *nick){
    sprintf(tmp, "PRIVMSG %s   .info\r\n", nick);
    wrap_send(fd, tmp);
    sprintf(tmp, "PRIVMSG %s   .itm\r\n", nick);
+   wrap_send(fd, tmp);
+   sprintf(tmp, "PRIVMSG %s   .opencongress <bill>\r\n", nick);
    wrap_send(fd, tmp);
    sprintf(tmp, "PRIVMSG %s   .quit (PRIVELEGED)\r\n", nick);
    wrap_send(fd, tmp);
