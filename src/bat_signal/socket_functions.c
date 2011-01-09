@@ -20,7 +20,7 @@
 int sockets_connect(void){
 	struct addrinfo hints;
 	struct addrinfo *ret, *p;
-	int sockfd;
+	int sockfd = -1;
 
    memset(&hints, 0, sizeof(struct addrinfo));
    hints.ai_family = AF_UNSPEC;

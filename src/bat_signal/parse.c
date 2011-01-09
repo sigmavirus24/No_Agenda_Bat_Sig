@@ -17,7 +17,7 @@
 #include "./include/parse.h"
 
 t_tweet *parse_mem(char *mem){
-   t_tweet *parsed;
+   t_tweet *parsed = NULL;
    char *s;
    char *p;
    char tmp[MAX_SIZE];

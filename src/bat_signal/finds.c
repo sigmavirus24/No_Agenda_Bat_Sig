@@ -19,7 +19,7 @@
 
 /* find_char::Returns first position of c */
 int find_char(char *str, char c){
-	int i;
+	int i = -1;
 
 	if(str){
       for(i = 0; *str && *str != c; str++, i++)
@@ -32,7 +32,7 @@ int find_char(char *str, char c){
 
 /* rfind_char::Returns position of last instance of c */
 int rfind_char(char *str, char c){
-	int max;
+	int max = -1;
 	int i;
 
 	if(str){

@@ -22,7 +22,7 @@
 int dial(char *host, char *port){
    struct addrinfo hints;
    struct addrinfo *p, *res;
-   int sock;
+   int sock = -1;
    int i;
 
    memset(&hints, 0, sizeof(struct addrinfo));
@@ -299,7 +299,7 @@ int find(char *str, char ch){
 }
 
 int count(char *str, char ch){
-   int i;
+   int i = -1;
    int count;
 
    if(str && *str){
@@ -323,7 +323,7 @@ void *xmalloc(int size){
 }
 
 char *slice(char *str, char ch){
-   int i;
+   int i = -1;
 
    if(*str && str){
       i = find(str, ch);

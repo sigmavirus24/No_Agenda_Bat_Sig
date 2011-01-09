@@ -1,7 +1,7 @@
 VERSION := 0.1.1
 RM := rm -f
 CC := gcc
-CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE #-DDEBUG
+CFLAGS := -Os -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE #-DDEBUG
 Q := @
 # PREFIX := /usr/local
 
