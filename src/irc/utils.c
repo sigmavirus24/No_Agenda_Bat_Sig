@@ -100,7 +100,7 @@ int dial(char *host, char *port){
 
 void parse_srvr(char *in, t_setting *se, int fd){
    char *n;
-   char **l;
+   char **l, **t;
    char **vect;
    int i;
    char tmp[128];
@@ -142,6 +142,21 @@ void parse_srvr(char *in, t_setting *se, int fd){
                else
                   sprintf(tmp, "PRIVMSG %s In The Morning Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
+            } else if(*l && !strcmp(vect[3], "part")){
+               sprintf(tmp, "PART %s\r\n", vect[2]);
+               wrap_send(fd, tmp);
+               for(l = se->chans; *l && strcmp(*l, vect[2]); l++)
+                  ;
+               t = se->chans;
+               for(se->chans = l; *(se->chans); se->chans++){
+                  if(*(se->chans + 1))
+                     *(se->chans) = *(se->chans + 1);
+                  else
+                     break;
+               }
+               *(se->chans) = NULL;
+               free(*l);
+               se->chans = t;
             } else if(*l && !strcmp(vect[3], "quit")){
                wrap_send(fd, "QUIT Goodbye slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
@@ -467,6 +482,8 @@ void print_help(int fd, char *nick){
    sprintf(tmp, "PRIVMSG %s   .itm\r\n", nick);
    wrap_send(fd, tmp);
    sprintf(tmp, "PRIVMSG %s   .opencongress <bill>\r\n", nick);
+   wrap_send(fd, tmp);
+   sprintf(tmp, "PRIVMSG %s   .part (PRIVELEGED)\r\n", nick);
    wrap_send(fd, tmp);
    sprintf(tmp, "PRIVMSG %s   .quit (PRIVELEGED)\r\n", nick);
    wrap_send(fd, tmp);
