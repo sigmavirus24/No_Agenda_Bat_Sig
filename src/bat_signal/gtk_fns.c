@@ -37,8 +37,8 @@ GtkWidget *make_window(t_tweet *p, char *browser){
 
 	/* Label create */
 	len = strlen(p->date) + strlen(p->tweet_url) + strlen(p->text) + 3 + 1;
-	label = (char *)xmalloc(len * sizeof(char));
 	/* 3 '\n', 1 '\0' */
+	label = (char *)xmalloc(len * sizeof(char));
 	memset(label, '\0', len);
 	xstrcat(label, p->date);
 	xstrcat(label, p->text);
@@ -86,4 +86,4 @@ static void open_url(GtkWidget *button, gpointer data){
 	} else 
 		(void)wait(NULL);
 }
-/* vim: set sw=8 ts=8: */
+/* vim: set sw=3 ts=3 et: */

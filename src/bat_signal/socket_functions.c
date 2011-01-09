@@ -37,6 +37,8 @@ int sockets_connect(struct addrinfo *hints, char *def){
 			break;
 	}
 
+   freeaddrinfo(ret);
+
 	return sockfd;
 }
 
