@@ -42,24 +42,22 @@ void bat_sig_rc(t_setting *s){
 				if(!strncmp(str, "jingle", i)){
 					s->path_to_jingle = strdup(str + i + 1);
 					s->set_from_rc[0] = s->jingle_set = 1;
-				}
-				if(!strncmp(str, "browser", i)){
+				} else if(!strncmp(str, "browser", i)){
 					s->browser = strdup(str + i + 1);
 					s->set_from_rc[1] = s->browser_set = 1;
-				}
-				if(!strncmp(str, "mp3", i)){
+				} else if(!strncmp(str, "mp3player", i)){
 					s->mp3player = strdup(str + i + 1);
 					s->set_from_rc[2] = s->mp3player_set = 1;
-				}
-				if(!strncmp(str, "ssl", i))
+				} else if(!strncmp(str, "ssl", i)) {
 					if(!strcmp(str + i + 1, "on"))
 						s->use_ssl = 1;
-				if(!strncmp(str, "gtk", i))
+            } else if(!strncmp(str, "gtk", i)){
 					if(!strcmp(str + i + 1, "on"))
 						s->gtk_on = 1;
-				if(!strncmp(str, "irc", i))
+            } else if(!strncmp(str, "irc", i)){
 					if(!strcmp(str + i + 1, "on"))
 						s->irc = 1;
+            }
 			}
          free(file);
 		} else {

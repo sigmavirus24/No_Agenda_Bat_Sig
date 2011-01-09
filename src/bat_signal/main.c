@@ -50,12 +50,11 @@ int main(int argc, char **argv){
 	t_setting sets;
 	char *def; /* Default URL */
 	char *get;
-	char host[100];
 	char *mem;
+	char *host;
 	char count;
 	int sockfd;
 	int rv;
-	struct addrinfo hints;
 	pid_t pid;
 
 	setbuf(stdout, NULL);
@@ -94,9 +93,7 @@ int main(int argc, char **argv){
 #endif
 	}
 	else {
-		def = "search.twitter.com";
-		memset(host, '\0', 100);
-		sprintf(host, "Host: %s\n\n", def);
+      host = "Host: search.twitter.com\n\n";
 	}
 
 
@@ -104,11 +101,7 @@ int main(int argc, char **argv){
 	if(sets.use_ssl)
 		(void)my_curl_easier(mem, def);
 	else {
-		memset(&hints, 0, sizeof(struct addrinfo));
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-
-		sockfd = sockets_connect(&hints, def);
+		sockfd = sockets_connect();
 
 		if(sockfd < 0){
 			printf("Cannot establish connection.\n");
@@ -120,7 +113,6 @@ int main(int argc, char **argv){
 			get = "GET /search.json?q=@pocketnoagenda&from=sigmanatest&rpp=1 HTTP/1.1\n";
 #endif
 			sockets_request(sockfd, get, host, &mem, MAX_SIZE);
-			my_close(&sockfd);
 			get = (char *)xmalloc(MAX_SIZE * sizeof(char));
 			/* Twitter sends the Connection: close header so by RFC2616 we must close our
 			 * connection and then reconnect later.
@@ -138,7 +130,7 @@ int main(int argc, char **argv){
 			make_get(get, info->refresh);
 
 		for(count = 0; count < MAX_ITER; count++){
-			sockfd = sockets_connect(&hints, def);
+			sockfd = sockets_connect();
 
 			if(sockfd > 0){
 				memset(mem, '\0', MAX_SIZE); /* Clear out the memory so we do not get false information */
@@ -146,12 +138,10 @@ int main(int argc, char **argv){
 					(void)my_curl_easier(mem, info->refresh);
 				else 
 					sockets_request(sockfd, get, host, &mem, MAX_SIZE);
-				my_close(&sockfd);
 
 				/* Returns "{\"results\":[]" if there is nothing. 
 				 * Can run a while loop until this does not match. */
 				refreshed = parse_mem(mem);
-
 				if(refreshed)
 					break;
 
@@ -188,7 +178,6 @@ int main(int argc, char **argv){
 					gtk_widget_show(win);
 					gtk_main();
 				}
-				(void)wait(NULL);
 			}
 			free_t_tweet(refreshed);
 		}

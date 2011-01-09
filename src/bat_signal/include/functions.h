@@ -38,7 +38,7 @@ void *xmalloc(int);
 GtkWidget *make_window(t_tweet *, char *);
 #endif
 #ifdef _SYS_SOCKET_H
-int sockets_connect(struct addrinfo *, char *);
+int sockets_connect(void);
 #endif
 void sockets_request(int, char *, char *, char **, int);
 void notice(t_tweet *);

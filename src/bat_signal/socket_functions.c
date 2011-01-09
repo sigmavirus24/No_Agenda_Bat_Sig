@@ -17,12 +17,17 @@
 
 #include "./include/socket_functions.h"
 
-int sockets_connect(struct addrinfo *hints, char *def){
+int sockets_connect(void){
+	struct addrinfo hints;
 	struct addrinfo *ret, *p;
 	int sockfd;
 
+   memset(&hints, 0, sizeof(struct addrinfo));
+   hints.ai_family = AF_UNSPEC;
+   hints.ai_socktype = SOCK_STREAM;
+
 	/* Not the actual sockfd yet, just using it until I get the sockfd */
-	if(0 != getaddrinfo(def, "80", hints, &ret)){
+	if(0 != getaddrinfo("search.twitter.com", "80", &hints, &ret)){
 		printf("Getaddrinfo error.\n");
 		exit(1);
 	}
@@ -42,14 +47,19 @@ int sockets_connect(struct addrinfo *hints, char *def){
 	return sockfd;
 }
 
-void sockets_request(int sockfd, char *def, char *host, char **mem, int memsize){
+void my_close(int *sockfd){
+	close(*sockfd);
+	*sockfd = -1;
+}
+
+void sockets_request(int sockfd, char *get, char *host, char **mem, int memsize){
 	char *p;
 	int r;
 
 	if(*mem != NULL){
 		p = *mem;
 
-		if(0 > (r = write(sockfd, def, strlen(def))))
+		if(0 > (r = write(sockfd, get, strlen(get))))
 			return;
 		if(0 > (r = write(sockfd, host, strlen(host))))
 			return;
@@ -62,11 +72,7 @@ void sockets_request(int sockfd, char *def, char *host, char **mem, int memsize)
 		}
 		*(p + r) = '\0';
 	}
-}
-
-void my_close(int *sockfd){
-	close(*sockfd);
-	*sockfd = -1;
+   my_close(&sockfd);
 }
 
 void notice(t_tweet *tweet){
