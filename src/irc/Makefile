@@ -1,4 +1,4 @@
-VERSION := 0.1.1
+VERSION := 0.1.2.development
 RM := rm -f
 CC := gcc
 CFLAGS := -ggdb3 -Werror -Wall -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE #-DDEBUG
