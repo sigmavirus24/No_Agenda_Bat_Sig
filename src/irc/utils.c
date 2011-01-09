@@ -135,38 +135,62 @@ void parse_srvr(char *in, t_setting *se, int fd){
          if(vect[3] && *vect[3] == '.'){
             vect[3]++;
             n = slice(vect[3], ' ');
-            if(!strcmp(n, "test")){
+            if(!strcmp(vect[3], "itm")){
                if(!strcmp(vect[2], se->nick))
-                  sprintf(tmp, "PRIVMSG %s Hello %s\r\n", *l, *l);
+                  sprintf(tmp, "PRIVMSG %s In The Morning %s\r\n", *l, *l);
                else
-                  sprintf(tmp, "PRIVMSG %s Hello Slaves\r\n", vect[2]);
+                  sprintf(tmp, "PRIVMSG %s In The Morning Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
-            } else if(!strcmp(n, "quit")){
+            } else if(!strcmp(vect[3], "quit")){
                wrap_send(fd, "QUIT Goodbye slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
                exit(0);
-            } else if(!strcmp(n, "start_signal")){
+            } else if(!strcmp(vect[3], "start_signal")){
                if(!fork()){
                   char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
                      NULL};
                   execvp(*args, args);
                }
-            } else if(!strcmp(n, "start_test")){
+            } else if(!strcmp(vect[3], "start_test")){
                if(!fork()){
                   char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
                   execvp(*args, args);
                }
-            } else if(!strcmp(n, "help")){
+            } else if(!strcmp(vect[3], "info") || !strcmp(vect[3], "version")){
+               sprintf(tmp, "PRIVMSG %s No Agenda IRC Bot Version "VERSION"\r\n", vect[2]);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s Copyright (C) 2010 SigmaVirus24\r\n", vect[2]);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s https://github.com/sigmavirus24/No_Agenda_Bat_Sig/tree/stable\r\n",
+                     vect[2]);
+               wrap_send(fd, tmp);
+            } else if(!strcmp(vect[3], "stream")){
+               sprintf(tmp, "PRIVMSG %s http://www.noagendastream.com/\r\n", vect[2]);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s Back-up: http://live.noagendamix.com:8000/listen.pls\r\n", vect[2]);
+               wrap_send(fd, tmp);
+            } else if(!strcmp(vect[3], "google")){
+               sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[2], n);
+               wrap_send(fd, tmp);
+            } else if(!strcmp(vect[3], "help")){
                sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", *l);
                wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .google\r\n", *l);
+               wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .help\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .info\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .itm\r\n", *l);
+               wrap_send(fd, tmp);
+               sprintf(tmp, "PRIVMSG %s .quit\r\n", *l);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .start_signal\r\n",
                      *l);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .test\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .stream\r\n", *l);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .quit\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .version\r\n", *l);
                wrap_send(fd, tmp);
             }
          }
