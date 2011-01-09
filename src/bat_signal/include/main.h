@@ -17,7 +17,6 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#include <curl/curl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
