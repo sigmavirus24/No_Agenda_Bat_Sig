@@ -129,8 +129,10 @@ void parse_srvr(char *in, t_setting *se, int fd){
       if(!strcmp(vect[1], "PRIVMSG")){
          for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
             ;
+#if 0
          if(!(*l))
             return;
+#endif
 
          if(vect[3] && *vect[3] == '.'){
             vect[3]++;
@@ -141,17 +143,17 @@ void parse_srvr(char *in, t_setting *se, int fd){
                else
                   sprintf(tmp, "PRIVMSG %s In The Morning Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "quit")){
+            } else if(*l && !strcmp(vect[3], "quit")){
                wrap_send(fd, "QUIT Goodbye slaves!\r\n");
                kill(se->listening_pid, SIGKILL);
                exit(0);
-            } else if(!strcmp(vect[3], "start_signal")){
+            } else if(*l && !strcmp(vect[3], "start_signal")){
                if(!fork()){
                   char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
                      NULL};
                   execvp(*args, args);
                }
-            } else if(!strcmp(vect[3], "start_test")){
+            } else if(*l && !strcmp(vect[3], "start_test")){
                if(!fork()){
                   char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
                   execvp(*args, args);
@@ -169,7 +171,8 @@ void parse_srvr(char *in, t_setting *se, int fd){
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s Back-up: http://live.noagendamix.com:8000/listen.pls\r\n", vect[2]);
                wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "google")){
+            } else if(!strcmp(vect[3], "google") && n){
+               replace_spaces(&n);
                sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[2], n);
                wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "help")){
@@ -183,9 +186,9 @@ void parse_srvr(char *in, t_setting *se, int fd){
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .itm\r\n", *l);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .quit\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .quit (PRIVELEGED)\r\n", *l);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .start_signal\r\n",
+               sprintf(tmp, "PRIVMSG %s .start_signal (PRIVELEGED)\r\n",
                      *l);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .stream\r\n", *l);
@@ -324,12 +327,14 @@ int find(char *str, char ch){
 
 int count(char *str, char ch){
    int i = -1;
+   int j;
    int count;
 
    if(str && *str){
       i = find(str, ch);
       for(count = 0; i > 0; count++){
-         i = (0 < find(str + i + 1, ch)) ? (i + find(str + i + 1, ch) + count + 1) : -1;
+         j = find(str + i + 1, ch);
+         i = (0 < j) ? (i + j + count + 1) : -1;
       }
       return count + 1;
    }
@@ -385,6 +390,28 @@ void clean_up(t_setting *se){
          ;
       for(p--; p != se->ausers; p--)
          free(p);
+   }
+}
+
+void replace_spaces(char **goog){
+   char *str;
+   int cnt;
+   int len;
+   int i;
+
+   if(goog && *goog){
+      str = *goog;
+      len = strlen(str);
+      cnt = count(str, ' ');
+      *goog = (char *)xmalloc((len + (cnt << 1) + 1) * sizeof(char));
+      memset(*goog, '\0', len + (cnt << 1) + 1);
+      for( ; cnt > 1; cnt--, str += i){
+         i = find(str, ' ');
+         strncat(*goog, str, i);
+         strcat(*goog, "%20");
+         i++;
+      }
+      strcat(*goog, str);
    }
 }
 /* vim: set ts=3 sw=3 et: */
