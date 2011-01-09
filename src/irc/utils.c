@@ -129,17 +129,15 @@ void parse_srvr(char *in, t_setting *se, int fd){
       if(!strcmp(vect[1], "PRIVMSG")){
          for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
             ;
-#if 0
-         if(!(*l))
-            return;
-#endif
+
+         i = (!strcmp(vect[2], se->nick)) ? 0 : 2;
 
          if(vect[3] && *vect[3] == '.'){
             vect[3]++;
             n = slice(vect[3], ' ');
             if(!strcmp(vect[3], "itm")){
                if(!strcmp(vect[2], se->nick))
-                  sprintf(tmp, "PRIVMSG %s In The Morning %s\r\n", *l, *l);
+                  sprintf(tmp, "PRIVMSG %s In The Morning %s\r\n", vect[0], vect[0]);
                else
                   sprintf(tmp, "PRIVMSG %s In The Morning Slaves\r\n", vect[2]);
                wrap_send(fd, tmp);
@@ -159,48 +157,48 @@ void parse_srvr(char *in, t_setting *se, int fd){
                   execvp(*args, args);
                }
             } else if(!strcmp(vect[3], "info") || !strcmp(vect[3], "version")){
-               sprintf(tmp, "PRIVMSG %s No Agenda IRC Bot Version "VERSION"\r\n", vect[2]);
+               sprintf(tmp, "PRIVMSG %s No Agenda IRC Bot Version "VERSION"\r\n", vect[i]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s Copyright (C) 2010 SigmaVirus24\r\n", vect[2]);
+               sprintf(tmp, "PRIVMSG %s Copyright (C) 2010 SigmaVirus24\r\n", vect[i]);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s https://github.com/sigmavirus24/No_Agenda_Bat_Sig/tree/stable\r\n",
-                     vect[2]);
+                     vect[i]);
                wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "stream")){
                if(strcmp(n, vect[3])){
-                  sprintf(tmp, "PRIVMSG %s %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[2], n);
+                  sprintf(tmp, "PRIVMSG %s %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[i], n);
                   wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s %s Back-up: http://www.noagendastreaem.com\r\n", vect[2], n);
+                  sprintf(tmp, "PRIVMSG %s %s Back-up: http://www.noagendastreaem.com\r\n", vect[i], n);
                   wrap_send(fd, tmp);
                } else {
-                  sprintf(tmp, "PRIVMSG %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[2]);
+                  sprintf(tmp, "PRIVMSG %s http://live.noagendamix.com:8000/listen.pls\r\n", vect[i]);
                   wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s Back-up: http://www.noagendastream.com/\r\n", vect[2]);
+                  sprintf(tmp, "PRIVMSG %s Back-up: http://www.noagendastream.com/\r\n", vect[i]);
                   wrap_send(fd, tmp);
                }
             } else if(!strcmp(vect[3], "google") && n){
                replace_spaces(&n);
-               sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[2], n);
+               sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[i], n);
                wrap_send(fd, tmp);
             } else if(!strcmp(vect[3], "help")){
-               sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .google\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .google\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .help\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .help\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .info\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .info\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .itm\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .itm\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .quit (PRIVELEGED)\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .quit (PRIVELEGED)\r\n", vect[0]);
                wrap_send(fd, tmp);
                sprintf(tmp, "PRIVMSG %s .start_signal (PRIVELEGED)\r\n",
-                     *l);
+                     vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .stream\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .stream\r\n", vect[0]);
                wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s .version\r\n", *l);
+               sprintf(tmp, "PRIVMSG %s .version\r\n", vect[0]);
                wrap_send(fd, tmp);
             }
          }
