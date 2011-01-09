@@ -45,7 +45,8 @@ void join_chans(int, t_setting *);
 void wrap_send(int, char *);
 void *xmalloc(int);
 void clean_up(t_setting *);
-void replace_spaces(char **);
+void replace_spaces(char **, char *);
+void print_help(int, char *);
 
 #endif
 /* vim: set ts=3 sw=3 et: */
