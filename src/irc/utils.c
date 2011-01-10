@@ -99,8 +99,7 @@ int dial(char *host, char *port){
 }
 
 void parse_srvr(char *in, t_setting *se, int fd){
-   char *n;
-   char **l, **t;
+   char **l;
    char **vect;
    int i;
    char tmp[128];
@@ -111,147 +110,19 @@ void parse_srvr(char *in, t_setting *se, int fd){
       if(!vect)
          exit(1);
 
-      if(!strcmp(vect[0], "PONG")) /* Server is replying to a PING, ignore */
-         return;
       if(!strcmp(vect[0], "PING")){
          sprintf(tmp, "PONG %s\r\n", vect[1]);
 #ifdef DEBUG
          printf(">>> %s", tmp);
 #endif
          wrap_send(fd, tmp);
-         return;
-      }
-      if(!strcmp(vect[1], "451") || !strcmp(vect[2], "JOIN")){
+      } else if(!strcmp(vect[1], "451") || !strcmp(vect[2], "JOIN")){
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
-      }
-      if(!strcmp(vect[1], "PRIVMSG")){
-         for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
-            ;
+      } else if(!strcmp(vect[1], "PRIVMSG"))
+         privmsg(vect, se, fd);
 
-         i = (!strcmp(vect[2], se->nick)) ? 0 : 2;
-
-         if(vect[3] && *vect[3] == '.'){
-            vect[3]++;
-            n = slice(vect[3], ' ');
-            if(!strcmp(vect[3], "itm")){
-               if(!strcmp(vect[2], se->nick))
-                  sprintf(tmp, "PRIVMSG %s In The Morning %s\r\n", vect[0], 
-                        vect[0]);
-               else
-                  sprintf(tmp, "PRIVMSG %s In The Morning Slaves\r\n", vect[2]);
-               wrap_send(fd, tmp);
-            } else if(*l && !strcmp(vect[3], "part")){
-               sprintf(tmp, "PART %s\r\n", vect[2]);
-               wrap_send(fd, tmp);
-               for(l = se->chans; *l && strcmp(*l, vect[2]); l++)
-                  ;
-               t = se->chans;
-               for(se->chans = l; *(se->chans); se->chans++){
-                  if(*(se->chans + 1))
-                     *(se->chans) = *(se->chans + 1);
-                  else
-                     break;
-               }
-               *(se->chans) = NULL;
-               free(*l);
-               se->chans = t;
-            } else if(*l && !strcmp(vect[3], "quit")){
-               wrap_send(fd, "QUIT Goodbye slaves!\r\n");
-               kill(se->listening_pid, SIGKILL);
-               exit(0);
-            } else if(*l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
-               sprintf(tmp, "INVITE %s %s\r\n", n, vect[2]);
-               wrap_send(fd, tmp);
-            } else if(*l && !strcmp(vect[3], "start_signal")){
-               if(!fork()){
-                  char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
-                     NULL};
-                  execvp(*args, args);
-               }
-            } else if(*l && !strcmp(vect[3], "start_test")){
-               if(!fork()){
-                  char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
-                  execvp(*args, args);
-               }
-            } else if(!strcmp(vect[3], "info") || !strcmp(vect[3], "version")){
-               sprintf(tmp, "PRIVMSG %s No Agenda IRC Bot Version "VERSION
-                     "\r\n", vect[i]);
-               wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s Copyright (C) 2010 SigmaVirus24\r\n", 
-                     vect[i]);
-               wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s https://github.com/sigmavirus24/No_Age"
-                     "nda_Bat_Sig/tree/stable\r\n",
-                     vect[i]);
-               wrap_send(fd, tmp);
-               sprintf(tmp, "PRIVMSG %s #linux-bat-signal on noagendachat.net"
-                     "\r\n", vect[i]);
-               wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "stream")){
-               if(strcmp(n, vect[3])){
-                  sprintf(tmp, "PRIVMSG %s %s http://live.noagendamix.com:8000/"
-                        "listen.pls\r\n", vect[i], n);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s %s Back-up: http://www.noagendastrea"
-                        "m.com\r\n", vect[i], n);
-                  wrap_send(fd, tmp);
-               } else {
-                  sprintf(tmp, "PRIVMSG %s http://live.noagendamix.com:8000/lis"
-                        "ten.pls\r\n", vect[i]);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s Back-up: http://www.noagendastream.c"
-                        "om/\r\n", vect[i]);
-                  wrap_send(fd, tmp);
-               }
-            } else if(!strcmp(vect[3], "google") && strcmp(vect[3], n)){
-               replace_spaces(&n, "%20");
-               sprintf(tmp, "PRIVMSG %s http://lmgtfy.com/?q=%s\r\n", vect[i], n);
-               wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "wiki") && strcmp(vect[3], n)){
-               replace_spaces(&n, "_");
-               sprintf(tmp, "PRIVMSG %s https://secure.wikimedia.org/wikipedia/"
-                     "en/wiki/%s\r\n", vect[i], n);
-               wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "opencongress") && strcmp(vect[3], n)){
-               replace_spaces(&n, "%20");
-               sprintf(tmp, "PRIVMSG %s http://www.opencongress.org/search/res"
-                     "ult?q=%s&search_bills=1\r\n", vect[i], n);
-               wrap_send(fd, tmp);
-            } else if(!strcmp(vect[3], "help")){
-               print_help(fd, vect[0]);
-            } else if(!strcmp(vect[3], "twitter")){
-               if(!count(n, ' ')){
-                  sprintf(tmp, "PRIVMSG %s https://twitter.com/%s\r\n",
-                        vect[i], n);
-                  wrap_send(fd, tmp);
-               }
-            } else if (!strcmp(vect[3], "donate")){
-               if(strcmp(vect[3], n)){
-                  sprintf(tmp, "PRIVMSG %s %s http://dvorak.org/na\r\n",
-                        vect[i], n);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s %s http://noagenda.squarespace.com/"
-                        "donations/\r\n", vect[i], n);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s %s http://www.noagendanation.com/"
-                        "donate\r\n", vect[i], n);
-                  wrap_send(fd, tmp);
-               } else {
-                  sprintf(tmp, "PRIVMSG %s http://dvorak.org/na\r\n",
-                        vect[i]);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s http://noagenda.squarespace.com/"
-                        "donations/\r\n", vect[i]);
-                  wrap_send(fd, tmp);
-                  sprintf(tmp, "PRIVMSG %s http://www.noagendanation.com/"
-                        "donate\r\n", vect[i]);
-                  wrap_send(fd, tmp);
-               }
-            }
-         }
-      }
       for(i = 0, l = vect; *l; l++)
          ;
       for( ; i; i--)
@@ -470,40 +341,147 @@ void replace_spaces(char **goog, char *s){
    }
 }
 
-void print_help(int fd, char *nick){
+void sprintf_send(int fd, char *to, char *fn){
    char tmp[1024];
    memset(tmp, '\0', 1024);
-   sprintf(tmp, "PRIVMSG %s ===COMMANDS===\r\n", nick);
+   sprintf(tmp, "PRIVMSG %s %s\r\n", to, fn);
    wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .donate [nick]\r\n", nick);
+}
+
+
+void print_help(int fd, char *nick){
+   sprintf_send(fd, nick, "===COMMANDS===");
+   sprintf_send(fd, nick, ".donate [nick]");
+   sprintf_send(fd, nick, ".google <phrase>");
+   sprintf_send(fd, nick, ".help");
+   sprintf_send(fd, nick, ".info");
+   sprintf_send(fd, nick, ".invite <nick>*");
+   sprintf_send(fd, nick, ".itm");
+   sprintf_send(fd, nick, ".opencongress <bill>");
+   sprintf_send(fd, nick, ".part (PRIVELEGED)");
+   sprintf_send(fd, nick, ".quit (PRIVELEGED)");
+   sprintf_send(fd, nick, ".start_signal (PRIVELEGED)");
+   sprintf_send(fd, nick, ".stream [nick]");
+   sprintf_send(fd, nick, ".twitter <username>");
+   sprintf_send(fd, nick, ".version");
+   sprintf_send(fd, nick, ".wiki <phrase>");
+   sprintf_send(fd, nick, "Things in <>'s are required. Things in []'s are opti"
+         "onal.");
+   sprintf_send(fd, nick, "* The bot must have proper permissions to do this.");
+}
+
+void swap_chans(t_setting *se, int i){
+   char *l;
+
+   l = *(se->chans + i);
+   *(se->chans + i) = *(se->chans + se->num_chans);
+   *(se->chans + se->num_chans) = l;
+   se->num_chans--;
+}
+
+void sprintf_send2(int fd, char *to, char *one, char *two){
+   char tmp[1024];
+   memset(tmp, '\0', 1024);
+   sprintf(tmp, "PRIVMSG %s %s%s\r\n", to, one, two);
    wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .google <phrase>\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .help\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .info\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .itm\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .opencongress <bill>\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .part (PRIVELEGED)\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .quit (PRIVELEGED)\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .start_signal (PRIVELEGED)\r\n",
-         nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .stream [nick]\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .twitter <username>\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .version\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   .wiki <phrase>\r\n", nick);
-   wrap_send(fd, tmp);
-   sprintf(tmp, "PRIVMSG %s   Things in <>'s are required,"
-         "Things in []'s are optional.\r\n", nick);
-   wrap_send(fd, tmp);
+}
+
+void privmsg(char **vect, t_setting *se, int fd){
+   char **l;
+   /* char **t; */
+   char *n;
+   char tmp[128];
+   int i;
+
+   for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
+      ;
+
+   i = (!strcmp(vect[2], se->nick)) ? 0 : 2;
+
+   if(vect[3] && *vect[3] == '.'){
+      vect[3]++;
+      n = slice(vect[3], ' ');
+      if(!strcmp(vect[3], "itm")){
+         if(!strcmp(vect[2], se->nick)){
+            sprintf_send2(fd, vect[0], "In The Morning ", vect[0]);
+         } else
+            sprintf_send(fd, vect[2], "In The Morning Slaves");
+      } else if(*l && !strcmp(vect[3], "part")){
+         sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
+         wrap_send(fd, tmp);
+         for(l = se->chans, i = 0; *l && strcmp(*l, vect[2]); l++, i++)
+            ;
+         if(i < se->num_chans)
+            swap_chans(se, i);
+         else
+            se->num_chans--;
+      } else if(*l && !strcmp(vect[3], "quit")){
+         wrap_send(fd, "QUIT Goodbye slaves!\r\n");
+         kill(se->listening_pid, SIGKILL);
+         exit(0);
+      } else if(*l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
+         sprintf(tmp, "INVITE %s %s\r\n", n, vect[2]);
+         wrap_send(fd, tmp);
+      } else if(*l && !strcmp(vect[3], "start_signal")){
+         if(!fork()){
+            char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
+               NULL};
+            execvp(*args, args);
+         }
+      } else if(*l && !strcmp(vect[3], "start_test")){
+         if(!fork()){
+            char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
+            execvp(*args, args);
+         }
+      } else if(!strcmp(vect[3], "info") || !strcmp(vect[3], "version")){
+         sprintf_send(fd, vect[i], "No Agenda IRC Bot Version "VERSION);
+         sprintf_send(fd, vect[i], "Copyright (C) 2010 Sigmavirus24");
+         sprintf_send(fd, vect[i], "https://github.com/sigmavirus24/No_Agenda"
+               "_Bat_Sig/tree/stable");
+         sprintf_send(fd, vect[i], "#linux-bat-signal on noagendachat.net");
+      } else if(!strcmp(vect[3], "stream")){
+         if(strcmp(n, vect[3])){
+            sprintf_send2(fd, vect[i], n, " http://live.noagendamix.com:8000/"
+                  "listen.pls");
+            sprintf_send2(fd, vect[i], n, " Back-up: http://www.noagendastream"
+                  ".com");
+         } else {
+            sprintf_send(fd, vect[i], "http://live.noagendamix.com:8000/listen"
+                  ".pls");
+            sprintf_send(fd, vect[i], "Back-up: http://www.noagendastream.com");
+         }
+      } else if(!strcmp(vect[3], "google") && strcmp(vect[3], n)){
+         replace_spaces(&n, "%20");
+         sprintf_send2(fd, vect[i], "http://lmgtfy.com?q=", n);
+      } else if(!strcmp(vect[3], "wiki") && strcmp(vect[3], n)){
+         replace_spaces(&n, "_");
+         sprintf_send2(fd, vect[i], "https://secure.wikimedia.org/wikipedia/"
+               "en/wiki/", n);
+      } else if(!strcmp(vect[3], "opencongress") && strcmp(vect[3], n)){
+         replace_spaces(&n, "%20");
+         sprintf(tmp, "PRIVMSG %s http://www.opencongress.org/search/res"
+               "ult?q=%s&search_bills=1\r\n", vect[i], n);
+         wrap_send(fd, tmp);
+      } else if(!strcmp(vect[3], "help")){
+         print_help(fd, vect[0]);
+      } else if(!strcmp(vect[3], "twitter")){
+         if(!count(n, ' ')){
+            sprintf_send2(fd, vect[i], "https://twitter.com/", n);
+         }
+      } else if (!strcmp(vect[3], "donate")){
+         if(strcmp(vect[3], n)){
+            sprintf_send2(fd, vect[i], n, " http://dvorak.org/na/");
+            sprintf_send2(fd, vect[i], n, " http://noagenda.squarespace.com/"
+                  "donations/");
+            sprintf_send2(fd, vect[i], n, " http://www.noagendanation.com/"
+                  "donate");
+         } else {
+            sprintf_send(fd, vect[i], "http://dvorak.org/na/");
+            sprintf_send(fd, vect[i], "http://noagenda.squaresapce.com/"
+                  "donations/");
+            sprintf_send(fd, vect[i], "http://www.noagendanation.com/donate");
+         }
+      }
+   }
 }
 /* vim: set ts=3 sw=3 et: */

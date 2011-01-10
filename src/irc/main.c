@@ -191,6 +191,7 @@ void read_rc(char *file, t_setting *se){
 
       /* Parse out channels and authorized users */
       se->chans = parse(se->_chans, ',');
+      se->num_chans = count(se->_chans, ',');
       se->ausers = parse(se->_ausers, ',');
    }
 }
