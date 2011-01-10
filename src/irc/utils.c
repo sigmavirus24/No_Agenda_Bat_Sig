@@ -374,16 +374,20 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".google <phrase>");
    sprintf_send(fd, nick, ".help");
    sprintf_send(fd, nick, ".info");
+   sleep(1);
    sprintf_send(fd, nick, ".invite <nick>*");
    sprintf_send(fd, nick, ".itm");
-   sprintf_send(fd, nick, ".join <#channel> (PRIVELEGED)");
+   sprintf_send(fd, nick, ".join <#channel> [key] (PRIVELEGED)");
+   sprintf_send(fd, nick, ".list_chans (PRIVELEGED)");
    sprintf_send(fd, nick, ".opencongress <bill>");
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
+   sleep(1);
    sprintf_send(fd, nick, ".quit (PRIVELEGED)");
    sprintf_send(fd, nick, ".start_signal (PRIVELEGED)");
    sprintf_send(fd, nick, ".stream [nick]");
    sprintf_send(fd, nick, ".twitter <username>");
    sprintf_send(fd, nick, ".version");
+   sleep(1);
    sprintf_send(fd, nick, ".wiki <phrase>");
    sprintf_send(fd, nick, "Things in <>'s are required. Things in []'s are opti"
          "onal.");
@@ -440,6 +444,9 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
          sprintf(tmp, "INVITE %s %s\r\n", n, vect[2]);
          wrap_send(fd, tmp);
+      } else if(l && !strcmp(vect[3], "list_chans")){
+         for(l = se->chan_h; l; l = l->next)
+            sprintf_send(fd, vect[0], l->name);
       } else if(l && !strcmp(vect[3], "start_signal")){
          if(!fork()){
             char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
