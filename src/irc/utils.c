@@ -370,6 +370,8 @@ void sprintf_send(int fd, char *to, char *fn){
 
 void print_help(int fd, char *nick){
    sprintf_send(fd, nick, "===COMMANDS===");
+   sprintf_send(fd, nick, ".add <nick> (PRIVELEGED)");
+   sprintf_send(fd, nick, ".del <nick> (PRIVELEGED)");
    sprintf_send(fd, nick, ".donate [nick]");
    sprintf_send(fd, nick, ".google <phrase>");
    sprintf_send(fd, nick, ".help");
@@ -378,7 +380,9 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".invite <nick>*");
    sprintf_send(fd, nick, ".itm");
    sprintf_send(fd, nick, ".join <#channel> [key] (PRIVELEGED)");
+   sprintf_send(fd, nick, ".list_ausers (PRIVELEGED)");
    sprintf_send(fd, nick, ".list_chans (PRIVELEGED)");
+   sprintf_send(fd, nick, ".mkrc (PRIVELEGED)");
    sprintf_send(fd, nick, ".opencongress <bill>");
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
    sleep(1);
@@ -399,6 +403,25 @@ void sprintf_send2(int fd, char *to, char *one, char *two){
    memset(tmp, '\0', 1024);
    sprintf(tmp, "PRIVMSG %s %s%s\r\n", to, one, two);
    wrap_send(fd, tmp);
+}
+
+void make_rc(t_setting *se){
+   FILE *rc;
+   t_list *l;
+
+   if(NULL != (rc = fopen(se->rcfilepath, "w"))){
+      fprintf(rc, "password %s\nnick %s\nrealname %s\n", se->pass, se->nick,
+           se->realname);
+      fprintf(rc, "server %s\nport %s\nchannels %s", se->serv, se->port,
+            se->chan_h->name);
+      for(l = se->chan_h->next; l; l = l->next)
+         fprintf(rc, ",%s", l->name);
+      fprintf(rc, "\nauth_users %s", se->user_h->name);
+      for(l = se->user_h->next; l; l = l->next)
+         fprintf(rc, ",%s", l->name);
+      fflush(rc);
+      fclose(rc);
+   }
 }
 
 void privmsg(char **vect, t_setting *se, int fd){
@@ -489,11 +512,11 @@ void privmsg(char **vect, t_setting *se, int fd){
          wrap_send(fd, tmp);
       } else if(!strcmp(vect[3], "help")){
          print_help(fd, vect[0]);
-      } else if(!strcmp(vect[3], "twitter")){
+      } else if(!strcmp(vect[3], "twitter") && strcmp(vect[3], n)){
          if(!count(n, ' ')){
             sprintf_send2(fd, vect[i], "https://twitter.com/", n);
          }
-      } else if (!strcmp(vect[3], "donate")){
+      } else if(!strcmp(vect[3], "donate")){
          if(strcmp(vect[3], n)){
             sprintf_send2(fd, vect[i], n, " http://dvorak.org/na/");
             sprintf_send2(fd, vect[i], n, " http://noagenda.squarespace.com/"
@@ -506,6 +529,29 @@ void privmsg(char **vect, t_setting *se, int fd){
                   "donations/");
             sprintf_send(fd, vect[i], "http://www.noagendanation.com/donate");
          }
+      } else if(l && !strcmp(vect[3], "add") && strcmp(vect[3], n)){
+         slice(n, ' ');
+         if(!count(n, ' ')){
+            new_head(n, &(se->user_h));
+            sprintf_send2(fd, vect[0], n, " was added to the authorized users list.");
+         }
+      } else if(l && !strcmp(vect[3], "del") && strcmp(vect[3], n)){
+         if(!count(n, ' ')){
+            if(se->user_h){
+               if(strcmp(se->user_h->name, n)){
+                  for(l = se->user_h; l->next && strcmp(l->next->name, n); l = l->next) 
+                     ;
+                  remove_head(&(l->next));
+               } else {
+                  remove_head(&(se->user_h));
+               }
+            }
+         }
+      } else if(l && !strcmp(vect[3], "list_ausers")){
+         for(l = se->user_h; l; l = l->next)
+            sprintf_send(fd, vect[0], l->name);
+      } else if(l && !strcmp(vect[3], "mkrc")){
+         make_rc(se);
       }
    }
 }

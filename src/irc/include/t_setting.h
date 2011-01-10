@@ -19,6 +19,7 @@
 #include "t_list.h"
 
 typedef struct s_setting {
+   char *rcfilepath;
    char *pass;
    char *nick;
    char *realname;

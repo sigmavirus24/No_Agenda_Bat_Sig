@@ -39,6 +39,7 @@ int main(int argc, char **argv){
    }
 
    strcat(rc, "/.nabotrc");
+   se.rcfilepath = rc;
    read_rc(rc, &se);
 
 #ifdef DEBUG
