@@ -39,6 +39,7 @@ int main(int argc, char **argv){
    }
 
    strcat(rc, "/.nabotrc");
+   se.rcfilepath = rc;
    read_rc(rc, &se);
 
 #ifdef DEBUG
@@ -89,7 +90,7 @@ int main(int argc, char **argv){
    if(0 == pid){
       int bsfd;
       socklen_t saddrlen;
-      char **p;
+      t_list *p;
       char tmp[1028];
       struct sockaddr_in batsig;
 
@@ -112,8 +113,8 @@ int main(int argc, char **argv){
          *(recvd + pid) = '\0';
 
          memset(tmp, '\0', 1028);
-         for(p = se.chans ; *p; p++){
-            sprintf(tmp, "NOTICE %s :%s\r\n", *p, recvd);
+         for(p = se.chan_h ; p; p = p->next){
+            sprintf(tmp, "NOTICE %s :%s\r\n", p->name, recvd);
             wrap_send(fileno(server), tmp);
             memset(tmp, '\0', 1028);
          }
@@ -140,25 +141,29 @@ void borked_pipe(int signo){
    exit(0);
 }
 
-char **parse(char *str, char ch){
+t_list *parse(char *str, char ch){
    int cnt, i;
-   char **tmp;
    char *p;
+   t_list *ptr, *t;
 
    i = count(str, ch);
    if(i > 0){
-      tmp = (char **)xmalloc((i + 1) * sizeof(char *));
+      ptr = (t_list *)xmalloc(sizeof(t_list));
+      t = ptr;
       p = str;
-      for(cnt = i = 0; 0 < (i = find(p, ',')); p += i + 1, cnt++)
-         *(tmp + cnt) = strndup(p, i);
-      *(tmp + cnt++) = strdup(p);
-      *(tmp + cnt) = NULL;
+      for(cnt = i = 0; 0 < (i = find(p, ',')); p += i + 1, cnt++){
+         t->name = strndup(p, i);
+         t->next = (t_list *)xmalloc(sizeof(t_list));
+         t = t->next;
+      }
+      t->name = strdup(p);
+      t->next = NULL;
    } else {
-      tmp = (char **)xmalloc(2 * sizeof(char *));
-      *tmp = strdup(str);
-      *(tmp + 1) = NULL;
+      ptr = (t_list *)xmalloc(sizeof(t_list));
+      ptr->name = strdup(str);
+      ptr->next = NULL;
    }
-   return tmp;
+   return ptr;
 }
 
 void read_rc(char *file, t_setting *se){
@@ -189,8 +194,9 @@ void read_rc(char *file, t_setting *se){
       fclose(rc);
 
       /* Parse out channels and authorized users */
-      se->chans = parse(se->_chans, ',');
-      se->ausers = parse(se->_ausers, ',');
+      se->chan_h = parse(se->_chans, ',');
+      se->num_chans = count(se->_chans, ',');
+      se->user_h = parse(se->_ausers, ',');
    }
 }
 /* vim: set ts=3 sw=3 et: */

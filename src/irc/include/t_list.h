@@ -14,20 +14,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * See LICENSE file for license details.
  */
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __T_LIST_H__
+#define __T_LIST_H__
 
-#include <stdio.h>
-#include <signal.h>
-#include <string.h>
+typedef struct s_list t_list;
 
-int fork(void);
-
-#include "t_setting.h"
-#include "t_list.h"
-#include "utils.h"
-void read_rc(char *, t_setting *);
-void borked_pipe(int);
+struct s_list {
+   char *name;
+   t_list *next;
+};
 
 #endif
 /* vim: set ts=3 sw=3 et: */
