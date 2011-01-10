@@ -16,6 +16,7 @@
  */
 #ifndef __T_SETTING_H__
 #define __T_SETTING_H__
+#include "t_list.h"
 
 typedef struct s_setting {
    char *pass;
@@ -24,10 +25,10 @@ typedef struct s_setting {
    char *serv;
    char *port;
    char *_chans;
-   char **chans;
+   t_list *chan_h;
    int num_chans;
    char *_ausers;
-   char **ausers;
+   t_list *user_h;
    int listening_pid;
 } t_setting;
 #endif

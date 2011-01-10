@@ -288,8 +288,31 @@ char *slice(char *str, char ch){
    return (str + i + 1);
 }	
 
+void remove_head(t_list **h){
+   t_list *tmp;
+
+   if(h && *h){
+      tmp = *h;
+      *h = tmp->next;
+      tmp->next = NULL;
+      free(tmp->name);
+      free(tmp);
+   }
+}
+
+void new_head(char *n, t_list **h){
+   t_list *new;
+
+   if(n){
+      new = (t_list *)xmalloc(sizeof(t_list));
+      new->name = strdup(n);
+      new->next = *h;
+      *h = new;
+   }
+}
+
 void clean_up(t_setting *se){
-   char **p;
+   t_list *p;
 
    if(se->pass)
       free(se->pass);
@@ -305,17 +328,13 @@ void clean_up(t_setting *se){
       free(se->_chans);
    if(se->_ausers)
       free(se->_ausers);
-   if(se->chans && *(se->chans)){
-      for(p = se->chans; *p; p++)
-         ;
-      for(p--; p != se->chans; p--)
-         free(p);
+   if(se->chan_h){
+      for(p = se->chan_h; p;)
+         remove_head(&p);
    }
-   if(se->ausers && *(se->ausers)){
-      for(p = se->ausers; *p; p++)
-         ;
-      for(p--; p != se->ausers; p--)
-         free(p);
+   if(se->user_h){
+      for(p = se->chan_h; p;)
+         remove_head(&p);
    }
 }
 
@@ -357,6 +376,7 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".info");
    sprintf_send(fd, nick, ".invite <nick>*");
    sprintf_send(fd, nick, ".itm");
+   sprintf_send(fd, nick, ".join <#channel> (PRIVELEGED)");
    sprintf_send(fd, nick, ".opencongress <bill>");
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
    sprintf_send(fd, nick, ".quit (PRIVELEGED)");
@@ -370,15 +390,6 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, "* The bot must have proper permissions to do this.");
 }
 
-void swap_chans(t_setting *se, int i){
-   char *l;
-
-   l = *(se->chans + i);
-   *(se->chans + i) = *(se->chans + se->num_chans);
-   *(se->chans + se->num_chans) = l;
-   se->num_chans--;
-}
-
 void sprintf_send2(int fd, char *to, char *one, char *two){
    char tmp[1024];
    memset(tmp, '\0', 1024);
@@ -387,13 +398,13 @@ void sprintf_send2(int fd, char *to, char *one, char *two){
 }
 
 void privmsg(char **vect, t_setting *se, int fd){
-   char **l;
+   t_list *l;
    /* char **t; */
    char *n;
    char tmp[128];
    int i;
 
-   for(l = se->ausers; *l && strcmp(*l, vect[0]); l++)
+   for(l = se->user_h; l && strcmp(l->name, vect[0]); l = l->next)
       ;
 
    i = (!strcmp(vect[2], se->nick)) ? 0 : 2;
@@ -406,29 +417,36 @@ void privmsg(char **vect, t_setting *se, int fd){
             sprintf_send2(fd, vect[0], "In The Morning ", vect[0]);
          } else
             sprintf_send(fd, vect[2], "In The Morning Slaves");
-      } else if(*l && !strcmp(vect[3], "part")){
+      } else if(l && !strcmp(vect[3], "part")){
          sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
          wrap_send(fd, tmp);
-         for(l = se->chans, i = 0; *l && strcmp(*l, vect[2]); l++, i++)
-            ;
-         if(i < se->num_chans)
-            swap_chans(se, i);
-         else
-            se->num_chans--;
-      } else if(*l && !strcmp(vect[3], "quit")){
+         if(se->chan_h){
+            if(strcmp(se->chan_h->name, vect[2])){
+               for(l = se->chan_h; l->next && strcmp(l->next->name, vect[2]); l = l->next)
+                  ;
+               remove_head(&(l->next));
+            } else 
+               remove_head(&(se->chan_h));
+         }
+      } else if(l && !strcmp(vect[3], "join") && strcmp(n, vect[3])){
+         sprintf(tmp, "JOIN %s\r\n", n);
+         wrap_send(fd, tmp);
+         slice(n, ' '); /* Make sure there is no password attached */
+         new_head(n, &(se->chan_h));
+      } else if(l && !strcmp(vect[3], "quit")){
          wrap_send(fd, "QUIT Goodbye slaves!\r\n");
          kill(se->listening_pid, SIGKILL);
          exit(0);
-      } else if(*l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
+      } else if(l && !strcmp(vect[3], "invite") && strcmp(n, vect[3])){
          sprintf(tmp, "INVITE %s %s\r\n", n, vect[2]);
          wrap_send(fd, tmp);
-      } else if(*l && !strcmp(vect[3], "start_signal")){
+      } else if(l && !strcmp(vect[3], "start_signal")){
          if(!fork()){
             char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
                NULL};
             execvp(*args, args);
          }
-      } else if(*l && !strcmp(vect[3], "start_test")){
+      } else if(l && !strcmp(vect[3], "start_test")){
          if(!fork()){
             char *args[] = {"/usr/bin/python", "./src/irc/test.py", NULL};
             execvp(*args, args);
