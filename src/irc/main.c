@@ -114,7 +114,12 @@ int main(int argc, char **argv){
 
          memset(tmp, '\0', 1028);
          for(p = se.chan_h ; p; p = p->next){
-            sprintf(tmp, "NOTICE %s :%s\r\n", p->name, recvd);
+            if(strcmp(p->name, "#NoAgenda"))
+               sprintf(tmp, "NOTICE %s :%s\r\n", p->name, recvd);
+            else {
+               sprintf(tmp, "PRIVMSG %s Batsignal RECEIVED! No Agenda is going"
+                    " live! (%s)\r\n", p->name, recvd);
+            }
             wrap_send(fileno(server), tmp);
             memset(tmp, '\0', 1028);
          }
