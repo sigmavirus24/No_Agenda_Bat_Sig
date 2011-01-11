@@ -137,7 +137,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
          join_chans(fd, NULL);
       } else if(!strcmp(vect[1], "JOIN")){
          if(strcmp(vect[0], se->nick))
-            sprintf_send2(fd, vect[2], "In The Morning, ", vect[0]);
+            sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
          else
             sprintf_send(fd, vect[2], "In The Morning Slaves!");
       } else if(!strcmp(vect[1], "PRIVMSG"))
