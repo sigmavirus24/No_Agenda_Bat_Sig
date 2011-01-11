@@ -387,6 +387,7 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
    sleep(1);
    sprintf_send(fd, nick, ".quit (PRIVELEGED)");
+   sprintf_send(fd, nick, ".shownotes <# > 246>");
    sprintf_send(fd, nick, ".start_signal (PRIVELEGED)");
    sprintf_send(fd, nick, ".stream [nick]");
    sprintf_send(fd, nick, ".twitter <username>");
@@ -529,6 +530,9 @@ void privmsg(char **vect, t_setting *se, int fd){
                   "donations/");
             sprintf_send(fd, vect[i], "http://www.noagendanation.com/donate");
          }
+      } else if(!strcmp(vect[3], "shownotes") && atoi(n) > 246){
+         sprintf(tmp, "http://curryscloud.com/shownotes/index%s.html", n);
+         sprintf_send(fd, vect[i], tmp);
       } else if(l && !strcmp(vect[3], "add") && strcmp(vect[3], n)){
          slice(n, ' ');
          if(!count(n, ' ')){
