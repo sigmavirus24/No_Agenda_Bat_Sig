@@ -19,6 +19,21 @@
 #include <errno.h>
 #endif
 
+void sprintf_send(int fd, char *to, char *fn){
+   char tmp[1024];
+   memset(tmp, '\0', 1024);
+   sprintf(tmp, "PRIVMSG %s %s\r\n", to, fn);
+   wrap_send(fd, tmp);
+}
+
+
+void sprintf_send2(int fd, char *to, char *one, char *two){
+   char tmp[1024];
+   memset(tmp, '\0', 1024);
+   sprintf(tmp, "PRIVMSG %s %s%s\r\n", to, one, two);
+   wrap_send(fd, tmp);
+}
+
 int dial(char *host, char *port){
    struct addrinfo hints;
    struct addrinfo *p, *res;
@@ -116,10 +131,15 @@ void parse_srvr(char *in, t_setting *se, int fd){
          printf(">>> %s", tmp);
 #endif
          wrap_send(fd, tmp);
-      } else if(!strcmp(vect[1], "451") || !strcmp(vect[2], "JOIN")){
+      } else if(!strcmp(vect[1], "451")){/* || !strcmp(vect[2], "JOIN")){*/
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
+      } else if(!strcmp(vect[1], "JOIN")){
+         if(strcmp(vect[0], se->nick))
+            sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
+         else
+            sprintf_send(fd, vect[2], "In The Morning Slaves!");
       } else if(!strcmp(vect[1], "PRIVMSG"))
          privmsg(vect, se, fd);
 
@@ -360,14 +380,6 @@ void replace_spaces(char **goog, char *s){
    }
 }
 
-void sprintf_send(int fd, char *to, char *fn){
-   char tmp[1024];
-   memset(tmp, '\0', 1024);
-   sprintf(tmp, "PRIVMSG %s %s\r\n", to, fn);
-   wrap_send(fd, tmp);
-}
-
-
 void print_help(int fd, char *nick){
    sprintf_send(fd, nick, "===COMMANDS===");
    sprintf_send(fd, nick, ".add <nick> (PRIVELEGED)");
@@ -397,13 +409,6 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, "Things in <>'s are required. Things in []'s are opti"
          "onal.");
    sprintf_send(fd, nick, "* The bot must have proper permissions to do this.");
-}
-
-void sprintf_send2(int fd, char *to, char *one, char *two){
-   char tmp[1024];
-   memset(tmp, '\0', 1024);
-   sprintf(tmp, "PRIVMSG %s %s%s\r\n", to, one, two);
-   wrap_send(fd, tmp);
 }
 
 void make_rc(t_setting *se){
