@@ -139,7 +139,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
          wrap_send(fd, tmp);
       } else if(!strcmp(vect[1], "JOIN")){
          greet(vect, se, fd);
-      } else if(!strcmp(vect[1], "451")){/* || !strcmp(vect[2], "JOIN")){*/
+      } else if(!strcmp(vect[1], "451")){
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
@@ -447,6 +447,33 @@ void make_rc(t_setting *se){
    }
 }
 
+int check_add(t_list *head, char *new){
+   t_list *l;
+
+   if(head && new){
+      for(l = head; l && strcmp(l->name, new); l = l->next)
+         ;
+      if(!l){
+         new_head(new, &head);
+         return 1;
+      }
+   }
+   return 0;
+}
+
+void check_rm(t_list *head, char *rm){
+   t_list *l;
+
+   if(head && rm){
+      if(strcmp(head->name, rm)){
+         for(l = head; l->next && strcmp(rm, l->next->name); l = l->next)
+            ;
+         remove_head(&(l->next));
+      } else
+         remove_head(&head);
+   }
+}
+
 void privmsg(char **vect, t_setting *se, int fd){
    t_list *l;
    /* char **t; */
@@ -463,60 +490,44 @@ void privmsg(char **vect, t_setting *se, int fd){
       vect[3]++;
       n = slice(vect[3], ' ');
       if(!strcmp(vect[3], "itm")){
-         if(!strcmp(vect[2], se->nick)){
+         if(!strcmp(vect[2], se->nick))
             sprintf_send2(fd, vect[0], "In The Morning ", vect[0]);
-         } else if(strcmp(vect[3], n)){
+         else if(strcmp(vect[3], n))
             sprintf_send2(fd, vect[2], "In The Morning ", n);
-         } else
+         else
             sprintf_send(fd, vect[2], "In The Morning Slaves");
       } else if(!strcmp(vect[3], "opt-out")){
          if(!strcmp(vect[3], n))
             sprintf_send(fd, vect[0], "No channel or nick provided.");
          else if(*n == '#'){
-            new_head(n, &(se->nogreetc_h));
-            sprintf_send2(fd, vect[0], n, " is now being monitored for leaks.");
-         } else {
-            new_head(n, &(se->nogreetn_h));
-            if(!strcmp(vect[0], n))
-               sprintf_send(fd, n, "Please step over here for a pat down.");
-            else
-               sprintf_send2(fd, vect[0], n, " will now be subject to pat downs.");
-         }
+            if(check_add(se->nogreetc_h, n))
+               sprintf_send2(fd, vect[0], n, " is now being monitored for leaks.");
+         }else 
+            if(check_add(se->nogreetn_h, n)){
+               if(!strcmp(vect[0], n))
+                  sprintf_send(fd, n, "Please step over here for a pat down.");
+               else
+                  sprintf_send2(fd, vect[0], n, " will now be subject to pat downs.");
+            }
       } else if(!strcmp(vect[3], "opt-in")){
          if(!strcmp(vect[3], n))
             sprintf_send(fd, vect[0], "No channel or nick provided.");
-         else if(l && *n == '#'){
-            if(strcmp(se->nogreetc_h->name, n)){
-               for(l = se->nogreetc_h; l->next && strcmp(n, l->next->name); l = l->next)
-                  ;
-               remove_head(&(l->next));
-            } else
-               remove_head(&(se->nogreetc_h));
-         } else if(!strcmp(vect[0], n)){
-            if(strcmp(se->nogreetn_h->name, n)){
-               for(l = se->nogreetn_h; l->next && strcmp(n, l->next->name); l = l->next)
-                  ;
-               remove_head(&(l->next));
-            } else
-               remove_head(&(se->chan_h));
-         } else 
+         else if(l && *n == '#')
+            check_rm(se->nogreetc_h, n);
+         else if(!strcmp(vect[0], n))
+            check_rm(se->nogreetn_h, n);
+         else 
             sprintf_send(fd, vect[0], "You are not permitted to do that.");
       } else if(l && !strcmp(vect[3], "part")){
          sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
          wrap_send(fd, tmp);
-         if(se->chan_h){
-            if(strcmp(se->chan_h->name, vect[2])){
-               for(l = se->chan_h; l->next && strcmp(l->next->name, vect[2]); l = l->next)
-                  ;
-               remove_head(&(l->next));
-            } else 
-               remove_head(&(se->chan_h));
-         }
+         if(se->chan_h)
+            check_rm(se->chan_h, vect[2]);
       } else if(l && !strcmp(vect[3], "join") && strcmp(n, vect[3])){
          sprintf(tmp, "JOIN %s\r\n", n);
-         wrap_send(fd, tmp);
          slice(n, ' '); /* Make sure there is no password attached */
-         new_head(n, &(se->chan_h));
+         if(check_add(se->chan_h, n))
+            wrap_send(fd, tmp);
       } else if(l && !strcmp(vect[3], "quit")){
          wrap_send(fd, "QUIT Goodbye slaves!\r\n");
          kill(se->listening_pid, SIGKILL);
@@ -570,9 +581,8 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(!strcmp(vect[3], "help")){
          print_help(fd, vect[0]);
       } else if(!strcmp(vect[3], "twitter") && strcmp(vect[3], n)){
-         if(!count(n, ' ')){
+         if(!count(n, ' '))
             sprintf_send2(fd, vect[i], "https://twitter.com/", n);
-         }
       } else if(!strcmp(vect[3], "donate")){
          if(strcmp(vect[3], n)){
             sprintf_send2(fd, vect[i], n, " http://dvorak.org/na/");
@@ -591,22 +601,13 @@ void privmsg(char **vect, t_setting *se, int fd){
          sprintf_send(fd, vect[i], tmp);
       } else if(l && !strcmp(vect[3], "add") && strcmp(vect[3], n)){
          slice(n, ' ');
-         if(!count(n, ' ')){
-            new_head(n, &(se->user_h));
-            sprintf_send2(fd, vect[0], n, " was added to the authorized users list.");
-         }
+         if(!count(n, ' '))
+            if(check_add(se->user_h, n))
+               sprintf_send2(fd, vect[0], n, " was added to the authorized users list.");
       } else if(l && !strcmp(vect[3], "del") && strcmp(vect[3], n)){
-         if(!count(n, ' ')){
-            if(se->user_h){
-               if(strcmp(se->user_h->name, n)){
-                  for(l = se->user_h; l->next && strcmp(l->next->name, n); l = l->next) 
-                     ;
-                  remove_head(&(l->next));
-               } else {
-                  remove_head(&(se->user_h));
-               }
-            }
-         }
+         if(!count(n, ' '))
+            if(se->user_h)
+               check_rm(se->user_h, n);
       } else if(l && !strcmp(vect[3], "list_ausers")){
          for(l = se->user_h; l; l = l->next)
             sprintf_send(fd, vect[0], l->name);
