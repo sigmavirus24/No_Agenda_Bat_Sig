@@ -124,12 +124,16 @@ void parse_srvr(char *in, t_setting *se, int fd){
    char **vect;
    int i;
    char tmp[128];
+   t_list *head;
 
    if(in && *in && se){
       memset(tmp, '\0', 128);
       vect = srvr_to_vect(in);
       if(!vect)
          exit(1);
+      for(head = se->nogreet_h; head && strcmp(head->name, vect[2]);
+            head = head->next)
+         ;
 
       if(!strcmp(vect[0], "PING")){
          sprintf(tmp, "PONG %s\r\n", vect[1]);
@@ -137,15 +141,17 @@ void parse_srvr(char *in, t_setting *se, int fd){
          printf(">>> %s", tmp);
 #endif
          wrap_send(fd, tmp);
-      } else if(!strcmp(vect[1], "451")){/* || !strcmp(vect[2], "JOIN")){*/
-         identify(fd, NULL);
-         sleep(2);
-         join_chans(fd, NULL);
       } else if(!strcmp(vect[1], "JOIN")){
+         if(head)
+            return;
          if(strcmp(vect[0], se->nick))
             sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
          else
             sprintf_send(fd, vect[2], "In The Morning Slaves!");
+      } else if(!strcmp(vect[1], "451")){/* || !strcmp(vect[2], "JOIN")){*/
+         identify(fd, NULL);
+         sleep(2);
+         join_chans(fd, NULL);
       } else if(!strcmp(vect[1], "PRIVMSG"))
          privmsg(vect, se, fd);
 
