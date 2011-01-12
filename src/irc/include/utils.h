@@ -48,6 +48,7 @@ void clean_up(t_setting *);
 void replace_spaces(char **, char *);
 void print_help(int, char *);
 void privmsg(char **, t_setting *, int);
+void greet(char **, t_setting *, int);
 
 #endif
 /* vim: set ts=3 sw=3 et: */

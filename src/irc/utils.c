@@ -124,15 +124,12 @@ void parse_srvr(char *in, t_setting *se, int fd){
    char **vect;
    int i;
    char tmp[128];
-   t_list *head;
 
    if(in && *in && se){
       memset(tmp, '\0', 128);
       vect = srvr_to_vect(in);
       if(!vect)
          exit(1);
-#if 0
-#endif
 
       if(!strcmp(vect[0], "PING")){
          sprintf(tmp, "PONG %s\r\n", vect[1]);
@@ -141,20 +138,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
 #endif
          wrap_send(fd, tmp);
       } else if(!strcmp(vect[1], "JOIN")){
-         for(head = se->nogreetc_h; head && strcmp(head->name, vect[2]);
-               head = head->next)
-            ;
-         if(head)
-            return;
-         for(head = se->nogreetn_h; head && strcmp(head->name, vect[0]);
-               head = head->next)
-            ;
-         if(head)
-            return;
-         if(strcmp(vect[0], se->nick))
-            sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
-         else
-            sprintf_send(fd, vect[2], "In The Morning Slaves!");
+         greet(vect, se, fd);
       } else if(!strcmp(vect[1], "451")){/* || !strcmp(vect[2], "JOIN")){*/
          identify(fd, NULL);
          sleep(2);
@@ -604,6 +588,23 @@ void privmsg(char **vect, t_setting *se, int fd){
          make_rc(se);
       }
       vect[3]--;
+   }
+}
+
+void greet(char **vect, t_setting *se, int fd){
+   t_list *c, *n;
+
+   for(c = se->nogreetc_h; c && strcmp(c->name, vect[2]);
+         c = c->next)
+      ;
+   for(n = se->nogreetn_h; n && strcmp(n->name, vect[0]);
+         n = n->next)
+      ;
+   if(!c && !n){
+      if(strcmp(vect[0], se->nick))
+         sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
+      else
+         sprintf_send(fd, vect[2], "In The Morning Slaves!");
    }
 }
 /* vim: set ts=3 sw=3 et: */
