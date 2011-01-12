@@ -351,14 +351,22 @@ void clean_up(t_setting *se){
       free(se->_chans);
    if(se->_ausers)
       free(se->_ausers);
-   if(se->chan_h){
+   if(se->_nogreetc)
+      free(se->_nogreetc);
+   if(se->_nogreetn)
+      free(se->_nogreetn);
+   if(se->chan_h)
       for(p = se->chan_h; p;)
          remove_head(&p);
-   }
-   if(se->user_h){
+   if(se->user_h)
       for(p = se->chan_h; p;)
          remove_head(&p);
-   }
+   if(se->nogreetc_h)
+      for(p = se->nogreetc_h; p;)
+         remove_head(&p);
+   if(se->nogreetn_h)
+      for(p = se->nogreetn_h; p;)
+         remove_head(&p);
 }
 
 void replace_spaces(char **goog, char *s){
@@ -398,6 +406,7 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".list_ausers (PRIVELEGED)");
    sprintf_send(fd, nick, ".list_chans (PRIVELEGED)");
    sprintf_send(fd, nick, ".mkrc (PRIVELEGED)");
+   sprintf_send(fd, nick, ".opt-in <nick> <#channel (PRIVELEGED)>");
    sprintf_send(fd, nick, ".opt-out <#channel or nick>");
    sprintf_send(fd, nick, ".opencongress <bill>");
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
@@ -473,8 +482,27 @@ void privmsg(char **vect, t_setting *se, int fd){
             if(!strcmp(vect[0], n))
                sprintf_send(fd, n, "Please step over here for a pat down.");
             else
-               sprintf_send2(fd, vect[0], n, " will now be subject to a pat down");
+               sprintf_send2(fd, vect[0], n, " will now be subject to pat downs.");
          }
+      } else if(!strcmp(vect[3], "opt-in")){
+         if(!strcmp(vect[3], n))
+            sprintf_send(fd, vect[0], "No channel or nick provided.");
+         else if(l && *n == '#'){
+            if(strcmp(se->nogreetc_h->name, n)){
+               for(l = se->nogreetc_h; l->next && strcmp(n, l->next->name); l = l->next)
+                  ;
+               remove_head(&(l->next));
+            } else
+               remove_head(&(se->nogreetc_h));
+         } else if(!strcmp(vect[0], n)){
+            if(strcmp(se->nogreetn_h->name, n)){
+               for(l = se->nogreetn_h; l->next && strcmp(n, l->next->name); l = l->next)
+                  ;
+               remove_head(&(l->next));
+            } else
+               remove_head(&(se->chan_h));
+         } else 
+            sprintf_send(fd, vect[0], "You are not permitted to do that.");
       } else if(l && !strcmp(vect[3], "part")){
          sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
          wrap_send(fd, tmp);
