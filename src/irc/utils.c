@@ -22,7 +22,10 @@
 void sprintf_send(int fd, char *to, char *fn){
    char tmp[1024];
    memset(tmp, '\0', 1024);
-   sprintf(tmp, "PRIVMSG %s %s\r\n", to, fn);
+   sprintf(tmp, "PRIVMSG %s :%s\r\n", to, fn);
+#ifdef DEBUG
+   printf(">>> %s", tmp);
+#endif
    wrap_send(fd, tmp);
 }
 
@@ -30,7 +33,10 @@ void sprintf_send(int fd, char *to, char *fn){
 void sprintf_send2(int fd, char *to, char *one, char *two){
    char tmp[1024];
    memset(tmp, '\0', 1024);
-   sprintf(tmp, "PRIVMSG %s %s%s\r\n", to, one, two);
+   sprintf(tmp, "PRIVMSG %s :%s%s\r\n", to, one, two);
+#ifdef DEBUG
+   printf(">>> %s", tmp);
+#endif
    wrap_send(fd, tmp);
 }
 
@@ -135,6 +141,10 @@ void parse_srvr(char *in, t_setting *se, int fd){
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
+      } else if(!strcmp(vect[0], "NickServ") && !strcmp(vect[1], "NOTICE")
+            && !strncmp(vect[4], "nick", 4)){
+         /* Rizon does not seem to like to follow RFC's */
+         identify(fd, NULL);
       } else if(!strcmp(vect[1], "JOIN")){
          if(strcmp(vect[0], se->nick))
             sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
