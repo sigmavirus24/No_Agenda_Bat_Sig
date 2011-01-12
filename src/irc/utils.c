@@ -146,7 +146,7 @@ void parse_srvr(char *in, t_setting *se, int fd){
       } else if(!strcmp(vect[1], "PRIVMSG"))
          privmsg(vect, se, fd);
 
-      for(i = 0, l = vect; *l; l++)
+      for(i = 0, l = vect; *l; l++, i++)
          ;
       for( ; i; i--)
          free(*(vect + i));
@@ -323,6 +323,14 @@ void remove_head(t_list **h){
    }
 }
 
+void clear_list(t_list *head){
+   t_list *p;
+
+   if(head)
+      for(p = head; p;)
+         remove_head(&p);
+}
+
 void new_head(char *n, t_list **h){
    t_list *new;
 
@@ -335,8 +343,6 @@ void new_head(char *n, t_list **h){
 }
 
 void clean_up(t_setting *se){
-   t_list *p;
-
    if(se->pass)
       free(se->pass);
    if(se->nick)
@@ -355,18 +361,10 @@ void clean_up(t_setting *se){
       free(se->_nogreetc);
    if(se->_nogreetn)
       free(se->_nogreetn);
-   if(se->chan_h)
-      for(p = se->chan_h; p;)
-         remove_head(&p);
-   if(se->user_h)
-      for(p = se->chan_h; p;)
-         remove_head(&p);
-   if(se->nogreetc_h)
-      for(p = se->nogreetc_h; p;)
-         remove_head(&p);
-   if(se->nogreetn_h)
-      for(p = se->nogreetn_h; p;)
-         remove_head(&p);
+   clear_list(se->chan_h);
+   clear_list(se->user_h);
+   clear_list(se->nogreetc_h);
+   clear_list(se->nogreetn_h);
 }
 
 void replace_spaces(char **goog, char *s){
