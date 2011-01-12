@@ -131,9 +131,8 @@ void parse_srvr(char *in, t_setting *se, int fd){
       vect = srvr_to_vect(in);
       if(!vect)
          exit(1);
-      for(head = se->nogreet_h; head && strcmp(head->name, vect[2]);
-            head = head->next)
-         ;
+#if 0
+#endif
 
       if(!strcmp(vect[0], "PING")){
          sprintf(tmp, "PONG %s\r\n", vect[1]);
@@ -142,6 +141,14 @@ void parse_srvr(char *in, t_setting *se, int fd){
 #endif
          wrap_send(fd, tmp);
       } else if(!strcmp(vect[1], "JOIN")){
+         for(head = se->nogreetc_h; head && strcmp(head->name, vect[2]);
+               head = head->next)
+            ;
+         if(head)
+            return;
+         for(head = se->nogreetn_h; head && strcmp(head->name, vect[0]);
+               head = head->next)
+            ;
          if(head)
             return;
          if(strcmp(vect[0], se->nick))
@@ -407,6 +414,7 @@ void print_help(int fd, char *nick){
    sprintf_send(fd, nick, ".list_ausers (PRIVELEGED)");
    sprintf_send(fd, nick, ".list_chans (PRIVELEGED)");
    sprintf_send(fd, nick, ".mkrc (PRIVELEGED)");
+   sprintf_send(fd, nick, ".opt-out <#channel or nick>");
    sprintf_send(fd, nick, ".opencongress <bill>");
    sprintf_send(fd, nick, ".part (PRIVELEGED)");
    sleep(1);
@@ -437,6 +445,12 @@ void make_rc(t_setting *se){
       fprintf(rc, "\nauth_users %s", se->user_h->name);
       for(l = se->user_h->next; l; l = l->next)
          fprintf(rc, ",%s", l->name);
+      fprintf(rc, "\nnogreet_chans %s", se->nogreetc_h->name);
+      for(l = se->nogreetc_h->next; l; l = l->next)
+         fprintf(rc, ",%s", l->name);
+      fprintf(rc, "\nnogreet_nicks %s", se->nogreetn_h->name);
+      for(l = se->nogreetn_h->next; l; l = l->next)
+         fprintf(rc, ",%s", l->name);
       fflush(rc);
       fclose(rc);
    }
@@ -460,8 +474,23 @@ void privmsg(char **vect, t_setting *se, int fd){
       if(!strcmp(vect[3], "itm")){
          if(!strcmp(vect[2], se->nick)){
             sprintf_send2(fd, vect[0], "In The Morning ", vect[0]);
+         } else if(strcmp(vect[3], n)){
+            sprintf_send2(fd, vect[2], "In The Morning ", n);
          } else
             sprintf_send(fd, vect[2], "In The Morning Slaves");
+      } else if(!strcmp(vect[3], "opt-out")){
+         if(!strcmp(vect[3], n))
+            sprintf_send(fd, vect[0], "No channel or nick provided.");
+         else if(*n == '#'){
+            new_head(n, &(se->nogreetc_h));
+            sprintf_send2(fd, vect[0], n, " is now being monitored for leaks.");
+         } else {
+            new_head(n, &(se->nogreetn_h));
+            if(!strcmp(vect[0], n))
+               sprintf_send(fd, n, "Please step over here for a pat down.");
+            else
+               sprintf_send2(fd, vect[0], n, " will now be subject to a pat down");
+         }
       } else if(l && !strcmp(vect[3], "part")){
          sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
          wrap_send(fd, tmp);
@@ -574,6 +603,7 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(l && !strcmp(vect[3], "mkrc")){
          make_rc(se);
       }
+      vect[3]--;
    }
 }
 /* vim: set ts=3 sw=3 et: */

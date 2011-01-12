@@ -28,8 +28,10 @@ typedef struct s_setting {
    char *_chans;
    t_list *chan_h;
    int num_chans;
-   char *_nogreet;
-   t_list *nogreet_h;
+   char *_nogreetc;
+   t_list *nogreetc_h;
+   char *_nogreetn;
+   t_list *nogreetn_h;
    char *_ausers;
    t_list *user_h;
    int listening_pid;

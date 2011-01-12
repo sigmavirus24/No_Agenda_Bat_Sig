@@ -196,7 +196,9 @@ void read_rc(char *file, t_setting *se){
          if(!strncmp(in, "auth_users", i))
             se->_ausers = strdup(in + i + 1);
          if(!strncmp(in, "nogreet_chans", i))
-            se->_nogreet = strdup(in + i + 1);
+            se->_nogreetc = strdup(in + i + 1);
+         if(!strncmp(in, "nogreet_nicks", i))
+            se->_nogreetn = strdup(in + i + 1);
       }
       fclose(rc);
 
@@ -204,7 +206,8 @@ void read_rc(char *file, t_setting *se){
       se->chan_h = parse(se->_chans, ',');
       se->num_chans = count(se->_chans, ',');
       se->user_h = parse(se->_ausers, ',');
-      se->nogreet_h = parse(se->_nogreet, ',');
+      se->nogreetc_h = parse(se->_nogreetc, ',');
+      se->nogreetn_h = parse(se->_nogreetn, ',');
    }
 }
 /* vim: set ts=3 sw=3 et: */
