@@ -141,10 +141,6 @@ void parse_srvr(char *in, t_setting *se, int fd){
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
-      } else if(!strcmp(vect[0], "NickServ") && !strcmp(vect[1], "NOTICE")
-            && !strncmp(vect[4], "nick", 4)){
-         /* Rizon does not seem to like to follow RFC's */
-         identify(fd, NULL);
       } else if(!strcmp(vect[1], "JOIN")){
          if(strcmp(vect[0], se->nick))
             sprintf_send2(fd, vect[2], "In The Morning ", vect[0]);
