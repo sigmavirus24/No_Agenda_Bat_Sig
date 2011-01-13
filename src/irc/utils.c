@@ -553,24 +553,18 @@ void privmsg(char **vect, t_setting *se, int fd){
                "_Bat_Sig/tree/stable");
          sprintf_send(fd, vect[0], "#linux-bat-signal on noagendachat.net");
       } else if(!strcmp(vect[3], "stream")){
-         if(!strcmp(n, "public")){
-            sprintf_send(fd, vect[i], "http://live.noagendamix.com:8000/"
-                  "listen.pls");
-            sprintf_send(fd, vect[i], "LOFI: http://lofi.noagendamix.com:8000/"
-                  "listen.pls");
-            sprintf_send(fd, vect[i], "Back-up: http://www.noagendastream"
-                  ".com");
-            sprintf_send(fd, vect[i], "Another backup: http://dsclive.prim"
-                  "cast.com:8208/listen.pls");
-         } else {
-            sprintf_send(fd, vect[0], "http://live.noagendamix.com:8000/listen"
-                  ".pls");
-            sprintf_send(fd, vect[0], "LOFI http://lofi.noagendamix.com:8000/listen"
-                  ".pls");
-            sprintf_send(fd, vect[0], "Back-up: http://www.noagendastream.com");
-            sprintf_send(fd, vect[0], " Another backup: http://dsclive.prim"
-                  "cast.com:8208/listen.pls");
-         }
+         if(!strcmp(n, "public"))
+            i = 2;
+         else
+            i = 0;
+         sprintf_send(fd, vect[i], "Stable(Main) http://live.noagendamix.com:8000/"
+               "listen.pls");
+         sprintf_send(fd, vect[i], "Primary back-up: http://www.noagendastream"
+               ".com");
+         sprintf_send(fd, vect[i], "LOFI: http://lofi.noagendamix.com:8000/"
+               "listen.pls");
+         sprintf_send(fd, vect[i], "Secondary back-up: http://dsclive.prim"
+               "cast.com:8208/listen.pls");
       } else if(!strcmp(vect[3], "google") && strcmp(vect[3], n)){
          replace_spaces(&n, "%20");
          sprintf_send2(fd, vect[i], "http://lmgtfy.com?q=", n);
