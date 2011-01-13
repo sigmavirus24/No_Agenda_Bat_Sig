@@ -547,21 +547,25 @@ void privmsg(char **vect, t_setting *se, int fd){
             execvp(*args, args);
          }
       } else if(!strcmp(vect[3], "info") || !strcmp(vect[3], "version")){
-         sprintf_send(fd, vect[i], "No Agenda IRC Bot Version "VERSION);
-         sprintf_send(fd, vect[i], "Copyright (C) 2010 Sigmavirus24");
-         sprintf_send(fd, vect[i], "https://github.com/sigmavirus24/No_Agenda"
+         sprintf_send(fd, vect[0], "No Agenda IRC Bot Version "VERSION);
+         sprintf_send(fd, vect[0], "Copyright (C) 2010 Sigmavirus24");
+         sprintf_send(fd, vect[0], "https://github.com/sigmavirus24/No_Agenda"
                "_Bat_Sig/tree/stable");
-         sprintf_send(fd, vect[i], "#linux-bat-signal on noagendachat.net");
+         sprintf_send(fd, vect[0], "#linux-bat-signal on noagendachat.net");
       } else if(!strcmp(vect[3], "stream")){
          if(strcmp(n, vect[3])){
             sprintf_send2(fd, vect[i], n, " http://live.noagendamix.com:8000/"
                   "listen.pls");
             sprintf_send2(fd, vect[i], n, " Back-up: http://www.noagendastream"
                   ".com");
+            sprintf_send2(fd, vect[i], n, " Another backup: http://dsclive.prim"
+                  "cast.com:8208/listen.pls");
          } else {
-            sprintf_send(fd, vect[i], "http://live.noagendamix.com:8000/listen"
+            sprintf_send(fd, vect[0], "http://live.noagendamix.com:8000/listen"
                   ".pls");
-            sprintf_send(fd, vect[i], "Back-up: http://www.noagendastream.com");
+            sprintf_send(fd, vect[0], "Back-up: http://www.noagendastream.com");
+            sprintf_send(fd, vect[0], " Another backup: http://dsclive.prim"
+                  "cast.com:8208/listen.pls");
          }
       } else if(!strcmp(vect[3], "google") && strcmp(vect[3], n)){
          replace_spaces(&n, "%20");
