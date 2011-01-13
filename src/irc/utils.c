@@ -143,8 +143,27 @@ void parse_srvr(char *in, t_setting *se, int fd){
          identify(fd, NULL);
          sleep(2);
          join_chans(fd, NULL);
-      } else if(!strcmp(vect[1], "PRIVMSG"))
+      } else if(!strcmp(vect[1], "PRIVMSG")){
+#ifdef DEBUG
+         printf("0:%s, 1:%s, 2:%s, 3:%s\n", 
+               vect[0], vect[1], vect[2], vect[3]);
+#endif
          privmsg(vect, se, fd);
+      } else if(!strcmp(vect[1], "KICK")){
+#ifdef DEBUG
+         printf("0:%s, 1:%s, 2:%s, 3:%s\n", 
+               vect[0], vect[1], vect[2], vect[3]);
+#endif
+         sleep(1);
+         sprintf(tmp, "JOIN %s\r\n", vect[2]);
+         wrap_send(fd, tmp);
+      } else if(!strcmp(vect[1], "474")){
+         slice(vect[3], ' ');
+         check_rm(&(se->chan_h), vect[3]);
+#ifdef DEBUG
+         printf("%s was removed from channel list", vect[3]);
+#endif
+      }
 
       for(i = 0, l = vect; *l; l++, i++)
          ;
@@ -178,7 +197,8 @@ char **srvr_to_vect(char *srvr){
          *(tmp + j) = strndup(srvr, i);
          srvr += i + 1;
       }
-      srvr++;
+      if(*srvr == ':')
+         srvr++;
       i = find(srvr, '\r');
       *(tmp + j) = strndup(srvr, i);
       for(j++ ; j < 5; j++)
@@ -448,12 +468,17 @@ int check_add(t_list **head, char *new){
    t_list *l;
 
    if(head && *head && new){
-      for(l = *head; l && strcmp(l->name, new); l = l->next)
+      for(l = *head; l && strcasecmp(l->name, new); l = l->next)
          ;
       if(!l){
          new_head(new, head);
          return 1;
       }
+   } else if(new){
+      *head = (t_list *)xmalloc(sizeof(t_list));
+      (*head)->name = strdup(new);
+      (*head)->next = NULL;
+      return 1;
    }
    return 0;
 }
@@ -522,9 +547,16 @@ void privmsg(char **vect, t_setting *se, int fd){
          check_rm(&(se->chan_h), vect[2]);
       } else if(l && !strcmp(vect[3], "join") && strcmp(n, vect[3])){
          sprintf(tmp, "JOIN %s\r\n", n);
+#ifdef DEBUG
+         printf("%s", tmp);
+#endif
          slice(n, ' '); /* Make sure there is no password attached */
-         if(check_add(&(se->chan_h), n))
+         if(check_add(&(se->chan_h), n)){
+#ifdef DEBUG
+            printf("joining %s\n", n);
+#endif
             wrap_send(fd, tmp);
+         }
       } else if(l && !strcmp(vect[3], "quit")){
          wrap_send(fd, "QUIT Goodbye slaves!\r\n");
          kill(se->listening_pid, SIGKILL);
@@ -535,6 +567,7 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(l && !strcmp(vect[3], "list_chans")){
          for(l = se->chan_h; l; l = l->next)
             sprintf_send(fd, vect[0], l->name);
+         sprintf_send(fd, vect[0], "End of my channel list");
       } else if(l && !strcmp(vect[3], "start_signal")){
          if(!fork()){
             char *args[] = {"/usr/bin/python", "./src/irc/bat_sig.py", 
