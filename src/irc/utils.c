@@ -569,15 +569,18 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(!strcmp(vect[3], "google") && strcmp(vect[3], n)){
          replace_spaces(&n, "%20");
          sprintf_send2(fd, vect[i], "http://lmgtfy.com?q=", n);
+         free(n);
       } else if(!strcmp(vect[3], "wiki") && strcmp(vect[3], n)){
          replace_spaces(&n, "_");
          sprintf_send2(fd, vect[i], "https://secure.wikimedia.org/wikipedia/"
                "en/wiki/", n);
+         free(n);
       } else if(!strcmp(vect[3], "opencongress") && strcmp(vect[3], n)){
          replace_spaces(&n, "%20");
          sprintf(tmp, "PRIVMSG %s http://www.opencongress.org/search/res"
                "ult?q=%s&search_bills=1\r\n", vect[i], n);
          wrap_send(fd, tmp);
+         free(n);
       } else if(!strcmp(vect[3], "help")){
          print_help(fd, vect[0]);
       } else if(!strcmp(vect[3], "twitter") && strcmp(vect[3], n)){
