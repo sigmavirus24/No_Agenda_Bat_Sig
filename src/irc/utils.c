@@ -553,15 +553,19 @@ void privmsg(char **vect, t_setting *se, int fd){
                "_Bat_Sig/tree/stable");
          sprintf_send(fd, vect[0], "#linux-bat-signal on noagendachat.net");
       } else if(!strcmp(vect[3], "stream")){
-         if(strcmp(n, vect[3])){
-            sprintf_send2(fd, vect[i], n, " http://live.noagendamix.com:8000/"
+         if(!strcmp(n, "public")){
+            sprintf_send(fd, vect[i], "http://live.noagendamix.com:8000/"
                   "listen.pls");
-            sprintf_send2(fd, vect[i], n, " Back-up: http://www.noagendastream"
+            sprintf_send(fd, vect[i], "LOFI: http://lofi.noagendamix.com:8000/"
+                  "listen.pls");
+            sprintf_send(fd, vect[i], "Back-up: http://www.noagendastream"
                   ".com");
-            sprintf_send2(fd, vect[i], n, " Another backup: http://dsclive.prim"
+            sprintf_send(fd, vect[i], "Another backup: http://dsclive.prim"
                   "cast.com:8208/listen.pls");
          } else {
             sprintf_send(fd, vect[0], "http://live.noagendamix.com:8000/listen"
+                  ".pls");
+            sprintf_send(fd, vect[0], "LOFI http://lofi.noagendamix.com:8000/listen"
                   ".pls");
             sprintf_send(fd, vect[0], "Back-up: http://www.noagendastream.com");
             sprintf_send(fd, vect[0], " Another backup: http://dsclive.prim"
