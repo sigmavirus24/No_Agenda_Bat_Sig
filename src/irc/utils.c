@@ -444,30 +444,31 @@ void make_rc(t_setting *se){
    }
 }
 
-int check_add(t_list *head, char *new){
+int check_add(t_list **head, char *new){
    t_list *l;
 
-   if(head && new){
-      for(l = head; l && strcmp(l->name, new); l = l->next)
+   if(head && *head && new){
+      for(l = *head; l && strcmp(l->name, new); l = l->next)
          ;
       if(!l){
-         new_head(new, &head);
+         new_head(new, head);
          return 1;
       }
    }
    return 0;
 }
 
-void check_rm(t_list *head, char *rm){
+void check_rm(t_list **head, char *rm){
    t_list *l;
 
-   if(head && rm){
-      if(strcmp(head->name, rm)){
-         for(l = head; l->next && strcmp(rm, l->next->name); l = l->next)
+   if(head && *head && rm){
+      l = *head;
+      if(strcasecmp(l->name, rm)){
+         for(; l->next && strcmp(rm, l->next->name); l = l->next)
             ;
          remove_head(&(l->next));
       } else
-         remove_head(&head);
+         remove_head(head);
    }
 }
 
@@ -478,10 +479,10 @@ void privmsg(char **vect, t_setting *se, int fd){
    char tmp[128];
    int i;
 
-   for(l = se->user_h; l && strcmp(l->name, vect[0]); l = l->next)
+   for(l = se->user_h; l && strcasecmp(l->name, vect[0]); l = l->next)
       ;
 
-   i = (!strcmp(vect[2], se->nick)) ? 0 : 2;
+   i = (!strcasecmp(vect[2], se->nick)) ? 0 : 2;
 
    if(vect[3] && *vect[3] == '.'){
       vect[3]++;
@@ -497,10 +498,10 @@ void privmsg(char **vect, t_setting *se, int fd){
          if(!strcmp(vect[3], n))
             sprintf_send(fd, vect[0], "No channel or nick provided.");
          else if(*n == '#'){
-            if(check_add(se->nogreetc_h, n))
+            if(check_add(&(se->nogreetc_h), n))
                sprintf_send2(fd, vect[0], n, " is now being monitored for leaks.");
          }else 
-            if(check_add(se->nogreetn_h, n)){
+            if(check_add(&(se->nogreetn_h), n)){
                if(!strcmp(vect[0], n))
                   sprintf_send(fd, n, "Please step over here for a pat down.");
                else
@@ -510,20 +511,19 @@ void privmsg(char **vect, t_setting *se, int fd){
          if(!strcmp(vect[3], n))
             sprintf_send(fd, vect[0], "No channel or nick provided.");
          else if(l && *n == '#')
-            check_rm(se->nogreetc_h, n);
+            check_rm(&(se->nogreetc_h), n);
          else if(!strcmp(vect[0], n))
-            check_rm(se->nogreetn_h, n);
+            check_rm(&(se->nogreetn_h), n);
          else 
             sprintf_send(fd, vect[0], "You are not permitted to do that.");
       } else if(l && !strcmp(vect[3], "part")){
          sprintf(tmp, "PART %s :Parting is so sad ITM\r\n", vect[2]);
          wrap_send(fd, tmp);
-         if(se->chan_h)
-            check_rm(se->chan_h, vect[2]);
+         check_rm(&(se->chan_h), vect[2]);
       } else if(l && !strcmp(vect[3], "join") && strcmp(n, vect[3])){
          sprintf(tmp, "JOIN %s\r\n", n);
          slice(n, ' '); /* Make sure there is no password attached */
-         if(check_add(se->chan_h, n))
+         if(check_add(&(se->chan_h), n))
             wrap_send(fd, tmp);
       } else if(l && !strcmp(vect[3], "quit")){
          wrap_send(fd, "QUIT Goodbye slaves!\r\n");
@@ -606,12 +606,11 @@ void privmsg(char **vect, t_setting *se, int fd){
       } else if(l && !strcmp(vect[3], "add") && strcmp(vect[3], n)){
          slice(n, ' ');
          if(!count(n, ' '))
-            if(check_add(se->user_h, n))
+            if(check_add(&(se->user_h), n))
                sprintf_send2(fd, vect[0], n, " was added to the authorized users list.");
       } else if(l && !strcmp(vect[3], "del") && strcmp(vect[3], n)){
          if(!count(n, ' '))
-            if(se->user_h)
-               check_rm(se->user_h, n);
+            check_rm(&(se->user_h), n);
       } else if(l && !strcmp(vect[3], "list_ausers")){
          for(l = se->user_h; l; l = l->next)
             sprintf_send(fd, vect[0], l->name);
@@ -619,7 +618,7 @@ void privmsg(char **vect, t_setting *se, int fd){
          make_rc(se);
       }
       vect[3]--;
-   }
+   } 
 }
 
 void greet(char **vect, t_setting *se, int fd){
