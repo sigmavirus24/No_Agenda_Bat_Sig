@@ -342,25 +342,22 @@ void new_head(char *n, t_list **h){
    }
 }
 
+void safe_free(void *p){
+   if(p)
+      free(p);
+}
+
 void clean_up(t_setting *se){
-   if(se->pass)
-      free(se->pass);
-   if(se->nick)
-      free(se->nick);
-   if(se->realname)
-      free(se->realname);
-   if(se->serv)
-      free(se->serv);
-   if(se->port)
-      free(se->port);
-   if(se->_chans)
-      free(se->_chans);
-   if(se->_ausers)
-      free(se->_ausers);
-   if(se->_nogreetc)
-      free(se->_nogreetc);
-   if(se->_nogreetn)
-      free(se->_nogreetn);
+   safe_free(se->rcfilepath);
+   safe_free(se->pass);
+   safe_free(se->nick);
+   safe_free(se->realname);
+   safe_free(se->serv);
+   safe_free(se->port);
+   safe_free(se->_chans);
+   safe_free(se->_ausers);
+   safe_free(se->_nogreetc);
+   safe_free(se->_nogreetn);
    clear_list(se->chan_h);
    clear_list(se->user_h);
    clear_list(se->nogreetc_h);
